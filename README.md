@@ -27,7 +27,7 @@ garantindo conformidade total com as exigências de avaliação do MEC.
 
 ### Instalação
 1. Clone o repositório:
-   - git clone https://github.com/usuario/projeto.git
+   - git clone https://github.com/GuilhermeMeloRoxo/SCE
 
 ## Demo
 - [Site Online]()
