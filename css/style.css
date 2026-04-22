@@ -1,0 +1,136 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+/* Celular */
+.navbar {
+    display: grid;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    background: #2b5b18;
+    position: relative;
+    z-index: 20;
+    grid-template-columns: auto 1fr auto;
+}
+.nav-menu {
+    display: flex;
+    position: absolute;
+    top: 100%;
+    right: 0;
+    width: 100%;
+    height: calc(100vh - 60px);
+    background-color: rgba(29, 28, 28, 0.986);
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    padding-top: 15vh;
+    gap: 20px;
+    z-index: 10;
+    transition: transform 0.5s ease-in-out;
+    list-style: none;
+    transform: translateX(100%);
+    visibility: hidden;
+}
+.nav-menu.active {
+    transform: translateX(0);
+    visibility: visible;
+}
+.menu-hamburger {
+    display: block;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid white;
+    border-radius: 5px;
+    cursor: pointer;
+    padding: 10px;
+    margin-left: auto;
+    flex-shrink: 0;
+}
+
+.linha {
+    display: block;
+    width: 25px;
+    height: 3px;
+    background: white;
+    margin: 5px 0;
+    transition: 0.3s;
+}
+
+.logo {
+    color: white;
+    font-size: 1.5rem;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+}
+
+.logo img {
+    height: 40px;
+}
+
+.sce-title {
+    color: white;
+    font-size: 1.5rem;
+    font-weight: bold;
+    text-align: center;
+    flex-grow: 1;
+}
+#sce-title-pc {
+    display: none;
+}
+
+.nav-menu a {
+    background: #2b5b18;
+    border: 1px solid #228B22;
+    border-radius: 15px;
+    padding: 10px 20px;
+    width: 180px;
+    text-align: center;
+    color: white;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.nav-menu a:hover {
+    background: #228B22;
+}
+
+.nav-menu li {
+    margin: 0;
+    padding: 0;
+}
+
+/* Tablet */
+@media (min-width: 600px) {
+
+    #sce-title-mobile {
+        display: none;
+    }
+    #sce-title-pc {
+        display: block;
+    }
+}
+
+/* Computador */
+@media (min-width: 1024px) {
+    .navbar {
+        padding: 5px 20px;
+        height: 60px;
+    }
+    .nav-menu {
+        top: 100%;
+        right: 0;
+        width: 20%;
+        height: calc(30vh);
+        border-bottom-left-radius: 30px;
+        padding-top: 5vh;
+    }
+    .logo {
+        font-size: 1rem;
+    }
+
+    .logo img {
+        height: 50px;
+    }
+}
