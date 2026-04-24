@@ -1,13 +1,15 @@
 /* configurações base */
 :root {
-    font-family: "Manrope", sans-serif, Arial;
     font-size: 62.5%;
-    overflow: hidden;
 }
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+}
+body {
+    font-family: "Manrope", sans-serif, Arial;
+    overflow-x: hidden;
 }
 /* barra de navegação */
 .navbar {
@@ -81,7 +83,7 @@
 }
 .sce-title {
     color: white;
-    font-size: 3.5rem;
+    font-size: 3rem;
     font-weight: bold;
     text-align: center;
     flex-grow: 1;
@@ -143,6 +145,33 @@ footer h5, p {
     padding: 0;
     height: 60px;
 }
+h1 {
+    font-size: 2.8rem;
+    text-align: center;
+    padding: 20px 0 10px;
+    color: #191970;
+}
+#feedback {
+    display: flex;
+    margin: 40px 25px;
+}
+.btn-feedback {
+    font-size: 1.4rem;
+    padding: 10px 20px;
+    border: 1px solid #000080;
+    background: #0176b9;
+    border-radius: 15px;
+    color: white;
+}
+.btn-feedback:hover {
+    background-color: #000080;
+    cursor: pointer;
+}
+.btn-feedback:active {
+    transform: scale(0.9);
+    box-shadow: 0 8px 210px #81adf4;
+    transition: all 0.1s ease;
+}
 /* Tablet */
 @media (min-width: 600px) {
     #sce-title-mobile {
@@ -151,6 +180,9 @@ footer h5, p {
     #sce-title-pc {
         display: block;
         font-size: 2.6rem;
+    }
+    h1 {
+        font-size: 2.4rem;
     }
 }
 /* Computador */
@@ -183,5 +215,11 @@ footer h5, p {
     #sce-title-pc {
         display: block;
         font-size: 3.5rem;
+    }
+    h1 {
+        font-size: 3rem;
+    }
+    .btn-feedback {
+        font-size: 1.8rem;
     }
 }
