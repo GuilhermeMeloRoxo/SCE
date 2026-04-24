@@ -17,11 +17,12 @@ function fazerLogout() {
 
 /* função para ativar o menu hamburguer */
 function configurarMenuHamburguer() {
-    const btnMobile = document.getElementById('btn-hamburguer');
+    const btnHamburger = document.getElementById('btn-hamburguer');
     const navMenu = document.getElementById('nav-menu');
 
-    if (btnMobile && navMenu) {
-        btnMobile.addEventListener('click', () => {
+    if (btnHamburger && navMenu) {
+        btnHamburger.addEventListener('click', () => {
+            btnHamburger.classList.toggle('active');
             navMenu.classList.toggle('active');
         });
     }

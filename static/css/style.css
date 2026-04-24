@@ -28,7 +28,7 @@
     padding-top: 15vh;
     gap: 20px;
     z-index: 10;
-    transition: transform 0.5s ease-in-out;
+    transition: all 0.5s ease-out;
     list-style: none;
     transform: translateX(100%);
     visibility: hidden;
@@ -47,7 +47,15 @@
     margin-left: auto;
     flex-shrink: 0;
 }
-
+.menu-hamburger.active .linha:nth-child(1) {
+    transform: translateY(8px) rotate(45deg);
+}
+.menu-hamburger.active .linha:nth-child(2) {
+    opacity: 0;
+}
+.menu-hamburger.active .linha:nth-child(3) {
+    transform: translateY(-8px) rotate(-45deg);
+}
 .linha {
     display: block;
     width: 25px;
