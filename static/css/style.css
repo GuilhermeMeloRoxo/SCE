@@ -1,0 +1,228 @@
+/* configurações base */
+:root {
+    font-size: 62.5%;
+}
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+body {
+    font-family: "Manrope", sans-serif, Arial;
+    overflow-x: hidden;
+}
+/* barra de navegação */
+.navbar {
+    display: grid;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    background: #191970;
+    position: relative;
+    z-index: 20;
+    grid-template-columns: auto 1fr auto;
+}
+.nav-menu {
+    display: flex;
+    position: absolute;
+    top: 100%;
+    right: 0;
+    width: 100%;
+    height: calc(100vh - 60px);
+    background-color: rgba(29, 28, 28, 0.986);
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    padding-top: 15vh;
+    gap: 20px;
+    z-index: 10;
+    transition: all 0.5s ease-out;
+    list-style: none;
+    transform: translateX(100%);
+    visibility: hidden;
+}
+.nav-menu.active {
+    transform: translateX(0);
+    visibility: visible;
+}
+.menu-hamburger {
+    display: block;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid white;
+    border-radius: 5px;
+    cursor: pointer;
+    padding: 10px;
+    margin-left: auto;
+    flex-shrink: 0;
+}
+.menu-hamburger.active .linha:nth-child(1) {
+    transform: translateY(8px) rotate(45deg);
+}
+.menu-hamburger.active .linha:nth-child(2) {
+    opacity: 0;
+}
+.menu-hamburger.active .linha:nth-child(3) {
+    transform: translateY(-8px) rotate(-45deg);
+}
+.linha {
+    display: block;
+    width: 25px;
+    height: 3px;
+    background: white;
+    margin: 5px 0;
+    transition: 0.3s;
+}
+.logo {
+    color: white;
+    display: flex;
+    align-items: center;
+}
+.logo img {
+    height: 50px;
+    border-radius: 99px;
+}
+.sce-title {
+    color: white;
+    font-size: 3rem;
+    font-weight: bold;
+    text-align: center;
+    flex-grow: 1;
+}
+#sce-title-pc {
+    display: none;
+}
+.nav-menu a {
+    background: #000080;
+    border: 1px solid #0176b9;
+    border-radius: 15px;
+    padding: 10px 20px;
+    width: 180px;
+    text-align: center;
+    color: white;
+    text-decoration: none;
+    display: inline-block;
+}
+.nav-menu a:hover {
+    background: #0176b9;
+}
+.nav-menu li {
+    margin: 20px;
+}
+.nav-menu li a {
+    font-size: 1.8rem;
+    font-weight: bold;
+}
+footer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 150px;
+    text-align: center;
+    background-color: #191970;
+    color: white;
+    padding-top: 10px;
+    font-size: 1.5rem;
+    z-index: 1;
+}
+.footer-section {
+    padding-bottom: 12px;
+}
+footer h5, p {
+    font-size: 1.6rem;
+    font-weight: bold;
+}
+.social-icons a img{
+    margin-top: 5px;
+}
+.github img {
+    height: 38px;
+    border-radius: 100px;
+    margin-right: 14px;
+    margin-bottom: 10px;
+}
+.instagram img, .linkedin img {
+    margin: 0;
+    padding: 0;
+    height: 60px;
+}
+h1 {
+    font-size: 2.8rem;
+    text-align: center;
+    padding: 20px 0 10px;
+    color: #191970;
+}
+#feedback {
+    display: flex;
+    margin: 40px 25px;
+}
+.btn-feedback {
+    font-size: 1.4rem;
+    padding: 10px 20px;
+    border: 1px solid #000080;
+    background: #0176b9;
+    border-radius: 15px;
+    color: white;
+}
+.btn-feedback:hover {
+    background-color: #000080;
+    cursor: pointer;
+}
+.btn-feedback:active {
+    transform: scale(0.9);
+    box-shadow: 0 8px 210px #81adf4;
+    transition: all 0.1s ease;
+}
+/* Tablet */
+@media (min-width: 600px) {
+    #sce-title-mobile {
+        display: none;
+    }
+    #sce-title-pc {
+        display: block;
+        font-size: 2.6rem;
+    }
+    h1 {
+        font-size: 2.4rem;
+    }
+}
+/* Computador */
+@media (min-width: 1024px) {
+    .navbar {
+        padding: 5px 20px;
+        height: 80px;
+    }
+    .nav-menu {
+        bottom: 65%;
+        left: 75%;
+        width: 25%;
+        height: 35%;
+        height: 300px;
+        border-bottom-left-radius: 30px;
+        padding-top: 5vh;
+    }
+    .nav-menu li {
+        margin: 0;
+    }
+    .nav-menu li a {
+        font-size: 2rem;
+    } 
+    .logo img {
+        height: 60px;
+    }
+    #sce-title-mobile {
+        display: none;
+    }
+    #sce-title-pc {
+        display: block;
+        font-size: 3.5rem;
+    }
+    h1 {
+        font-size: 3rem;
+    }
+    #feedback {
+        margin-left: 100px;
+    }
+    .btn-feedback {
+        font-size: 1.8rem;
+    }
+}
