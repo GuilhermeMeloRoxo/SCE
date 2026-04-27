@@ -160,6 +160,7 @@ h1 {
 .btn-feedback {
     font-size: 1.4rem;
     padding: 10px 20px;
+    font-weight: bold;
     border: 1px solid #000080;
     background: #0176b9;
     border-radius: 15px;
