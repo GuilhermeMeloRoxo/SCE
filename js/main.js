@@ -1,4 +1,4 @@
-/* função de logout */
+// função de logout
 function fazerLogout() {
     const linkLogout = document.getElementById('link-logout');
     
@@ -15,7 +15,7 @@ function fazerLogout() {
     }
 }
 
-/* função para ativar o menu hamburguer */
+// função para ativar o menu hamburguer
 function configurarMenuHamburguer() {
     const btnHamburger = document.getElementById('btn-hamburguer');
     const navMenu = document.getElementById('nav-menu');
@@ -28,7 +28,7 @@ function configurarMenuHamburguer() {
     }
 }
 
-/* função para adicionar os componentes html (barra de navegação, footer, etc) */
+// função para adicionar os componentes html (barra de navegação, footer, etc)
 function inserirHtml(id, caminho) {
     const idElemento = document.getElementById(id);
     
@@ -48,6 +48,25 @@ function inserirHtml(id, caminho) {
             .catch(error => console.error(error));
     }
 }
+//
+function handleClick(id) {
+    const formCadastro = document.getElementById(id);
+    formCadastro.addEventListener("submit", function(event) {
+        event.preventDefault();
+        const cadastroPerfil = new FormData(formCadastro);
+        fetch(formCadastro.action, {
+            method: 'POST',
+            body: cadastroPerfil
+        })
+        .then(response => {
+            if (response.ok) {
+                window.location.href = "index.html";
+            }
+        })
+        .catch(error => console.error('Erro:', error));
+    });
+}
+
 
 document.addEventListener('DOMContentLoaded', () => {
     inserirHtml('navbar', '/components/navbar.html');
