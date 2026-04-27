@@ -48,7 +48,7 @@ function inserirHtml(id, caminho) {
             .catch(error => console.error(error));
     }
 }
-//
+// função para tratar o envio padrão do formulário de cadastro e o redirecionamento para a página de login.
 function handleClick(id) {
     const formCadastro = document.getElementById(id);
     formCadastro.addEventListener("submit", function(event) {
@@ -60,10 +60,10 @@ function handleClick(id) {
         })
         .then(response => {
             if (response.ok) {
-                window.location.href = "index.html";
+                window.location.href = "cadastro.html";
             }
         })
-        .catch(error => console.error('Erro:', error));
+        .catch(error => console.error(error));
     });
 }
 
