@@ -60,7 +60,7 @@ function handleClick(id) {
         })
         .then(response => {
             if (response.ok) {
-                window.location.href = "cadastro.html";
+                window.location.href = "login.html";
             }
         })
         .catch(error => console.error(error));
