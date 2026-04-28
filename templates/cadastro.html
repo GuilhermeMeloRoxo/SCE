@@ -7,17 +7,10 @@
     <title>Cadastro - SCE</title>
     <link rel="stylesheet" href="../static/css/style.css">
 </head>
-
 <body>
-    <!-- menu hamburguer -->
-    <header>
-        <nav id="navbar" class="navbar">
-
-        </nav>
-    </header>
-
     <!-- formulário para cadastro -->
     <main>
+        <div class="form-logo"><img src="../static/images/logo.png" alt="Logo SCE"></div>
         <h1>Crie seu perfil</h1>
         <div>
             <form id="form-cadastro">
@@ -35,9 +28,10 @@
                 </div>
                 <div>
                     <label for="senha" id="senha">Senha</label>
-                    <input type="password" name="senha" minlength="8" pattern="[a-z0-9._%+-]" title="Por favor, insira no mínimo 8 dígitos" placeholder="Digite sua senha" required>
+                    <input type="password" name="senha" minlength="8" pattern="[a-z0-9._%+-]" title="Por favor, insira no mínimo 8 dígitos" placeholder="Digite sua senha, no mínimo 8 dígitos" required>
                 </div>
                     <button onclick="handleClick('form-cadastro')" type="submit">Criar perfil</button>
+                    <a href="login.html">Já tenho perfil</a>
                 </div>
             </form>
         </div>
