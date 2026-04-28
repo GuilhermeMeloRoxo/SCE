@@ -147,6 +147,7 @@ footer h5, p {
     padding: 0;
     height: 60px;
 }
+/* página inicial */
 h1 {
     font-size: 2.8rem;
     text-align: center;
@@ -184,6 +185,7 @@ h1 {
         display: block;
         font-size: 2.6rem;
     }
+    /* página inicial */
     h1 {
         font-size: 2.4rem;
     }
@@ -219,6 +221,7 @@ h1 {
         display: block;
         font-size: 3.5rem;
     }
+    /* página inicial */
     h1 {
         font-size: 3rem;
     }
