@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
+
 /* configurações base */
 :root {
     font-size: 62.5%;
@@ -137,7 +139,7 @@ footer h5, p {
 .github img {
     height: 38px;
     border-radius: 100px;
-    margin-right: 14px;
+    margin-right: 13px;
     margin-bottom: 10px;
 }
 .instagram img, .linkedin img {
@@ -158,6 +160,7 @@ h1 {
 .btn-feedback {
     font-size: 1.4rem;
     padding: 10px 20px;
+    font-weight: bold;
     border: 1px solid #000080;
     background: #0176b9;
     border-radius: 15px;

@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro - SCE</title>
+    <link rel="stylesheet" href="../static/css/style.css">
+</head>
+
+<body>
+    <!-- menu hamburguer -->
+    <header>
+        <nav id="navbar" class="navbar">
+
+        </nav>
+    </header>
+
+    <!-- formulário para cadastro -->
+    <main>
+        <h1>Crie seu perfil</h1>
+        <div>
+            <form id="form-cadastro">
+                <div>
+                    <label for="nome" id="nome">Nome Completo</label>
+                    <input type="text" name="nome" pattern="[A-Za-zÀ-ÖØ-öø-ÿ\s]+ [A-Za-zÀ-ÖØ-öø-ÿ\s]+$" placeholder="Digite seu nome completo" required>
+                </div>
+                <div>
+                    <label for="cpf" id="cpf">CPF</label>
+                    <input type="text" name="cpf" pattern="[0-9]{3}.[0-9]{3}.[0-9]{3}-[0-9]{2}" placeholder="Digite seu CPF    Ex.: 123.456.789-00" required>
+                </div>
+                <div>
+                    <label for="matricula" id="matricula">Matrícula Institucional</label>
+                    <input type="text" name="matricula" pattern="[0-9]{4}[1-2]{1}[0-9]{6,}|[0-9]{7}" placeholder="Digite sua matrícula" required>
+                </div>
+                <div>
+                    <label for="senha" id="senha">Senha</label>
+                    <input type="password" name="senha" minlength="8" pattern="[a-z0-9._%+-]" title="Por favor, insira no mínimo 8 dígitos" placeholder="Digite sua senha" required>
+                </div>
+                    <button onclick="handleClick('form-cadastro')" type="submit">Criar perfil</button>
+                </div>
+            </form>
+        </div>
+    </main>
+
+    <footer>
+        <div id="footer">
+
+        </div>
+    </footer>
+
+    <script src="../js/main.js"></script>
+</body>
+</html>
