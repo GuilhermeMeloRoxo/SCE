@@ -1,16 +1,12 @@
-@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
-
+@import "tailwindcss";
 /* configurações base */
-:root {
-    font-size: 62.5%;
-}
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 body {
-    font-family: "Manrope", sans-serif, Arial;
+    font-family: sans-serif, Arial;
     overflow-x: hidden;
 }
 /* barra de navegação */
@@ -85,7 +81,7 @@ body {
 }
 .sce-title {
     color: white;
-    font-size: 3rem;
+    font-size: 1.8rem;
     font-weight: bold;
     text-align: center;
     flex-grow: 1;
@@ -111,7 +107,7 @@ body {
     margin: 20px;
 }
 .nav-menu li a {
-    font-size: 1.8rem;
+    font-size: 1rem;
     font-weight: bold;
 }
 footer {
@@ -123,24 +119,24 @@ footer {
     background-color: #191970;
     color: white;
     padding-top: 10px;
-    font-size: 1.5rem;
+    font-size: 0.9rem;
     z-index: 1;
 }
 .footer-section {
     padding-bottom: 12px;
 }
 footer h5, p {
-    font-size: 1.6rem;
+    font-size: 1rem;
     font-weight: bold;
 }
 .social-icons a img{
     margin-top: 5px;
+    display: inline-flex;
 }
 .github img {
     height: 38px;
     border-radius: 100px;
     margin-right: 13px;
-    margin-bottom: 10px;
 }
 .instagram img, .linkedin img {
     margin: 0;
@@ -148,8 +144,9 @@ footer h5, p {
     height: 60px;
 }
 /* página inicial */
-h1 {
-    font-size: 2.8rem;
+.container h1 {
+    font-size: 1.75rem;
+    font-weight: bold;
     text-align: center;
     padding: 20px 0 10px;
     color: #191970;
@@ -159,7 +156,7 @@ h1 {
     margin: 40px 25px;
 }
 .btn-feedback {
-    font-size: 1.4rem;
+    font-size: 0.8rem;
     padding: 10px 20px;
     font-weight: bold;
     border: 1px solid #000080;
@@ -183,11 +180,11 @@ h1 {
     }
     #sce-title-pc {
         display: block;
-        font-size: 2.6rem;
+        font-size: 1.6rem;
     }
     /* página inicial */
-    h1 {
-        font-size: 2.4rem;
+    .container h1 {
+        font-size: 1.5rem;
     }
 }
 /* Computador */
@@ -209,7 +206,7 @@ h1 {
         margin: 0;
     }
     .nav-menu li a {
-        font-size: 2rem;
+        font-size: 1.25rem;
     } 
     .logo img {
         height: 60px;
@@ -219,16 +216,16 @@ h1 {
     }
     #sce-title-pc {
         display: block;
-        font-size: 3.5rem;
+        font-size: 2.2rem;
     }
     /* página inicial */
-    h1 {
-        font-size: 3rem;
+    .container h1 {
+        font-size: 1.8rem;
     }
     #feedback {
         margin-left: 100px;
     }
     .btn-feedback {
-        font-size: 1.8rem;
+        font-size: 1.1rem;
     }
 }
