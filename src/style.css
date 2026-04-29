@@ -144,11 +144,17 @@ footer h5, p {
     height: 60px;
 }
 /* página inicial */
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 20px auto;
+    padding: 0 auto;
+}
 .container h1 {
-    font-size: 1.75rem;
+    font-size: 1rem;
     font-weight: bold;
     text-align: center;
-    padding: 20px 0 10px;
     color: #191970;
 }
 #feedback {
@@ -174,7 +180,7 @@ footer h5, p {
     transition: all 0.1s ease;
 }
 /* Tablet */
-@media (min-width: 600px) {
+@media (min-width: 640px) {
     #sce-title-mobile {
         display: none;
     }
@@ -217,10 +223,11 @@ footer h5, p {
     #sce-title-pc {
         display: block;
         font-size: 2.2rem;
+        margin: auto;
     }
     /* página inicial */
     .container h1 {
-        font-size: 1.8rem;
+        font-size: 2rem;
     }
     #feedback {
         margin-left: 100px;
