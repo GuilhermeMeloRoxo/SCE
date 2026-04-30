@@ -1,10 +1,6 @@
 @import "tailwindcss";
+
 /* configurações base */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
 body {
     font-family: sans-serif, Arial;
     height: 100%;
@@ -12,6 +8,8 @@ body {
     overflow-y: auto;
     display: flex;
     flex-direction: column;
+    z-index: 10;
+    min-height: 100vh;
 }
 /* barra de navegação */
 header {
@@ -118,15 +116,16 @@ header {
     font-weight: bold;
 }
 footer {
-    position: fixed;
     bottom: 0;
     width: 100%;
+    margin-top: 10px;
     height: 150px;
     text-align: center;
     background-color: #191970;
     color: white;
     padding-top: 10px;
     z-index: 1;
+    flex-shrink: 0;
 }
 .footer-section {
     padding-bottom: 12px;
@@ -157,6 +156,7 @@ footer h5, p {
     justify-content: center;
     align-items: center;
     margin: 20px auto;
+    flex: 1 0 auto;
 }
 .container h1 {
     padding: 20px 25px;
