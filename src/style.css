@@ -7,51 +7,61 @@
 }
 body {
     font-family: sans-serif, Arial;
+    height: 100%;
     overflow-x: hidden;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
 }
 /* barra de navegação */
-.navbar {
-    display: grid;
+header {
+    background-color: #191970;
+    text-align: center;
+    color: white;
     justify-content: space-between;
     align-items: center;
-    padding: 10px 20px;
-    background: #191970;
-    position: relative;
-    z-index: 20;
-    grid-template-columns: auto 1fr auto;
+    width: 100%;
+    height: 65px;
+    z-index: 50;
+    position: sticky;
+}
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    text-align: center;
+    width: 100%;
+    padding: 6px 10px;
 }
 .nav-menu {
-    display: flex;
-    position: absolute;
-    top: 100%;
-    right: 0;
+    position: fixed;
+    top: 65px;
+    left: 0;
     width: 100%;
-    height: calc(100vh - 60px);
+    height: calc(100vh - 65px);
     background-color: rgba(29, 28, 28, 0.986);
     flex-direction: column;
-    justify-content: flex-start;
+    padding-top: 80px;
     align-items: center;
-    padding-top: 15vh;
     gap: 20px;
-    z-index: 10;
+    z-index: 40;
     transition: all 0.5s ease-out;
     list-style: none;
     transform: translateX(100%);
-    visibility: hidden;
+    display: flex;
 }
 .nav-menu.active {
-    transform: translateX(0);
-    visibility: visible;
+    transform: translate(0);
 }
 .menu-hamburger {
     display: block;
     background: rgba(255, 255, 255, 0.1);
     border: 1px solid white;
-    border-radius: 5px;
+    border-radius: 10px;
     cursor: pointer;
     padding: 10px;
+    z-index: 60;
     margin-left: auto;
-    flex-shrink: 0;
 }
 .menu-hamburger.active .linha:nth-child(1) {
     transform: translateY(8px) rotate(45deg);
@@ -71,29 +81,26 @@ body {
     transition: 0.3s;
 }
 .logo {
-    color: white;
-    display: flex;
-    align-items: center;
+    margin-right: auto;
 }
 .logo img {
     height: 50px;
-    border-radius: 99px;
+    border-radius: 999px;
 }
 .sce-title {
     color: white;
     font-size: 1.8rem;
     font-weight: bold;
     text-align: center;
-    flex-grow: 1;
 }
 #sce-title-pc {
     display: none;
 }
 .nav-menu a {
     background: #000080;
-    border: 1px solid #0176b9;
-    border-radius: 15px;
-    padding: 10px 20px;
+    border: 1px solid #78cdff;
+    border-radius: 50px;
+    padding: 10px;
     width: 180px;
     text-align: center;
     color: white;
@@ -101,17 +108,17 @@ body {
     display: inline-block;
 }
 .nav-menu a:hover {
-    background: #0176b9;
+    background: #007fc8;
 }
 .nav-menu li {
-    margin: 20px;
+    margin: 15px;
 }
 .nav-menu li a {
     font-size: 1rem;
     font-weight: bold;
 }
 footer {
-    position: absolute;
+    position: fixed;
     bottom: 0;
     width: 100%;
     height: 150px;
@@ -119,55 +126,55 @@ footer {
     background-color: #191970;
     color: white;
     padding-top: 10px;
-    font-size: 0.9rem;
     z-index: 1;
 }
 .footer-section {
     padding-bottom: 12px;
 }
 footer h5, p {
-    font-size: 1rem;
+    font-size: 0.8rem;
     font-weight: bold;
+}
+.social-icons {
+    display: inline-flex;
+    align-items: center;
 }
 .social-icons a img{
     margin-top: 5px;
-    display: inline-flex;
 }
 .github img {
-    height: 38px;
-    border-radius: 100px;
-    margin-right: 13px;
+    height: 40px;
+    margin-left: 12px;
+}
+.instagram img {
+    margin-left: 13px;
 }
 .instagram img, .linkedin img {
-    margin: 0;
-    padding: 0;
     height: 60px;
 }
 /* página inicial */
 .container {
-    display: flex;
     justify-content: center;
     align-items: center;
     margin: 20px auto;
-    padding: 0 auto;
 }
 .container h1 {
-    font-size: 1rem;
+    padding: 20px 25px;
+    font-size: 1.4rem;
     font-weight: bold;
     text-align: center;
     color: #191970;
 }
 #feedback {
-    display: flex;
     margin: 40px 25px;
 }
 .btn-feedback {
-    font-size: 0.8rem;
-    padding: 10px 20px;
+    font-size: 0.9rem;
+    padding: 10px 15px;
     font-weight: bold;
-    border: 1px solid #000080;
-    background: #0176b9;
-    border-radius: 15px;
+    border: 2px solid #78cdff;
+    background: #007fc8;
+    border-radius: 50px;
     color: white;
 }
 .btn-feedback:hover {
@@ -177,36 +184,59 @@ footer h5, p {
 .btn-feedback:active {
     transform: scale(0.9);
     box-shadow: 0 8px 210px #81adf4;
-    transition: all 0.1s ease;
+    transition: all 0.2s ease;
 }
 /* Tablet */
 @media (min-width: 640px) {
+    header {
+        height: 75px;
+    }
+    .navbar {
+        padding: 10px 20px;
+    }
+    .nav-menu {
+        top: 75px;
+    }
+    .nav-menu a {
+        padding: 15px 30px;
+    }
     #sce-title-mobile {
         display: none;
     }
     #sce-title-pc {
         display: block;
-        font-size: 1.6rem;
+        margin: auto;
+        font-size: 1.8rem;
+    }
+    footer h5, p {
+        font-size: 1rem;
     }
     /* página inicial */
     .container h1 {
-        font-size: 1.5rem;
+        font-size: 1.8rem;
+    }
+    #feedback {
+        margin: 40px 60px;
+    }
+    .btn-feedback {
+        padding: 10px 20px;
+        font-size: 1rem;
     }
 }
 /* Computador */
 @media (min-width: 1024px) {
-    .navbar {
-        padding: 5px 20px;
+    header {
         height: 80px;
     }
     .nav-menu {
-        bottom: 65%;
-        left: 75%;
-        width: 25%;
-        height: 35%;
-        height: 300px;
+        top: 80px;
+        width: 300px;
+        left: auto;
+        right: 0;
+        height: auto;
+        justify-content: center;
+        padding: 40px 0 40px 10px;
         border-bottom-left-radius: 30px;
-        padding-top: 5vh;
     }
     .nav-menu li {
         margin: 0;
@@ -217,13 +247,8 @@ footer h5, p {
     .logo img {
         height: 60px;
     }
-    #sce-title-mobile {
-        display: none;
-    }
-    #sce-title-pc {
-        display: block;
+    .navbar #sce-title-pc {
         font-size: 2.2rem;
-        margin: auto;
     }
     /* página inicial */
     .container h1 {
@@ -233,6 +258,6 @@ footer h5, p {
         margin-left: 100px;
     }
     .btn-feedback {
-        font-size: 1.1rem;
+        padding: 10px 25px;
     }
 }
