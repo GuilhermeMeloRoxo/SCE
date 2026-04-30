@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cadastro - SCE</title>
-    <link rel="stylesheet" href="../src/style.css">
+    <link rel="stylesheet" href="/src/style.css">
 </head>
 <body>
     <!-- formulário para cadastro -->
@@ -19,12 +19,12 @@
                     <input type="text" name="nome" pattern="[A-Za-zÀ-ÖØ-öø-ÿ\s]+ [A-Za-zÀ-ÖØ-öø-ÿ\s]+$" placeholder="Digite seu nome completo" required>
                 </div>
                 <div>
-                    <label for="cpf" id="cpf">CPF</label>
-                    <input type="text" name="cpf" pattern="[0-9]{3}.[0-9]{3}.[0-9]{3}-[0-9]{2}" placeholder="Digite seu CPF    Ex.: 123.456.789-00" required>
+                    <label for="email" id="email">Email</label>
+                    <input type="email" name="email" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$" title="Por favor, insira o seu email pessoal" placeholder="Ex.: nome@exemplo.com" required>
                 </div>
                 <div>
-                    <label for="matricula" id="matricula">Matrícula Institucional</label>
-                    <input type="text" name="matricula" pattern="[0-9]{4}[1-2]{1}[0-9]{6,}|[0-9]{7}" placeholder="Digite sua matrícula" required>
+                    <label for="cpf" id="cpf">CPF</label>
+                    <input type="text" name="cpf" pattern="[0-9]{3}.[0-9]{3}.[0-9]{3}-[0-9]{2}" placeholder="Ex.: 123.456.789-00" required>
                 </div>
                 <div>
                     <label for="senha" id="senha">Senha</label>
