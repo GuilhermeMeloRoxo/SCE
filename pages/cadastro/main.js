@@ -1,4 +1,4 @@
-import { supabase } from './supabaseClient'
+import { supabase } from '/supabaseClient.js'
 
 
 export function handleCadastro() {
@@ -53,3 +53,4 @@ export function handleCadastro() {
         alert("Ocorreu um erro inesperado.")
     }
 }
+

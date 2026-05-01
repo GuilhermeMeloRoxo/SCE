@@ -1,4 +1,6 @@
-import './style.css'
+import { handleCadastro } from '/pages/cadastro/main.js';
+import { handleLogin } from '/pages/login/main.js';
+import '/style.css'
 /*
 import javascriptLogo from './assets/javascript.svg'
 import viteLogo from './assets/vite.svg'
@@ -56,27 +58,19 @@ function inserirHtml(id, caminho) {
             })
             .catch(error => console.error(error));
     }
-}
-// função para tratar o envio padrão do formulário de cadastro e o redirecionamento para a página de login.
-function handleClick(id) {
-    const formCadastro = document.getElementById(id);
-    formCadastro.addEventListener("submit", function(event) {
-        event.preventDefault();
-        const cadastroPerfil = new FormData(formCadastro);
-        fetch(formCadastro.action, {
-            method: 'POST',
-            body: cadastroPerfil
-        })
-        .then(response => {
-            if (response.ok) {
-                window.location.href = "login.html";
-            }
-        })
-        .catch(error => console.error(error));
-    });
-}
+};
 
-
+// função para lidar com os botões de cadastro e login
+function handleClick(form) {
+    form.addEventListener('submit', async (e) => {
+    e.preventDefault()
+    
+    if (form.id === 'form-cadastro') {
+        handleCadastro();
+    }else if (form.id === 'form-login') {
+        handleLogin();
+    }
+})};
 document.addEventListener('DOMContentLoaded', () => {
     inserirHtml('navbar', '/components/navbar.html');
     inserirHtml('footer', '/components/footer.html');
