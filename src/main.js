@@ -26,6 +26,20 @@ function fazerLogout() {
         });
     }
 }
+async function verificarUsuarioLogado() {
+    const { data: { user }, error } = await supabase.auth.getUser()
+
+    const paginaAtual = window.location.pathname
+    const ehPaginaPublica = paginaAtual.includes('login') || paginaAtual.includes('cadastro')
+
+    if (!user && !ehPaginaPublica) {
+        // Se não houver usuário logado, manda de volta para o login
+        window.location.href = '/pages/login/';
+    } else if (user && ehPaginaPublica) {
+        window.location.href = '/';
+    }
+}
+
 
 // função para ativar o menu hamburguer
 function configurarMenuHamburguer() {
@@ -75,6 +89,7 @@ function handleForm(form) {
 
 // carregando funções a partir daqui
 document.addEventListener('DOMContentLoaded', () => {
+    verificarUsuarioLogado();
     inserirHtml('navbar', '/components/navbar.html');
     inserirHtml('footer', '/components/footer.html');
 });
