@@ -11,6 +11,10 @@ body {
     z-index: 10;
     min-height: 100vh;
 }
+/* faz com que o footer fique no lugar certo */
+main {
+    margin-bottom: auto;
+}
 /* barra de navegação */
 header {
     background-color: #191970;
@@ -118,7 +122,6 @@ header {
 footer {
     bottom: 0;
     width: 100%;
-    margin-top: 10px;
     height: 150px;
     text-align: center;
     background-color: #191970;
