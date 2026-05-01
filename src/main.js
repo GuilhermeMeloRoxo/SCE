@@ -8,19 +8,6 @@ import viteLogo from './assets/vite.svg'
 import heroImg from './assets/hero.png'
 import { setupCounter } from './counter.js'
 */
-console.log("URL do Supabase:", import.meta.env.VITE_SUPABASE_URL)
-
-async function testarConexao() {
-  const { data, error } = await supabase.from('perfis').select('count', { count: 'exact', head: true })
-  
-  if (error) {
-    console.error("Erro de conexão com Supabase:", error.message)
-  } else {
-    console.log("Conexão com Supabase: OK! (Tabela perfis acessível)")
-  }
-}
-
-testarConexao()
 // função de logout
 function fazerLogout() {
     const linkLogout = document.getElementById('link-logout');
