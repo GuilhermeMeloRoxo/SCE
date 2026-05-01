@@ -119,6 +119,7 @@ header {
 .nav-menu li a {
     font-weight: bold;
 }
+/* footer */
 footer {
     bottom: 0;
     width: 100%;
@@ -194,6 +195,7 @@ footer h5, p {
 }
 /* Tablet */
 @media (min-width: 640px) {
+    /* barra de navegação */
     header {
         height: 75px;
     }
@@ -211,6 +213,7 @@ footer h5, p {
         margin: auto;
         font-size: 1.8rem;
     }
+    /* footer */
     footer h5, p {
         font-size: 1rem;
     }
@@ -228,6 +231,7 @@ footer h5, p {
 }
 /* Computador */
 @media (min-width: 1024px) {
+    /* barra de navegação */
     header {
         height: 80px;
     }
