@@ -26,14 +26,16 @@ function fazerLogout() {
     const linkLogout = document.getElementById('link-logout');
     
     if (linkLogout) {
-        linkLogout.addEventListener('click', (event) => {
-            event.preventDefault(); /* não deixa a página se mexer com o link # */
-            
-            localStorage.removeItem('id_usuario');
-            sessionStorage.clear();
-            
-            /* redireciona pra página de login */
-            window.location.href = "/pages/login";
+        linkLogout.addEventListener('click', async (e) => {
+            event.preventDefault();
+
+            const { error } = await supabase.auth.signOut();
+            if (error) {
+                console.error("Erro ao sair:", error.message);
+            } else {
+                alert("Você fez logout com sucesso!");
+                window.location.href = '/pages/login/';
+            }
         });
     }
 }
@@ -83,6 +85,8 @@ function handleForm(form) {
         handleLogin();
     }
 })};
+
+// carregando funções a partir daqui
 document.addEventListener('DOMContentLoaded', () => {
     inserirHtml('navbar', '/components/navbar.html');
     inserirHtml('footer', '/components/footer.html');
