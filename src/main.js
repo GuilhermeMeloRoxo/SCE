@@ -1,14 +1,26 @@
-import { handleCadastro } from '/pages/cadastro/main.js';
-import { handleLogin } from '/pages/login/main.js';
-import '/style.css'
+import { handleCadastro, btnCadastro } from '/pages/cadastro/main.js';
+import { handleLogin, btnLogin } from '/pages/login/main.js';
+import '/src/style.css'
+import { supabase } from '/src/supabaseClient.js'
 /*
 import javascriptLogo from './assets/javascript.svg'
 import viteLogo from './assets/vite.svg'
 import heroImg from './assets/hero.png'
 import { setupCounter } from './counter.js'
 */
+console.log("URL do Supabase:", import.meta.env.VITE_SUPABASE_URL)
 
+async function testarConexao() {
+  const { data, error } = await supabase.from('perfis').select('count', { count: 'exact', head: true })
+  
+  if (error) {
+    console.error("Erro de conexão com Supabase:", error.message)
+  } else {
+    console.log("Conexão com Supabase: OK! (Tabela perfis acessível)")
+  }
+}
 
+testarConexao()
 // função de logout
 function fazerLogout() {
     const linkLogout = document.getElementById('link-logout');
@@ -61,7 +73,7 @@ function inserirHtml(id, caminho) {
 };
 
 // função para lidar com os botões de cadastro e login
-function handleClick(form) {
+function handleForm(form) {
     form.addEventListener('submit', async (e) => {
     e.preventDefault()
     
@@ -74,4 +86,12 @@ function handleClick(form) {
 document.addEventListener('DOMContentLoaded', () => {
     inserirHtml('navbar', '/components/navbar.html');
     inserirHtml('footer', '/components/footer.html');
+});
+
+btnCadastro?.addEventListener('click', () => {
+    handleForm(document.querySelector('#form-cadastro'));
+});
+
+btnLogin?.addEventListener('click', () => {
+    handleForm(document.querySelector('#form-login'));
 });

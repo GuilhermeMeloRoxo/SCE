@@ -1,14 +1,15 @@
-import { supabase } from '/supabaseClient.js'
+import { supabase } from '/src/supabaseClient.js'
 
-
-export function handleCadastro() {
+export const btnCadastro = document.getElementById('btn-cadastro');
+export async function handleCadastro() {
     
     const form = document.querySelector('#form-cadastro')
     
-    const nome = form.querySelector('#nome').value
-    const email = form.querySelector('#email').value
-    const cpf = form.querySelector('#cpf').value
-    const senha = form.querySelector('#senha').value
+    const dados = new FormData(form);
+    const nome = dados.get('nome');
+    const email = dados.get('email');
+    const cpf = dados.get('cpf');
+    const senha = dados.get('senha');
     
     try {
          // verificando se o cpf já está cadastrado
@@ -48,6 +49,7 @@ export function handleCadastro() {
         if (dbError) throw dbError
         
         alert("Cadastro realizado com sucesso!")
+        window.location.href = '/pages/login';
         }
 
     } catch (error) {

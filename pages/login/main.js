@@ -1,11 +1,13 @@
-import { supabase } from '/supabaseClient.js'
+import { supabase } from '/src/supabaseClient.js'
 
-export function handleLogin() {
+export const btnLogin = document.getElementById('btn-login');
+export async function handleLogin() {
 
     const form = document.querySelector('#form-login')
     
-    const email = form.querySelector('#email').value
-    const senha = form.querySelector('#senha').value
+    const dados = new FormData(form);
+    const email = dados.get('email');
+    const senha = dados.get('senha');   
 
     // fazendo login do usuário
     const { data, error } = await supabase.auth.signInWithPassword({
