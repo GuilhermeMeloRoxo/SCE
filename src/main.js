@@ -21,7 +21,7 @@ function fazerLogout() {
             sessionStorage.clear();
             
             /* redireciona pra página de login */
-            window.location.href = "/login.html";
+            window.location.href = "/pages/login";
         });
     }
 }

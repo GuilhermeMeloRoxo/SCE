@@ -24,12 +24,13 @@ export function handleCadastro() {
         }
 
     
-        // cadastrando usuário no auth
+        // cadastrando usuário no auth do supabase
         const { data: authData, error: authError } = await supabase.auth.signUp({
             email,
             password: senha,
         })
 
+        // verificando se o email já está sendo usado ou outro erro
         if (authError) {
             if (authError.message.includes("already registered")) {
                 alert("Erro: Este e-mail já está em uso.")
@@ -38,6 +39,7 @@ export function handleCadastro() {
             }
             return
         }
+        // adicionando perfil do usuário na tabela 'perfis' do supabase
         if (authData.user) {
         const { error: dbError } = await supabase
             .from('perfis')
