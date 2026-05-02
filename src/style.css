@@ -26,6 +26,7 @@ header {
     height: 65px;
     z-index: 50;
     position: sticky;
+    box-shadow: 0 8px 210px rgba(1, 13, 28, 0.18);
 }
 .navbar {
     display: flex;
