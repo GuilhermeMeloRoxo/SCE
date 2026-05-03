@@ -73,7 +73,7 @@ function handleForm(form) {
     }
 })};
 
-// função para lidar com os botões de cadastro e login
+// função para lidar com o feedback dos usuários
 async function handleFeedback() {
     const formFeedback = document.getElementById('feedback');
     const camposFeedback = document.getElementById('hidden-feedback');
@@ -94,7 +94,7 @@ async function handleFeedback() {
             window.location.href = '/pages/login/';
         }
     } const email = await getEmail();
-    if (btnFeedback && msgFeedback && submitFeedback) {
+    if (btnFeedback && msgFeedback && submitFeedback && formFeedback) {
         formFeedback.addEventListener('submit', (e) => {
             e.preventDefault();
             if (msgFeedback.value.length < 10 || msgFeedback.value.length > 500) {
