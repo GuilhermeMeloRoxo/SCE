@@ -194,7 +194,7 @@ footer h5, p {
     box-shadow: 0 8px 210px #6ca2f8;
     transition: all 0.2s ease;
 }
-.feedback-hidden {
+.hidden-feedback {
     display: none;
 }
 /* Tablet */

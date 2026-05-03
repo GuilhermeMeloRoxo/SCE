@@ -26,8 +26,7 @@ export async function handleLogin() {
     }
 
     if (data.user) {
-        alert("Bem-vindo(a)")
-        // redirecionando usuário para a página inicial
         window.location.href = '/';
+        alert("Bem-vindo(a)")
     }
-    }
+}
