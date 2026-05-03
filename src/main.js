@@ -74,7 +74,8 @@ function handleForm(form) {
 })};
 
 // função para lidar com os botões de cadastro e login
-function handleFeedback() {
+async function handleFeedback() {
+    const formFeedback = document.getElementById('feedback');
     const camposFeedback = document.getElementById('hidden-feedback');
     const btnFeedback = document.getElementById('btn-feedback');
     const msgFeedback = document.getElementById('msg-feedback');
@@ -89,12 +90,13 @@ function handleFeedback() {
         if (data.user) {
             return data.user.email;
         } if (error) {
-            return null;
+            alert('Faça login para enviar seu feedback!');
+            window.location.href = '/pages/login/';
         }
-    }
-    const email = getEmail();
+    } const email = await getEmail();
     if (btnFeedback && msgFeedback && submitFeedback) {
-        submitFeedback.addEventListener('click', () => {
+        formFeedback.addEventListener('submit', (e) => {
+            e.preventDefault();
             if (msgFeedback.value.length < 10 || msgFeedback.value.length > 500) {
                 alert('Por favor, escreva uma mensagem com no mínimo 10 caracteres e no máximo 500.');
             } else {
