@@ -25,13 +25,13 @@
     </main>
 
     <!-- botão de feedback -->
-    <div id="feedback">
-        <button class="btn-feedback">Feedback</button>
-        <div class="feedback-hidden">
-            <textarea class="msg-feedback" id="mensagem" name="mensagem" minlength="10" maxlength="500" placeholder="Deixe o seu comentário aqui, no mínimo 10 caracteres." required></textarea>
-            <button class="submit-feedback" type="submit">Enviar</button>
+    <form id="feedback">
+        <button class="btn-feedback" id="btn-feedback" type="button">Feedback</button>
+        <div class="hidden-feedback" id="hidden-feedback">
+            <textarea class="msg-feedback" id="msg-feedback" name="mensagem" minlength="10" maxlength="500" placeholder="Deixe o seu comentário aqui, no mínimo 10 caracteres."></textarea>
+            <button class="submit-feedback" id="submit-feedback" type="submit">Enviar</button>
         </div>
-    </div>
+    </form>
 
     <!-- autoexplicativo-->
     <footer>
