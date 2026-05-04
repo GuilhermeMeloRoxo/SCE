@@ -42,7 +42,8 @@ export async function renderizarPerfil() {
                     <span class="block text-[12px] uppercase tracking-[0.2em] text-slate-400 font-bold">
                         Curso
                     </span>
-                    <span class="block text-1xl font-semibold text-slate-800 mt-1 leading-snug">
+                    <span class="flex items-center gap-2 text-1xl font-semibold text-slate-800 mt-1 leading-none">
+                        <span class="material-symbols-outlined">menu_book</span>
                         ${data.formacao?.curso || 'Curso não informado'}
                     </span>
                 </div>
@@ -51,8 +52,9 @@ export async function renderizarPerfil() {
                     <span class="block text-[12px] uppercase tracking-[0.2em] text-slate-400 font-bold">
                         Formado em
                     </span>
-                    <span class="block text-1xl font-semibold text-slate-800 mt-1 leading-snug">
-                        ${data.formacao?.termino || 'Data de término não informada'}
+                    <span class="flex items-center gap-2 text-1xl font-semibold text-slate-800 mt-1 leading-none">
+                        <span class="material-symbols-outlined">calendar_month</span>
+                        ${data.formacao?.termino || 'Data não informada'}
                     </span>
                 </div>
             </div>

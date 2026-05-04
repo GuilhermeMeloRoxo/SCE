@@ -2,6 +2,7 @@ import { handleCadastro, btnCadastro } from '/pages/cadastro/main.js';
 import { handleLogin, btnLogin } from '/pages/login/main.js';
 import { renderizarPerfil, renderizarBotãoGithub, conectarGithub } from '/pages/perfil/main.js';
 import '/src/style.css'
+import 'material-symbols';
 import { supabase } from '/src/supabaseClient.js'
 /*
 import javascriptLogo from './assets/javascript.svg'
@@ -46,11 +47,19 @@ async function verificarUsuarioLogado() {
 function configurarMenuHamburguer() {
     const btnHamburger = document.getElementById('btn-hamburguer');
     const navMenu = document.getElementById('nav-menu');
-
+    const icon = document.getElementById('icon-hamburguer');
+    
     if (btnHamburger && navMenu) {
-        btnHamburger.addEventListener('click', () => {
-            btnHamburger.classList.toggle('active');
-            navMenu.classList.toggle('active');
+        btnHamburger.addEventListener('click', () => { 
+            const isOpened = navMenu.classList.toggle('hidden');
+            navMenu.classList.toggle('flex');
+
+            // Se 'isOpened' for falso (menu visível), coloca o ícone de fechar
+            if (!isOpened) {
+                icon.textContent = 'close';
+            } else {
+                icon.textContent = 'menu';
+    }
         });
     }
 }
