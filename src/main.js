@@ -1,5 +1,6 @@
 import { handleCadastro, btnCadastro } from '/pages/cadastro/main.js';
 import { handleLogin, btnLogin } from '/pages/login/main.js';
+import { renderizarPerfil, renderizarBotãoGithub, conectarGithub } from '/pages/perfil/main.js';
 import '/src/style.css'
 import { supabase } from '/src/supabaseClient.js'
 /*
@@ -14,13 +15,13 @@ function fazerLogout() {
     
     if (linkLogout) {
         linkLogout.addEventListener('click', async (e) => {
-            event.preventDefault();
+            e.preventDefault();
 
             const { error } = await supabase.auth.signOut();
             if (error) {
                 console.error("Erro ao sair:", error.message);
             } else {
-                alert("Você fez logout com sucesso!");
+                alert("Logout realizado com sucesso!");
                 window.location.href = '/pages/login/';
             }
         });
@@ -82,16 +83,53 @@ function handleForm(form) {
     
     if (form.id === 'form-cadastro') {
         handleCadastro();
-    }else if (form.id === 'form-login') {
+    } else if (form.id === 'form-login') {
         handleLogin();
     }
 })};
+
+// função para lidar com o feedback dos usuários
+async function handleFeedback() {
+    const formFeedback = document.getElementById('feedback');
+    const camposFeedback = document.getElementById('hidden-feedback');
+    const btnFeedback = document.getElementById('btn-feedback');
+    const msgFeedback = document.getElementById('msg-feedback');
+    const submitFeedback = document.getElementById('submit-feedback');
+    if (camposFeedback.style.display === 'none' || camposFeedback.style.display === '') {
+        camposFeedback.style.display = 'block';
+    } else {
+        camposFeedback.style.display = 'none';
+    }
+    async function getEmail() {
+        const { data, error } = await supabase.auth.getUser();
+        if (data.user) {
+            return data.user.email;
+        } if (error) {
+            alert('Faça login para enviar seu feedback!');
+            window.location.href = '/pages/login/';
+        }
+    } const email = await getEmail();
+    if (btnFeedback && msgFeedback && submitFeedback && formFeedback) {
+        formFeedback.addEventListener('submit', (e) => {
+            e.preventDefault();
+            if (msgFeedback.value.length < 10 || msgFeedback.value.length > 500) {
+                alert('Por favor, escreva uma mensagem com no mínimo 10 caracteres e no máximo 500.');
+            } else {
+                localStorage.setItem(email, JSON.stringify(msgFeedback.value));
+                alert('Feedback enviado com sucesso! Agradecemos por compartilhar sua opinião conosco.');
+                msgFeedback.value = '';
+                camposFeedback.style.display = 'none';
+            }
+        });
+    }
+};
 
 // carregando funções a partir daqui
 document.addEventListener('DOMContentLoaded', () => {
     verificarUsuarioLogado();
     inserirHtml('navbar', '/components/navbar.html');
     inserirHtml('footer', '/components/footer.html');
+    renderizarPerfil();
 });
 
 btnCadastro?.addEventListener('click', () => {
@@ -100,4 +138,8 @@ btnCadastro?.addEventListener('click', () => {
 
 btnLogin?.addEventListener('click', () => {
     handleForm(document.querySelector('#form-login'));
+});
+
+document.getElementById('btn-feedback')?.addEventListener('click', () => {
+    handleFeedback();
 });

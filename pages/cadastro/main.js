@@ -49,7 +49,7 @@ export async function handleCadastro() {
         if (dbError) throw dbError
         
         alert("Cadastro realizado com sucesso!")
-        window.location.href = '/pages/login';
+        window.location.href = '/pages/login/';
         }
 
     } catch (error) {

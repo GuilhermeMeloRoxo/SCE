@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="15 20 70 55">
+    <!-- Arco de base -->
+    <path d="M30 55C30 66.0457 38.9543 75 50 75C61.0457 75 70 66.0457 70 55" stroke="white" stroke-width="5" stroke-linecap="round" fill="none"/>
+    
+    <!-- Detalhe Amarelo (Sorriso) -->
+    <path d="M38 60C38 66.6274 43.3726 72 50 72C56.6274 72 62 66.6274 62 60" stroke="#F59E0B" stroke-width="4" stroke-linecap="round" fill="none"/>
+    
+    <!-- Base do Chapéu (Parte cilíndrica) -->
+    <path d="M35 45V52C35 60.2843 41.7157 67 50 67C58.2843 67 65 60.2843 65 52V45" fill="#075985"/>
+
+    <!-- Topo do Chapéu (Losango/Diamante) -->
+    <path d="M50 20L85 38L50 56L15 38L50 20Z" fill="#0EA5E9"/>
+    
+    <!-- Cordão Amarelo -->
+    <path d="M50 28L25 45V52" stroke="#F59E0B" stroke-width="2" stroke-linecap="round" fill="none"/>
+    <circle cx="25" cy="53" r="3" fill="#F59E0B"/>
+</svg>
