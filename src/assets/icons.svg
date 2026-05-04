@@ -10,8 +10,7 @@
   </symbol>
   <symbol id="profile" viewBox="0 0 24 24">
     <circle cx="12" cy="7.5" r="4.5" />
-    <!-- Corpo com ombros bem arredondados (curva quadrática) -->
     <path d="M12,13 C6,13 4,16 4,19 C4,22 6,24 12,24 C18,24 20,22 20,19 C20,16 18,13 12,13 Z" />
-</symbol>
+  </symbol>
 </svg>
 
