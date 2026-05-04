@@ -1,5 +1,6 @@
 import { handleCadastro, btnCadastro } from '/pages/cadastro/main.js';
 import { handleLogin, btnLogin } from '/pages/login/main.js';
+import { renderizarPerfil, renderizarBotãoGithub, conectarGithub } from '/pages/perfil/main.js';
 import '/src/style.css'
 import { supabase } from '/src/supabaseClient.js'
 /*
@@ -113,6 +114,7 @@ async function handleFeedback() {
 document.addEventListener('DOMContentLoaded', () => {
     inserirHtml('navbar', '/components/navbar.html');
     inserirHtml('footer', '/components/footer.html');
+    renderizarPerfil();
 });
 
 btnCadastro?.addEventListener('click', () => {
@@ -123,6 +125,6 @@ btnLogin?.addEventListener('click', () => {
     handleForm(document.querySelector('#form-login'));
 });
 
-document.getElementById('btn-feedback').addEventListener('click', () => {
+document.getElementById('btn-feedback')?.addEventListener('click', () => {
     handleFeedback();
 });
