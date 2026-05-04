@@ -67,7 +67,7 @@ export function renderizarBotãoGithub() {
     container.innerHTML = `
         <div class="flex flex-col items-center justify-center rounded-[24px] border border-dashed border-slate-300 p-10 text-center">
             <p class="text-sm text-slate-500 mb-4">Conecte seu GitHub para exibir suas contribuições recentes.</p>
-            <button id="btn-github" class="inline-flex items-center gap-2 rounded-full bg-slate-900 px-6 py-2.5 text-sm font-semibold text-white transition hover:bg-slate-700">
+            <button id="btn-github" class="inline-flex items-center gap-2 rounded-full bg-slate-900 px-6 py-2.5 text-sm font-semibold text-white transition hover:bg-slate-700 cursor-pointer">
                 <svg class="w-6 h-6 text-black" fill="white">
                     <use href="/src/assets/icons.svg#github"></use>
                 </svg>
