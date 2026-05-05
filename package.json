@@ -16,6 +16,7 @@
   "dependencies": {
     "@supabase/supabase-js": "^2.105.1",
     "@tailwindcss/vite": "^4.2.4",
+    "material-symbols": "^0.44.4",
     "tailwind": "^4.0.0"
   }
 }

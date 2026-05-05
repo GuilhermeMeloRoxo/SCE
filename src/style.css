@@ -1,5 +1,4 @@
 @import "tailwindcss";
-
 /* configurações base */
 body {
     font-family: sans-serif, Arial;
@@ -11,117 +10,17 @@ body {
     z-index: 10;
     min-height: 100vh;
 }
+/* configurações dos icones */
+.material-symbols-outlined {
+    font-family: 'Material Symbols Outlined';
+    font-size: 18px; /* Tamanho ligeiramente menor para ficar delicado */
+    font-variation-settings: 'wght' 600;
+    text-align: center;
+}
+
 /* faz com que o footer fique no lugar certo */
 main {
     margin-bottom: auto;
-}
-/* barra de navegação */
-header {
-    background-color: #191970;
-    text-align: center;
-    color: white;
-    justify-content: space-between;
-    align-items: center;
-    width: 100%;
-    height: 65px;
-    z-index: 50;
-    position: sticky;
-    box-shadow: 0 8px 210px rgba(1, 13, 28, 0.18);
-}
-.navbar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    text-align: center;
-    width: 100%;
-    padding: 6px 10px;
-}
-.nav-menu {
-    position: fixed;
-    top: 65px;
-    height: calc(100vh - 65px);
-    background-color: rgba(29, 28, 28, 0.986);
-    flex-direction: column;
-    align-items: center;
-    z-index: 40;
-    transition: all 0.5s ease-out;
-    list-style: none;
-    transform: translateX(100%);
-    display: flex;
-    width: 200px;
-    left: auto;
-    right: 0;
-    padding-top: 20px;
-    border-bottom-left-radius: 50px;
-    box-shadow: 0 8px 210px rgba(1, 13, 28, 0.18);
-}
-.nav-menu.active {
-    transform: translate(0);
-}
-.menu-hamburger {
-    display: block;
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid white;
-    border-radius: 10px;
-    cursor: pointer;
-    padding: 10px;
-    z-index: 60;
-    margin-left: auto;
-}
-.menu-hamburger.active .linha:nth-child(1) {
-    transform: translateY(8px) rotate(45deg);
-}
-.menu-hamburger.active .linha:nth-child(2) {
-    opacity: 0;
-}
-.menu-hamburger.active .linha:nth-child(3) {
-    transform: translateY(-8px) rotate(-45deg);
-}
-.linha {
-    display: block;
-    width: 25px;
-    height: 3px;
-    background: white;
-    margin: 5px 0;
-    transition: 0.3s;
-}
-.logo {
-    margin-right: auto;
-}
-.logo img {
-    height: 50px;
-    border-radius: 999px;
-}
-.sce-title {
-    color: white;
-    font-size: 1.8rem;
-    font-weight: bold;
-    text-align: center;
-}
-#sce-title-pc {
-    display: none;
-}
-.nav-menu a {
-    background: #000080;
-    border: 1px solid #007fc8;
-    border-radius: 50px;
-    padding: 8px;
-    width: 150px;
-    text-align: center;
-    color: white;
-    text-decoration: none;
-    display: inline-block;
-    font-size: 0.9rem;
-}
-.nav-menu a:hover {
-    background: #007fc8;
-    color: #000080;
-}
-.nav-menu li {
-    margin: 15px;
-}
-.nav-menu li a {
-    font-weight: bold;
 }
 /* footer */
 footer {
@@ -129,7 +28,7 @@ footer {
     width: 100%;
     height: 150px;
     text-align: center;
-    background-color: #191970;
+    background-color: #087487;
     color: white;
     padding-top: 10px;
     z-index: 1;
