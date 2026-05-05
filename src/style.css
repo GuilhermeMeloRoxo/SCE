@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import "material-symbols";
 /* configurações base */
 body {
     font-family: sans-serif, Arial;
@@ -17,7 +18,114 @@ body {
     font-variation-settings: 'wght' 600;
     text-align: center;
 }
-
+/* barra de navegação */
+header {
+    background-color: #087487;
+    text-align: center;
+    color: white;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    height: 65px;
+    z-index: 50;
+    position: sticky;
+    box-shadow: 0 8px 210px rgba(1, 13, 28, 0.18);
+}
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    text-align: center;
+    width: 100%;
+    padding: 6px 10px;
+}
+.nav-menu {
+    position: fixed;
+    top: 60px;
+    background-color: white;
+    flex-direction: column;
+    align-items: center;
+    z-index: 40;
+    transition: all 0.5s ease-out;
+    list-style: none;
+    transform: translateX(100%);
+    display: flex;
+    width: 280px;
+    border-radius: 50px;
+    box-shadow: 0 8px 210px rgba(1, 13, 28, 0.18);
+    right: 0;
+    height: auto;
+    justify-content: center;
+    padding: 15px 0;
+}
+.nav-menu.active {
+    transform: translate(-25px);
+}
+.menu-hamburger {
+    display: block;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid white;
+    border-radius: 10px;
+    cursor: pointer;
+    padding: 10px;
+    z-index: 60;
+    margin-left: auto;
+}
+.menu-hamburger.active .linha:nth-child(1) {
+    transform: translateY(8px) rotate(45deg);
+}
+.menu-hamburger.active .linha:nth-child(2) {
+    opacity: 0;
+}
+.menu-hamburger.active .linha:nth-child(3) {
+    transform: translateY(-8px) rotate(-45deg);
+}
+.linha {
+    display: block;
+    width: 25px;
+    height: 3px;
+    background: white;
+    margin: 5px 0;
+    transition: 0.3s;
+}
+.logo {
+    margin-right: auto;
+}
+.logo img {
+    height: 50px;
+    border-radius: 999px;
+}
+.sce-title {
+    color: white;
+    font-size: 1.8rem;
+    font-weight: bold;
+    text-align: center;
+}
+#sce-title-pc {
+    display: none;
+}
+.nav-menu a {
+    width: 180px;
+    align-items: center;
+    color: #666;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 1rem;
+}
+.nav-menu a:hover {
+    color: #008b8b;
+}
+#link-logout:hover {
+    color: #f04f43;
+}
+.nav-menu li {
+    margin: 12px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid rgb(176, 176, 176);
+}
+.nav-menu li a {
+    font-weight: bold;
+}
 /* faz com que o footer fique no lugar certo */
 main {
     margin-bottom: auto;
@@ -70,7 +178,7 @@ footer h5, p {
     font-size: 1.4rem;
     font-weight: bold;
     text-align: center;
-    color: #191970;
+    color: black;
 }
 #feedback {
     margin: 60px 25px;
@@ -106,15 +214,7 @@ footer h5, p {
         padding: 10px 20px;
     }
     .nav-menu {
-        top: 75px;
-        width: 280px;
-        left: auto;
-        right: 0;
-        gap: 8px;
-    }
-    .nav-menu a {
-        font-size: 1rem;
-        width: 170px;
+        top: 70px;
     }
     #sce-title-mobile {
         display: none;
@@ -147,21 +247,8 @@ footer h5, p {
         height: 80px;
     }
     .nav-menu {
-        top: 80px;
-        width: 300px;
-        left: auto;
-        right: 0;
-        height: auto;
-        justify-content: center;
-        gap: 20px;
-        padding: 40px 0;
+        top: 75px;
     }
-    .nav-menu li {
-        margin: 0;
-    }
-    .nav-menu li a {
-        font-size: 1rem;
-    } 
     .logo img {
         height: 60px;
     }
