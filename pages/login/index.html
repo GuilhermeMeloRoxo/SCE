@@ -24,7 +24,15 @@
                     <input class="w-full text-sm px-4 py-2.5 border border-gray-400 rounded-3xl focus:ring-2 focus:ring-blue-900 focus:border-transparent outline-none transition" type="password" name="senha" minlength="8" title="Por favor, insira sua senha" placeholder="Digite sua senha" required>
                 </div>
                 <div class="my-8.5 text-center text-gray-600">
-                    <button class="w-full font-bold bg-blue-900 hover:bg-blue-950 text-white py-2.5 rounded-3xl cursor-pointer shadow-lg transition duration-300 active:scale-95 active:shadow-2xl" id="btn-login" type="submit">Entrar</button>
+                    <button class="w-full font-bold bg-blue-900 hover:bg-blue-950 text-white py-2.5 rounded-3xl cursor-pointer shadow-lg transition duration-300 active:scale-95 active:shadow-2xl flex items-center justify-center"
+                    id="btn-login"
+                    type="submit">
+                        <span id="btn-text">Login</span>
+                        <svg id="btn-spinner" class="hidden animate-spin h-6 w-6 text-[#e0e0e0]" fill="none">
+                            <use href="/src/assets/icons.svg#carregando"></use>
+                        </svg>
+                    </button>
+                </button>
                 </div>
             </form>
         </div>

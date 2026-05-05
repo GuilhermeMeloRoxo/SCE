@@ -1,10 +1,28 @@
 import { supabase } from '/src/supabaseClient.js'
+import { mostrarErro } from '/src/main.js'
 
 export const btnCadastro = document.getElementById('btn-cadastro');
 export async function handleCadastro() {
     
     const form = document.querySelector('#form-cadastro')
-    
+    const btnText = document.getElementById('btn-text');
+    const btnSpinner = document.getElementById('btn-spinner')
+
+      // Desativa e altera visual
+    btnCadastro.disabled = true;
+    btnCadastro.classList.add('opacity-80');
+
+    // Troca texto por ícone
+    btnText.classList.add('hidden');
+    btnSpinner.classList.remove('hidden');
+
+    function voltarBotao() {
+        btnLogin.disabled = false;
+        btnLogin.classList.remove('opacity-80');
+        btnText.classList.remove('hidden');
+        btnSpinner.classList.add('hidden');
+    }
+
     const dados = new FormData(form);
     const nome = dados.get('nome');
     const email = dados.get('email');
@@ -20,7 +38,8 @@ export async function handleCadastro() {
         .single()
 
         if (cpfExistente) {
-        alert("Erro: Este CPF já está cadastrado em nosso sistema.")
+        mostrarErro("Erro: Este CPF já está cadastrado em nosso sistema.")
+        voltarBotao();
         return
         }
 
@@ -34,9 +53,11 @@ export async function handleCadastro() {
         // verificando se o email já está sendo usado ou outro erro
         if (authError) {
             if (authError.message.includes("already registered")) {
-                alert("Erro: Este e-mail já está em uso.")
+                mostrarErro("Erro: Este e-mail já está em uso.")
+                voltarBotao();
             } else {
-                alert("Erro no cadastro: " + authError.message)
+                mostrarErro("Erro no cadastro: " + authError.message)
+                voltarBotao();
             }
             return
         }
@@ -48,13 +69,12 @@ export async function handleCadastro() {
 
         if (dbError) throw dbError
         
-        alert("Cadastro realizado com sucesso!")
         window.location.href = '/pages/login/';
         }
 
     } catch (error) {
         console.error(error)
-        alert("Ocorreu um erro inesperado.")
+        mostrarErro("Ocorreu um erro inesperado.")
     }
 }
 

@@ -1,3 +1,4 @@
+import { mostrarErro } from '../../src/main';
 import { supabase } from '/src/supabaseClient.js'
 
 export async function renderizarPerfil() {
@@ -19,7 +20,7 @@ export async function renderizarPerfil() {
     const temGithub = data && data.github_user;
     const avatarUrl = temGithub 
     ? `<img src="https://avatars.githubusercontent.com/${data.github_user}" alt="Foto de Perfil" class="w-full h-full object-cover rounded-full">` 
-    : `<svg class="w-60 h-60 text-[#0b8aa0]" fill="currentColor">
+    : `<svg class="w-60 h-60 text-[#087487]" fill="currentColor">
             <use href="/src/assets/icons.svg#profile"></use>
         </svg>`;
     
@@ -97,7 +98,7 @@ export async function conectarGithub() {
 
     } catch (error) {
         console.error('Erro ao iniciar autenticação GitHub:', error.message);
-        alert('Não foi possível conectar ao GitHub. Tente novamente.');
+        mostrarErro('Não foi possível conectar ao GitHub. Tente novamente.');
     }
 }
 export async function salvarUsuarioLogado() {
