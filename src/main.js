@@ -22,7 +22,6 @@ function fazerLogout() {
             if (error) {
                 console.error("Erro ao sair:", error.message);
             } else {
-                alert("Logout realizado com sucesso!");
                 window.location.href = '/pages/login/';
             }
         });
@@ -97,6 +96,41 @@ function handleForm(form) {
     }
 })};
 
+export function mostrarErro(msgErro){
+    // cria o container de alerta
+
+    const container = document.createElement('div');
+    container.id = 'alert-container';
+    // Estiliza para ficar fixo no topo ou em algum lugar padrão
+    container.className = "fixed top-5 left-1/2 -translate-x-1/2 z-[100] w-full max-w-sm px-3 pointer-events-none"; 
+    document.body.appendChild(container);
+
+
+
+    const alertDiv = document.createElement('div');
+    alertDiv.className = "flex items-center justify-center gap-x-2 p-2 mb-2 text-red-800 border border-red-300 rounded-lg bg-red-50 animate-bounce-short"; // Adicionei uma animação curta
+    alertDiv.role = "alert";
+
+    // HTML interno (Ícone + Mensagem)
+    alertDiv.innerHTML = `
+    <span class="material-symbols-outlined !text-2xl text-red">
+        error
+    </span>
+    <div>
+        <span class="font-medium"> Erro: ${msgErro}</span>
+    </div>
+    `;
+
+    // limpa alertas anteriores antes de mostrar o novo
+    container.innerHTML = '';
+    container.appendChild(alertDiv);
+
+    // remove o alerta após 3 segundos
+    setTimeout(() => {
+        alertDiv.remove();
+    }, 3000);
+}
+
 // função para lidar com o feedback dos usuários
 async function handleFeedback() {
     const formFeedback = document.getElementById('feedback');
@@ -114,7 +148,7 @@ async function handleFeedback() {
         if (data.user) {
             return data.user.email;
         } if (error) {
-            alert('Faça login para enviar seu feedback!');
+            mostrarErro('Faça login para enviar seu feedback!');
             window.location.href = '/pages/login/';
         }
     } const email = await getEmail();
@@ -122,10 +156,10 @@ async function handleFeedback() {
         formFeedback.addEventListener('submit', (e) => {
             e.preventDefault();
             if (msgFeedback.value.length < 10 || msgFeedback.value.length > 500) {
-                alert('Por favor, escreva uma mensagem com no mínimo 10 caracteres e no máximo 500.');
+                mostrarErro('Por favor, escreva uma mensagem com no mínimo 10 caracteres e no máximo 500.');
             } else {
                 localStorage.setItem(email, JSON.stringify(msgFeedback.value));
-                alert('Feedback enviado com sucesso! Agradecemos por compartilhar sua opinião conosco.');
+                mostrarErro('Feedback enviado com sucesso! Agradecemos por compartilhar sua opinião conosco.');
                 msgFeedback.value = '';
                 camposFeedback.style.display = 'none';
             }
