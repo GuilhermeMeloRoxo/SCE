@@ -194,6 +194,9 @@ footer h5, p {
     background: #0b8aa0;
     border-radius: 50px;
     color: white;
+    border: none;
+    box-shadow: 0 8px 210px rgba(1, 13, 28, 0.18);
+    transition: all 0.2s ease;
 }
 .btn-feedback:hover {
     background-color: #087487;
@@ -202,7 +205,6 @@ footer h5, p {
 .btn-feedback:active {
     transform: scale(0.9);
     box-shadow: 0 8px 210px #03aac7;
-    transition: all 0.2s ease;
 }
 .hidden-feedback {
     display: none;
