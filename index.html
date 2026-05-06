@@ -4,8 +4,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mural de Notícias</title>
-    <link rel="stylesheet" href="css/style.css">
+    <title>Mural de Notícias - SCE</title>
+    <link rel="stylesheet" href="./src/style.css">
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
 </head>
 
 <body>
@@ -18,18 +19,20 @@
 
     <!-- postagens do mural -->
     <main class="container">
-        <h1>Mural</h1>
+        <h1>Mural de Notícias - IFPB JP</h1>
         <div id="mural-posts" class="mural-grid">
 
         </div>
     </main>
 
-    <!-- botão de feedback, não sei se vai ficar um aside mesmo, vamos vendo ainda -->
-    <aside>
-        <div id="feedback">
-
+    <!-- botão de feedback -->
+    <form id="feedback" method="post">
+        <button class="btn-feedback" id="btn-feedback" type="button">Feedback</button>
+        <div class="hidden-feedback" id="hidden-feedback">
+            <textarea class="msg-feedback" id="msg-feedback" name="mensagem" minlength="10" maxlength="500" placeholder="Deixe o seu comentário aqui, no mínimo 10 caracteres."></textarea>
+            <button class="submit-feedback" id="submit-feedback" type="submit">Enviar</button>
         </div>
-    </aside>
+    </form>
 
     <!-- autoexplicativo-->
     <footer>
@@ -38,6 +41,6 @@
         </div>
     </footer>
 
-    <script src="/js/main.js"></script>
+    <script type="module" src="/src/main.js"></script>
 </body>
 </html>
