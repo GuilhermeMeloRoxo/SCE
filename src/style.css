@@ -124,7 +124,11 @@ header {
     border-bottom: 1px solid rgb(176, 176, 176);
 }
 .nav-menu li a {
-    font-weight: bold;
+    display: inline-flex;
+    justify-content: center;
+}
+.nav-menu li a span {
+    margin-right: 4px;
 }
 /* faz com que o footer fique no lugar certo */
 main {
