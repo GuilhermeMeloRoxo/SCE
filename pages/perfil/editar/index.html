@@ -70,7 +70,7 @@
                     <div class="space-y-4">
                         <div>
                             <label class="block text-sm font-bold m-2">Nome Completo *</label>
-                            <input type="text" placeholder="Digite seu nome completo" class="px-4 py-2.5 w-full border border-gray-300 rounded-3xl text-sm focus:ring-2 focus:ring-[#087487] focus:border-transparent outline-none transition required">
+                            <input type="text" placeholder="Digite seu nome completo" pattern="[A-Za-zÀ-ÖØ-öø-ÿ\s]+ [A-Za-zÀ-ÖØ-öø-ÿ\s]+$" class="px-4 py-2.5 w-full border border-gray-300 rounded-3xl text-sm focus:ring-2 focus:ring-[#087487] focus:border-transparent outline-none transition required">
                         </div>
                         <div>
                             <label class="block text-sm font-bold m-2">Email *</label>
@@ -78,15 +78,15 @@
                         </div>
                         <div>
                             <label class="block text-sm font-bold m-2">CPF *</label>
-                            <input type="text" placeholder="Ex.: 123.456.789-00" class="px-4 py-2.5 w-full border border-gray-300 rounded-3xl text-sm focus:ring-2 focus:ring-[#087487] focus:border-transparent outline-none transition required">
+                            <input type="text" placeholder="Ex.: 123.456.789-00" pattern="[0-9]{3}.[0-9]{3}.[0-9]{3}-[0-9]{2}" class="px-4 py-2.5 w-full border border-gray-300 rounded-3xl text-sm focus:ring-2 focus:ring-[#087487] focus:border-transparent outline-none transition required">
                         </div>
                         <div>
                             <label class="block text-sm font-bold m-2">Telefone</label>
-                            <input type="tel" placeholder="Ex.: (83) 98765-4321" class="px-4 py-2.5 w-full border border-gray-300 rounded-3xl text-sm focus:ring-2 focus:ring-[#087487] focus:border-transparent outline-none transition">
+                            <input type="tel" placeholder="Ex.: 83987654321" pattern="[0-9]{2}9[0-9]{8}" class="px-4 py-2.5 w-full border border-gray-300 rounded-3xl text-sm focus:ring-2 focus:ring-[#087487] focus:border-transparent outline-none transition">
                         </div>
                         <div>
                             <label class="block text-sm font-bold m-2">Matrícula Institucional *</label>
-                            <input type="text" placeholder="Ex.: 202610012" class="px-4 py-2.5 w-full border border-gray-300 rounded-3xl text-sm focus:ring-2 focus:ring-[#087487] focus:border-transparent outline-none transition">
+                            <input type="text" placeholder="Ex.: 202610012" pattern="[0-9]{9}[0-9]*|[0-9]{7}" class="px-4 py-2.5 w-full border border-gray-300 rounded-3xl text-sm focus:ring-2 focus:ring-[#087487] focus:border-transparent outline-none transition required">
                         </div>
                     </div>
 
@@ -104,7 +104,7 @@
                         </div>
                         <div>
                             <label class="block text-sm font-bold m-2">Data de Formação *</label>
-                            <input type="text" placeholder="Ex.: 2026.1" class="px-4 py-2.5 w-full border border-gray-300 rounded-3xl text-sm focus:ring-2 focus:ring-[#087487] focus:border-transparent outline-none transition" required>
+                            <input type="text" pattern="[0-9]{4}\.[0-9]{1}" placeholder="Ex.: 2026.1" class="px-4 py-2.5 w-full border border-gray-300 rounded-3xl text-sm focus:ring-2 focus:ring-[#087487] focus:border-transparent outline-none transition" required>
                         </div>
                         <div>
                             <label class="block text-sm font-bold m-2">LinkedIn *</label>
