@@ -185,20 +185,19 @@ footer h5, p {
 }
 .btn-feedback {
     font-size: 0.9rem;
-    padding: 10px 15px;
+    padding: 12px 15px;
     font-weight: bold;
-    border: 2px solid #78cdff;
-    background: #007fc8;
+    background: #0b8aa0;
     border-radius: 50px;
     color: white;
 }
 .btn-feedback:hover {
-    background-color: #000080;
+    background-color: #087487;
     cursor: pointer;
 }
 .btn-feedback:active {
     transform: scale(0.9);
-    box-shadow: 0 8px 210px #6ca2f8;
+    box-shadow: 0 8px 210px #03aac7;
     transition: all 0.2s ease;
 }
 .hidden-feedback {
@@ -236,7 +235,7 @@ footer h5, p {
         margin: 80px 25px 80px 60px;
     }
     .btn-feedback {
-        padding: 10px 20px;
+        padding: 12px 20px;
         font-size: 1rem;
     }
 }
@@ -263,6 +262,6 @@ footer h5, p {
         margin-left: 22%;
     }
     .btn-feedback {
-        padding: 10px 25px;
+        padding: 12px 25px;
     }
 }
