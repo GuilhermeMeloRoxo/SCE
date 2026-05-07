@@ -88,6 +88,12 @@ header {
     margin: 5px 0;
     transition: 0.3s;
 }
+#btn-search {
+    display: block;
+    cursor: pointer;
+    z-index: 60;
+    margin-left: 10px;
+}
 .logo {
     margin-right: auto;
 }
