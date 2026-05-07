@@ -20,6 +20,15 @@
                     <input class="w-full text-sm px-4 py-2.5 border border-gray-400 rounded-3xl focus:ring-2 focus:ring-[#087487] focus:border-transparent outline-none transition" type="text" name="nome" pattern="[A-Za-zÀ-ÖØ-öø-ÿ\s]+ [A-Za-zÀ-ÖØ-öø-ÿ\s]+$" placeholder="Digite seu nome completo" required>
                 </div>
                 <div>
+                    <label class="block text-gray-800 ml-1 mb-1" for="username" id="username">Nome de Usuário</label>
+                    <div class="relative w-full">
+                        <input id="input-username" class="w-full text-sm pl-4 pr-12 py-2.5 border border-gray-400 rounded-3xl focus:ring-2 focus:ring-[#087487] focus:border-transparent outline-none transition" type="text" name="username" minlength="3" pattern="[A-Za-z0-9\-]+" title="Permitido apenas letras, números e hífen." placeholder="Digite seu nome de usuário" required>
+                        <span id="icons-username" class="absolute right-4 bottom-1/2 translate-y-1/2 w-[18px] h-[18px]">
+                            
+                        </span>
+                    </div>
+                </div>
+                <div>
                     <label class="block text-gray-800 ml-1 mb-1" for="email" id="email">Email</label>
                     <input class="w-full text-sm px-4 py-2.5 border border-gray-400 rounded-3xl focus:ring-2 focus:ring-[#087487] focus:border-transparent outline-none transition" type="email" name="email" title="Por favor, insira o seu email pessoal" placeholder="Ex.: nome@exemplo.com" required>
                 </div>
@@ -39,12 +48,12 @@
                     </div>
                 </div>
                 <div class="my-8.5 text-center text-gray-600">
-                    <button class="w-full font-bold bg-blue-900 mb-2 hover:bg-blue-950 text-white py-2.5 rounded-3xl cursor-pointer shadow-lg transition duration-300 active:scale-95 active:shadow-2xl"
+                    <button class="w-full font-bold bg-blue-900 hover:bg-blue-950 text-white py-2.5 rounded-3xl cursor-pointer shadow-lg transition duration-300 active:scale-95 active:shadow-2xl flex items-center justify-center"
                     id="btn-cadastro"
                     type="submit">
-                        <span id="btn-text">Cadastrar</span>
-                        <svg id="btn-spinner" class="animate-spin h-5 w-5 text-white" fill="none">
-                            <use href="icons.svg#spinner-icon"></use>
+                        <span id="btn-text">Cadastro</span>
+                        <svg id="btn-spinner" class="hidden animate-spin h-6 w-6 text-[#e0e0e0]" fill="none">
+                            <use href="/src/assets/icons.svg#carregando"></use>
                         </svg>
                     </button>
                     <div class="inline-flex"><p class="pr-1 text-blue-950">Já tem um perfil?</p><a href="/pages/login/" class="text-blue-700 hover:underline">Entrar</a></div>
