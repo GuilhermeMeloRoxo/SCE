@@ -138,8 +138,7 @@ main {
 #search {
     display: inline-flex;
     align-items: center;
-    margin-left: auto;
-    margin-right: 16px;
+    justify-content: center;
 }
 #search input {    
     padding: 6px 14px;
@@ -292,6 +291,13 @@ footer h5, p {
         display: block;
         margin: auto;
         font-size: 1.8rem;
+    }
+    #search {
+        margin-left: auto;
+        margin-right: 16px;
+    }
+    #search input {    
+        width: 320px;
     }
     /* footer */
     footer h5, p {
