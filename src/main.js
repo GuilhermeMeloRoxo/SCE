@@ -1,4 +1,4 @@
-import { handleCadastro, btnCadastro } from '/pages/cadastro/main.js';
+import { handleCadastro, btnCadastro, iniciarValidacao, isUsernameValid } from '/pages/cadastro/main.js';
 import { handleLogin, btnLogin } from '/pages/login/main.js';
 import { renderizarPerfil, renderizarBotãoGithub, conectarGithub } from '/pages/perfil/main.js';
 import '/src/style.css'
@@ -81,7 +81,13 @@ function handleForm(form) {
     e.preventDefault()
     
     if (form.id === 'form-cadastro') {
-        handleCadastro();
+        if (!isUsernameValid()) {
+            document.getElementById('input-username').focus()
+            mostrarErro('Por favor, corrija o seu username antes de enviar o formulário de cadastro.')
+            return null
+        } else {
+            handleCadastro();
+        }
     } else if (form.id === 'form-login') {
         handleLogin();
     }
@@ -194,6 +200,7 @@ document.addEventListener('DOMContentLoaded', () => {
     inserirHtml('footer', '/components/footer.html');
     renderizarPerfil();
     visibilidadeSenha();
+    iniciarValidacao();
 });
 
 btnCadastro?.addEventListener('click', () => {
