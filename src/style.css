@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import "material-symbols";
 /* configurações base */
 body {
     font-family: sans-serif, Arial;
@@ -17,7 +18,120 @@ body {
     font-variation-settings: 'wght' 600;
     text-align: center;
 }
-
+/* barra de navegação */
+header {
+    background-color: #087487;
+    text-align: center;
+    color: white;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    height: 65px;
+    z-index: 50;
+    position: sticky;
+    box-shadow: 0 8px 210px rgba(1, 13, 28, 0.18);
+}
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    text-align: center;
+    width: 100%;
+    padding: 6px 10px;
+}
+.nav-menu {
+    position: fixed;
+    top: 60px;
+    background-color: white;
+    flex-direction: column;
+    align-items: center;
+    z-index: 40;
+    transition: all 0.5s ease-out;
+    list-style: none;
+    transform: translateX(100%);
+    display: flex;
+    width: 240px;
+    border-radius: 50px;
+    box-shadow: 0 8px 210px rgba(1, 13, 28, 0.18);
+    right: 0;
+    height: auto;
+    justify-content: center;
+    padding: 15px 0;
+}
+.nav-menu.active {
+    transform: translate(-25px);
+}
+.menu-hamburger {
+    display: block;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid white;
+    border-radius: 999px;
+    cursor: pointer;
+    padding: 10px;
+    z-index: 60;
+    margin-left: auto;
+}
+.menu-hamburger.active .linha:nth-child(1) {
+    transform: translateY(8px) rotate(45deg);
+}
+.menu-hamburger.active .linha:nth-child(2) {
+    opacity: 0;
+}
+.menu-hamburger.active .linha:nth-child(3) {
+    transform: translateY(-8px) rotate(-45deg);
+}
+.linha {
+    display: block;
+    width: 25px;
+    height: 3px;
+    background: white;
+    margin: 5px 0;
+    transition: 0.3s;
+}
+.logo {
+    margin-right: auto;
+}
+.logo img {
+    height: 50px;
+    border-radius: 999px;
+}
+.sce-title {
+    color: white;
+    font-size: 1.8rem;
+    font-weight: bold;
+    text-align: center;
+}
+#sce-title-pc {
+    display: none;
+}
+.nav-menu a {
+    width: 180px;
+    align-items: center;
+    color: #666;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 1rem;
+}
+.nav-menu a:hover {
+    color: #008b8b;
+}
+#link-logout:hover {
+    color: #f04f43;
+}
+.nav-menu li {
+    margin: 8px;
+    padding-bottom: 10px;
+}
+.nav-menu li a {
+    display: inline-flex;
+    align-items: center;
+}
+.nav-menu li a span {
+    margin-right: 4px;
+}
+.nav-menu p {
+    font-size: 1rem;
+}
 /* faz com que o footer fique no lugar certo */
 main {
     margin-bottom: auto;
@@ -70,28 +184,29 @@ footer h5, p {
     font-size: 1.4rem;
     font-weight: bold;
     text-align: center;
-    color: #191970;
+    color: black;
 }
 #feedback {
     margin: 60px 25px;
 }
 .btn-feedback {
     font-size: 0.9rem;
-    padding: 10px 15px;
+    padding: 12px 15px;
     font-weight: bold;
-    border: 2px solid #78cdff;
-    background: #007fc8;
+    background: #0b8aa0;
     border-radius: 50px;
     color: white;
+    border: none;
+    box-shadow: 0 8px 210px rgba(1, 13, 28, 0.18);
+    transition: all 0.2s ease;
 }
 .btn-feedback:hover {
-    background-color: #000080;
+    background-color: #087487;
     cursor: pointer;
 }
 .btn-feedback:active {
     transform: scale(0.9);
-    box-shadow: 0 8px 210px #6ca2f8;
-    transition: all 0.2s ease;
+    box-shadow: 0 8px 210px #03aac7;
 }
 .hidden-feedback {
     display: none;
@@ -106,15 +221,12 @@ footer h5, p {
         padding: 10px 20px;
     }
     .nav-menu {
-        top: 75px;
-        width: 280px;
-        left: auto;
-        right: 0;
-        gap: 8px;
+        top: 70px;
     }
-    .nav-menu a {
-        font-size: 1rem;
-        width: 170px;
+    .nav-menu li {
+        margin: 12px;
+        padding-left: 18px;
+        padding-bottom: 6px;
     }
     #sce-title-mobile {
         display: none;
@@ -136,7 +248,7 @@ footer h5, p {
         margin: 80px 25px 80px 60px;
     }
     .btn-feedback {
-        padding: 10px 20px;
+        padding: 12px 20px;
         font-size: 1rem;
     }
 }
@@ -147,21 +259,8 @@ footer h5, p {
         height: 80px;
     }
     .nav-menu {
-        top: 80px;
-        width: 300px;
-        left: auto;
-        right: 0;
-        height: auto;
-        justify-content: center;
-        gap: 20px;
-        padding: 40px 0;
+        top: 75px;
     }
-    .nav-menu li {
-        margin: 0;
-    }
-    .nav-menu li a {
-        font-size: 1rem;
-    } 
     .logo img {
         height: 60px;
     }
@@ -176,6 +275,6 @@ footer h5, p {
         margin-left: 22%;
     }
     .btn-feedback {
-        padding: 10px 25px;
+        padding: 12px 25px;
     }
 }

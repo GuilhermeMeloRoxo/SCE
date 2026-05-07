@@ -6,29 +6,30 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cadastro - SCE</title>
     <link rel="stylesheet" href="/src/style.css">
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
 </head>
-<body class="bg-blue-900 flex items-center sm:justify-center">
+<body class="bg-white flex items-center sm:justify-center">
     <!-- formulário para cadastro h-50 -->
-    <main class="bg-gray-200 p-8 shadow-2xl w-full max-w-2xl sm:rounded-2xl sm:mt-15 sm:px-18 lg:mx-auto">
+    <main class="bg-slate-50 p-8 shadow-2xl w-full max-w-2xl sm:rounded-2xl sm:mt-15 sm:px-18 lg:mx-auto">
         <div>
-            <div class="flex justify-center pb-8"><img class="h-30 rounded-full sm:h-40" src="/logo.png" alt="Logo SCE"></div>
-            <h1 class="text-3xl font-bold text-blue-950 pb-4">Criar Perfil</h1>
+            <div class="flex justify-center pb-8"><img class="h-30 shadow-xl rounded-full sm:h-40" src="/logo.png" alt="Logo SCE"></div>
+            <h1 class="text-3xl font-bold text-[#0b8aa0] pb-4">Criar Perfil</h1>
             <form id="form-cadastro" class="space-y-5" method="post">
                 <div>
                     <label class="block text-gray-800 ml-1 mb-1" for="nome" id="nome">Nome Completo</label>
-                    <input class="w-full text-sm px-4 py-2.5 border border-gray-400 rounded-3xl focus:ring-2 focus:ring-blue-900 focus:border-transparent outline-none transition" type="text" name="nome" pattern="[A-Za-zÀ-ÖØ-öø-ÿ\s]+ [A-Za-zÀ-ÖØ-öø-ÿ\s]+$" placeholder="Digite seu nome completo" required>
+                    <input class="w-full text-sm px-4 py-2.5 border border-gray-400 rounded-3xl focus:ring-2 focus:ring-[#087487] focus:border-transparent outline-none transition" type="text" name="nome" pattern="[A-Za-zÀ-ÖØ-öø-ÿ\s]+ [A-Za-zÀ-ÖØ-öø-ÿ\s]+$" placeholder="Digite seu nome completo" required>
                 </div>
                 <div>
                     <label class="block text-gray-800 ml-1 mb-1" for="email" id="email">Email</label>
-                    <input class="w-full text-sm px-4 py-2.5 border border-gray-400 rounded-3xl focus:ring-2 focus:ring-blue-900 focus:border-transparent outline-none transition" type="email" name="email" title="Por favor, insira o seu email pessoal" placeholder="Ex.: nome@exemplo.com" required>
+                    <input class="w-full text-sm px-4 py-2.5 border border-gray-400 rounded-3xl focus:ring-2 focus:ring-[#087487] focus:border-transparent outline-none transition" type="email" name="email" title="Por favor, insira o seu email pessoal" placeholder="Ex.: nome@exemplo.com" required>
                 </div>
                 <div>
                     <label class="block text-gray-800 ml-1 mb-1" for="cpf" id="cpf">CPF</label>
-                    <input class="w-full text-sm px-4 py-2.5 border border-gray-400 rounded-3xl focus:ring-2 focus:ring-blue-900 focus:border-transparent outline-none transition" type="text" name="cpf" pattern="[0-9]{3}.[0-9]{3}.[0-9]{3}-[0-9]{2}" placeholder="Ex.: 123.456.789-00" required>
+                    <input class="w-full text-sm px-4 py-2.5 border border-gray-400 rounded-3xl focus:ring-2 focus:ring-[#087487] focus:border-transparent outline-none transition" type="text" name="cpf" pattern="[0-9]{3}.[0-9]{3}.[0-9]{3}-[0-9]{2}" placeholder="Ex.: 123.456.789-00" required>
                 </div>
                 <div>
                     <label class="block text-gray-800 ml-1 mb-1" for="senha" id="senha">Senha</label>
-                    <input class="w-full text-sm px-4 py-2.5 border border-gray-400 rounded-3xl focus:ring-2 focus:ring-blue-900 focus:border-transparent outline-none transition" type="password" name="senha" minlength="8" title="Por favor, insira no mínimo 8 dígitos" placeholder="No mínimo 8 dígitos" required>
+                    <input class="w-full text-sm px-4 py-2.5 border border-gray-400 rounded-3xl focus:ring-2 focus:ring-[#087487] focus:border-transparent outline-none transition" type="password" name="senha" minlength="8" title="Por favor, insira no mínimo 8 dígitos" placeholder="No mínimo 8 dígitos" required>
                 </div>
                 <div class="my-8.5 text-center text-gray-600">
                     <button class="w-full font-bold bg-blue-900 mb-2 hover:bg-blue-950 text-white py-2.5 rounded-3xl cursor-pointer shadow-lg transition duration-300 active:scale-95 active:shadow-2xl"
