@@ -123,29 +123,19 @@ export function mostrarErro(msgErro){
 }
 
 // função para lidar com o feedback dos usuários
-async function handleFeedback() {
-    const formFeedback = document.getElementById('feedback');
-    const camposFeedback = document.getElementById('hidden-feedback');
-    const btnFeedback = document.getElementById('btn-feedback');
-    const msgFeedback = document.getElementById('msg-feedback');
-    const submitFeedback = document.getElementById('submit-feedback');
-    if (camposFeedback.style.display === 'none' || camposFeedback.style.display === '') {
-        camposFeedback.style.display = 'block';
-    } else {
-        camposFeedback.style.display = 'none';
-    }
-    async function getEmail() {
-        const { data, error } = await supabase.auth.getUser();
 
-        if (data.user) {
-            return data.user.email;
-        } if (error) {
-            mostrarErro('Faça login para enviar seu feedback!');
-            window.location.href = '/pages/login/';
-            return null;
-        }
+async function getEmail() {
+    const { data, error } = await supabase.auth.getUser();
+
+    if (data.user) {
+        return data.user.email;
+    } if (error) {
+        mostrarErro('Faça login para enviar seu feedback!');
+        window.location.href = '/pages/login/';
+        return null;
     }
 }
+
 // função para lidar com o feedback dos usuários
 async function handleFeedback(email) {
     const formFeedback = document.getElementById('feedback');
@@ -175,6 +165,27 @@ async function handleFeedback(email) {
         });
     }
 };
+function visibilidadeSenha() {
+    // verifica se existe algum dos formulários na página
+    const formLogin = document.getElementById('form-login')
+    const formCadastro = document.getElementById('form-cadastro')
+    if (!formCadastro && !formLogin) return null;
+
+    const inputSenha = document.getElementById('input-senha');
+    const btnOlho = document.getElementById('btn-olho');
+    
+    const iconeOlho = document.getElementById('icone-olho');
+
+    btnOlho.addEventListener('click', () => {
+        if (inputSenha.type === 'password') {
+            inputSenha.type = 'text';
+            iconeOlho.textContent = 'visibility_off';
+        } else {
+            inputSenha.type = 'password';
+            iconeOlho.textContent = 'visibility';
+        }
+    });
+}
 
 // carregando funções a partir daqui
 document.addEventListener('DOMContentLoaded', () => {
@@ -182,6 +193,7 @@ document.addEventListener('DOMContentLoaded', () => {
     inserirHtml('navbar', '/components/navbar.html');
     inserirHtml('footer', '/components/footer.html');
     renderizarPerfil();
+    visibilidadeSenha();
 });
 
 btnCadastro?.addEventListener('click', () => {
@@ -191,6 +203,7 @@ btnCadastro?.addEventListener('click', () => {
 btnLogin?.addEventListener('click', () => {
     handleForm(document.querySelector('#form-login'));
 });
+
 
 document.getElementById('btn-feedback')?.addEventListener('click', async () => {
     const email = await getEmail();
