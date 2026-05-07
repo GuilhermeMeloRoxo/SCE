@@ -53,6 +53,37 @@ function configurarMenuHamburguer() {
             btnHamburger.classList.toggle('active');
             navMenu.classList.toggle('active');
         });
+    
+        document.addEventListener('click', (e) => {
+        const isClickInside = navMenu.contains(e.target) || btnHamburger.contains(e.target);
+        if (!isClickInside && navMenu.classList.contains('active')) {
+            btnHamburger.classList.remove('active');
+            navMenu.classList.remove('active');
+        }
+        });
+    }
+}
+
+// função para ativar o input de pesquisa
+function configurarPesquisa() {
+    const btnPesquisar = document.getElementById('btn-search');
+    const btnEnviar = document.getElementById('btn-send');
+    const inputPesquisar = document.getElementById('search-input')
+
+    if (btnPesquisar && btnEnviar && inputPesquisar) {
+        btnPesquisar.addEventListener('click', () => {
+            inputPesquisar.focus();
+        });
+        inputPesquisar.addEventListener('focusin', () => {
+            btnPesquisar.style.display = 'none';
+            btnEnviar.style.display = 'block';
+        });
+        inputPesquisar.addEventListener('focusout', (event) => {
+            if (event.relatedTarget !== btnEnviar) {
+                btnPesquisar.style.display = 'block';
+                btnEnviar.style.display = 'none';
+            }
+        });
     }
 }
 
@@ -70,6 +101,8 @@ function inserirHtml(id, caminho) {
                 if (id === 'navbar') {
                     configurarMenuHamburguer();
                     fazerLogout();
+                } else if (id === 'search') {
+                    configurarPesquisa();
                 }
             }).catch(error => console.error(error));
     }
@@ -198,6 +231,7 @@ document.addEventListener('DOMContentLoaded', () => {
     verificarUsuarioLogado();
     inserirHtml('navbar', '/components/navbar.html');
     inserirHtml('footer', '/components/footer.html');
+    inserirHtml('search', '/components/search.html');
     renderizarPerfil();
     visibilidadeSenha();
     iniciarValidacao();
