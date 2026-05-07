@@ -8,9 +8,15 @@
   <symbol id="star" viewBox="0 0 16 16">
     <path stroke-linecap="round" stroke-linejoin="round" d="M8 .25a.75.75 0 0 1 .673.418l1.882 3.815 4.21.612a.75.75 0 0 1 .416 1.279l-3.046 2.97.719 4.192a.75.75 0 0 1-1.088.791L8 12.347l-3.766 1.98a.75.75 0 0 1-1.088-.79l.72-4.194L.818 6.36a.75.75 0 0 1 .416-1.28l4.21-.611L7.327.668A.75.75 0 0 1 8 .25Z"/>
   </symbol>
-  <symbol id="profile" viewBox="0 0 24 24">
-    <circle cx="12" cy="7.5" r="4.5" />
-    <path d="M12,13 C6,13 4,16 4,19 C4,22 6,24 12,24 C18,24 20,22 20,19 C20,16 18,13 12,13 Z" />
+  <symbol id="carregando" viewBox="0 0 24 24">
+    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"></circle>
+    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+  </symbol>
+  <symbol id="lapis" viewBox="0 0 24 24">
+  <path class="text-[#008b8b]" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path>
+  </symbol>
+  <symbol id="profile" viewBox="0 0 20 20">
+    <path class="text-[#008b8b]" fill="currentColor" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"></path>
   </symbol>
 </svg>
 

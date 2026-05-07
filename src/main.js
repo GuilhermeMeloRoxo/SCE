@@ -1,4 +1,4 @@
-import { handleCadastro, btnCadastro } from '/pages/cadastro/main.js';
+import { handleCadastro, btnCadastro, iniciarValidacao, isUsernameValid } from '/pages/cadastro/main.js';
 import { handleLogin, btnLogin } from '/pages/login/main.js';
 import { renderizarPerfil, renderizarBotãoGithub, conectarGithub } from '/pages/perfil/main.js';
 import '/src/style.css'
@@ -23,7 +23,6 @@ function fazerLogout() {
             if (error) {
                 console.error("Erro ao sair:", error.message);
             } else {
-                alert("Logout realizado com sucesso!");
                 window.location.href = '/pages/login/';
             }
         });
@@ -115,23 +114,65 @@ function handleForm(form) {
     e.preventDefault()
     
     if (form.id === 'form-cadastro') {
-        handleCadastro();
+        if (!isUsernameValid()) {
+            document.getElementById('input-username').focus()
+            mostrarErro('Por favor, corrija o seu username antes de enviar o formulário de cadastro.')
+            return null
+        } else {
+            handleCadastro();
+        }
     } else if (form.id === 'form-login') {
         handleLogin();
     }
 })};
 
-// função para obter o email do usuário logado
-async function getEmail() {
-        const { data, error } = await supabase.auth.getUser();
+export function mostrarErro(msgErro){
+    // cria o container de alerta
 
-        if (data.user) {
-            return data.user.email;
-        } if (error) {
-            alert('Faça login para enviar seu feedback!');
-            window.location.href = '/pages/login/';
-            return null;
-        }
+    const container = document.createElement('div');
+    container.id = 'alert-container';
+    // Estiliza para ficar fixo no topo ou em algum lugar padrão
+    container.className = "fixed top-5 left-1/2 -translate-x-1/2 z-[100] w-full max-w-sm px-3 pointer-events-none"; 
+    document.body.appendChild(container);
+
+
+
+    const alertDiv = document.createElement('div');
+    alertDiv.className = "flex items-center justify-center gap-x-2 p-2 mb-2 text-red-800 border border-red-300 rounded-lg bg-red-50 animate-bounce-short"; // Adicionei uma animação curta
+    alertDiv.role = "alert";
+
+    // HTML interno (Ícone + Mensagem)
+    alertDiv.innerHTML = `
+    <span class="material-symbols-outlined !text-2xl text-red">
+        error
+    </span>
+    <div>
+        <span class="font-medium"> Erro: ${msgErro}</span>
+    </div>
+    `;
+
+    // limpa alertas anteriores antes de mostrar o novo
+    container.innerHTML = '';
+    container.appendChild(alertDiv);
+
+    // remove o alerta após 3 segundos
+    setTimeout(() => {
+        alertDiv.remove();
+    }, 3000);
+}
+
+// função para lidar com o feedback dos usuários
+
+async function getEmail() {
+    const { data, error } = await supabase.auth.getUser();
+
+    if (data.user) {
+        return data.user.email;
+    } if (error) {
+        mostrarErro('Faça login para enviar seu feedback!');
+        window.location.href = '/pages/login/';
+        return null;
+    }
 }
 
 // função para lidar com o feedback dos usuários
@@ -150,12 +191,12 @@ async function handleFeedback(email) {
         formFeedback.addEventListener('submit', (e) => {
             e.preventDefault();
             if (msgFeedback.value.trim() === '' ||  msgFeedback.value.length < 10 || msgFeedback.value.length > 500) {
-                alert('Por favor, escreva uma mensagem com no mínimo 10 caracteres e no máximo 500.');
+                mostrarErro('Por favor, escreva uma mensagem com no mínimo 10 caracteres e no máximo 500.');
             } else {
                 const confirmar = confirm('Tem certeza que deseja enviar seu feedback?');
                 if (confirmar) {
                     setStorage(email, msgFeedback.value);
-                    alert('Feedback enviado com sucesso! Agradecemos por compartilhar sua opinião conosco.');
+                    mostrarErro('Feedback enviado com sucesso! Agradecemos por compartilhar sua opinião conosco.');
                     msgFeedback.value = '';
                     camposFeedback.style.display = 'none';
                 }
@@ -163,6 +204,27 @@ async function handleFeedback(email) {
         });
     }
 };
+function visibilidadeSenha() {
+    // verifica se existe algum dos formulários na página
+    const formLogin = document.getElementById('form-login')
+    const formCadastro = document.getElementById('form-cadastro')
+    if (!formCadastro && !formLogin) return null;
+
+    const inputSenha = document.getElementById('input-senha');
+    const btnOlho = document.getElementById('btn-olho');
+    
+    const iconeOlho = document.getElementById('icone-olho');
+
+    btnOlho.addEventListener('click', () => {
+        if (inputSenha.type === 'password') {
+            inputSenha.type = 'text';
+            iconeOlho.textContent = 'visibility_off';
+        } else {
+            inputSenha.type = 'password';
+            iconeOlho.textContent = 'visibility';
+        }
+    });
+}
 
 // carregando funções a partir daqui
 document.addEventListener('DOMContentLoaded', () => {
@@ -171,6 +233,8 @@ document.addEventListener('DOMContentLoaded', () => {
     inserirHtml('footer', '/components/footer.html');
     inserirHtml('search', '/components/search.html');
     renderizarPerfil();
+    visibilidadeSenha();
+    iniciarValidacao();
 });
 
 btnCadastro?.addEventListener('click', () => {
@@ -180,6 +244,7 @@ btnCadastro?.addEventListener('click', () => {
 btnLogin?.addEventListener('click', () => {
     handleForm(document.querySelector('#form-login'));
 });
+
 
 document.getElementById('btn-feedback')?.addEventListener('click', async () => {
     const email = await getEmail();
