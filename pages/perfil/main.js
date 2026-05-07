@@ -20,8 +20,8 @@ export async function renderizarPerfil() {
     const temGithub = data && data.github_user;
     const avatarUrl = temGithub 
     ? `<img src="https://avatars.githubusercontent.com/${data.github_user}" alt="Foto de Perfil" class="w-full h-full object-cover rounded-full">` 
-    : `<svg class="w-60 h-60 text-[#087487]" fill="currentColor">
-            <use href="/src/assets/icons.svg#profile"></use>
+    : `<svg class="w-34 h-34">
+        <use href="/src/assets/icons.svg#profile"></use>
         </svg>`;
     
     profileContainer.innerHTML = `
@@ -44,7 +44,7 @@ export async function renderizarPerfil() {
                         Curso
                     </span>
                     <span class="flex items-center gap-2 text-1xl font-semibold text-slate-800 mt-1 leading-none">
-                        <span class="material-symbols-outlined">menu_book</span>
+                        <span class="material-symbols-outlined">school</span>
                         ${data.formacao?.curso || 'Curso não informado'}
                     </span>
                 </div>
