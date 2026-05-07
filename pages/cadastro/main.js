@@ -144,70 +144,37 @@ export async function handleCadastro() {
     }
     
     try {
-        // cadastra a conta de autenticação no auth.users do Supabase
-        const { data: authData, error: authError } = await supabase.auth.signUp({
-            email,
-            password: senha,
-        })
-
-        if (authError) {
-            if (authError.message.includes("already registered")) {
-                mostrarErro("Erro: Este e-mail já está em uso.")
-            } else {
-                mostrarErro("Erro no cadastro: " + authError.message)
-            }
-            voltarBotao()
-            return
+      // 1. Cadastra a conta de autenticação enviando dados extras nos metadados
+      const { data: authData, error: authError } = await supabase.auth.signUp({
+        email, // Enviado para o Trigger para ler e salvar em 'dados_privados'
+        password: senha,
+        options: {
+          data: {
+            username: username, // Enviado para a Trigger ler e salvar em 'perfis'
+            nome: nome,         // Enviado para a Trigger ler e salvar em 'perfis'
+            cpf: cpf            // Enviado para a Trigger ler e salvar em 'dados_privados'
+          }
         }
-
-        if (authData.user) {
-            const usuarioId = authData.user.id
-
-            // inserindo dados públicos na tabela 'perfis'
-            const { error: dbPerfilError } = await supabase
-                .from('perfis')
-                .insert([{ 
-                    id: usuarioId, 
-                    username, 
-                    nome 
-                }])
-
-            if (dbPerfilError) {
-                if (dbPerfilError.message.includes("duplicate key")) {
-                    mostrarErro("Erro: Este username acabou de ser escolhido por outro usuário!")
-                } else {
-                    mostrarErro("Erro ao salvar perfil público: " + dbPerfilError.message)
-                }
-                voltarBotao()
-                return
-            }
-
-            // inserindo dados sensíveis na tabela restrita 'dados_privados'
-            // função no supabase vai criptografar o cpf
-            const { error: dbPrivadoError } = await supabase
-                .from('dados_privados')
-                .insert([{ 
-                    id: usuarioId, 
-                    email, 
-                    cpf 
-                }])
-
-            if (dbPrivadoError) {
-                // Caso ocorra um erro incomum aqui, tentamos alertar o desenvolvedor
-                console.error("Erro na tabela privada:", dbPrivadoError)
-                mostrarErro("Erro ao salvar dados privados de segurança.")
-                voltarBotao()
-                return
-            }
-            
-            // Sucesso absoluto nas duas tabelas encaminha para o login
-            window.location.href = '/pages/login/'
+      })
+    
+      if (authError) {
+        if (authError.message.includes("already registered")) {
+          mostrarErro("Erro: Este e-mail já está em uso.")
+        } else {
+          mostrarErro("Erro no cadastro: " + authError.message)
         }
-
-    } catch (error) {
-        console.error(error)
-        mostrarErro("Ocorreu um erro inesperado ao processar o formulário.")
         voltarBotao()
+        return
+      }
+    
+      // 2. Se chegou aqui, as Triggers do banco já criaram o perfil e os dados privados de forma segura!
+      if (authData.user) {
+        window.location.href = "/pages/login/"
+      }
+    
+    } catch (error) {
+      console.error(error)
+      mostrarErro("Ocorreu um erro inesperado ao processar o formulário.")
+      voltarBotao()
     }
-}
-
+  }
