@@ -12,7 +12,7 @@ export async function renderizarPerfil() {
 
     const { data, error } = await supabase
         .from('perfis')
-        .select('nome, email, github_user, formacao(curso, termino)')
+        .select('nome, github_user, formacao(curso, termino)')
         .eq('id', user.id)
         .single();
 
@@ -34,20 +34,13 @@ export async function renderizarPerfil() {
             <span class="block text-[26px] font-bold text-slate-900 leading-tight">
                 ${data.nome || 'Nome não informado'}
             </span>
-            <span class="block text-[#087487] text-[16px] mt-2">
-                ${data.email || 'Email não informado'}
-            </span>
             <div class="mt-10 space-y-8 text-left border-t border-slate-200 pt-10 px-4">
                 <div>
                     <span class="block text-[12px] uppercase tracking-[0.2em] text-slate-400 font-bold">
                         Curso
                     </span>
                     <span class="flex items-center gap-2 text-1xl font-semibold text-slate-800 mt-1 leading-none">
-<<<<<<< HEAD
-                        <span class="material-symbols-outlined">school</span>
-=======
                         <span class="material-symbols-outlined text-[#008b8b]">school</span>
->>>>>>> origin/develop
                         ${data.formacao?.curso || 'Curso não informado'}
                     </span>
                 </div>
