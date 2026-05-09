@@ -150,7 +150,7 @@ main {
     margin: 0 6px;
 }
 #search input:focus {
-    border-color: #0b8aa0;
+    border-color: #087487;
     background-color: #fff;
     box-shadow: 0 1px 6px rgba(32,33,36,0.28);
 }
