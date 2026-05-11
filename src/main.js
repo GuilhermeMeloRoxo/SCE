@@ -1,7 +1,7 @@
 import { handleCadastro, btnCadastro, iniciarValidacao, isUsernameValid } from '/pages/cadastro/main.js';
 import { handleLogin, btnLogin } from '/pages/login/main.js';
 import { renderizarPerfil } from '/pages/perfil/main.js';
-import { dadosPerfil, handleEdit, btnEdit } from '/pages/perfil/editar/main.js';
+import { dadosPerfil, handleEdit, btnEdit, btnCancel } from '/pages/perfil/editar/main.js';
 import '/src/style.css'
 import { supabase } from '/src/supabaseClient.js'
 import { setStorage } from './lib/storage.js'
@@ -254,6 +254,12 @@ btnLogin?.addEventListener('click', () => {
 
 btnEdit?.addEventListener('click', () => {
     handleForm(document.querySelector('#form-edit'));
+});
+
+btnCancel?.addEventListener('click', () =>{
+    location.reload();
+    document.getElementById('cancel-text').classList.add('hidden');
+    document.getElementById('cancel-spinner').classList.remove('hidden');
 });
 
 document.getElementById('btn-feedback')?.addEventListener('click', async () => {

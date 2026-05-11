@@ -152,6 +152,7 @@ export async function dadosPerfil() {
         </main>`;
 }
 export const btnEdit = document.getElementById('btn-edit');
+export const btnCancel = document.getElementById('btn-cancel');
 
 export async function handleEdit() {
     const btnText = document.getElementById('submit-text')
@@ -212,9 +213,3 @@ export async function handleEdit() {
             voltarBotao();
         }
 }
-
-document.getElementById('btn-cancel')?.addEventListener('click', () => {
-    location.reload();
-    document.getElementById('cancel-text').classList.add('hidden');
-    document.getElementById('cancel-spinner').classList.remove('hidden');
-});
