@@ -12,7 +12,7 @@ export async function renderizarPerfil() {
 
     const { data, error } = await supabase
         .from('perfis')
-        .select('nome, github_user, formacao(curso, termino)')
+        .select(`nome, github_user, formacao(curso, termino)`)
         .eq('id', user.id)
         .single();
 
