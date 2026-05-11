@@ -230,9 +230,10 @@ footer h5, p {
     align-items: center;
     margin: 20px auto;
     flex: 1 0 auto;
+    border-bottom: 1px solid rgb(214, 214, 214);
 }
 .container h1 {
-    padding: 20px 25px;
+    padding: 20px 0;
     font-size: 1.4rem;
     font-weight: bold;
     text-align: center;
