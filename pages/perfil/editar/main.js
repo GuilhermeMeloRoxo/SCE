@@ -121,13 +121,13 @@ export async function dadosPerfil() {
                     </div>
                 </div>
                 <div class="md:col-span-2 flex justify-end gap-4 mt-12 lg:mt-8">
-                    <button id="btn-cancel" type="button" class="px-8 py-2 border border-gray-300 rounded-3xl text-sm font-bold text-[#008b8b] hover:bg-gray-50 cursor-pointer shadow-lg transition duration-300 active:scale-95 active:shadow-2xl">
+                    <button id="btn-cancel" type="button" class="px-8 py-2 border border-gray-300 rounded-3xl text-sm font-bold text-[#0b8aa0] hover:bg-gray-100 cursor-pointer shadow-lg transition duration-300 active:scale-95 active:shadow-2xl">
                     <span id="cancel-text">Cancelar</span>
                         <svg id="cancel-spinner" class="hidden animate-spin h-6 w-6 text-[#e0e0e0]" fill="none">
                             <use href="/src/assets/icons.svg#carregando"></use>
                         </svg>
                     </button>
-                    <button id="btn-edit" type="submit" class="px-6 py-2 bg-[#008b8b] hover:bg-[#087487] text-white rounded-3xl text-sm font-bold flex items-center gap-2 hover:bg-teal-800 cursor-pointer shadow-lg transition duration-300 active:scale-95 active:shadow-2xl">
+                    <button id="btn-edit" type="submit" class="px-6 py-2 bg-[#0b8aa0] hover:bg-[#087487] text-white rounded-3xl text-sm font-bold flex items-center gap-2 hover:bg-teal-800 cursor-pointer shadow-lg transition duration-300 active:scale-95 active:shadow-2xl">
                     <span class="material-symbols-outlined !text-2xl text-white">check</span>
                     <span id="submit-text">Salvar Alterações</span>
                         <svg id="submit-spinner" class="hidden animate-spin h-6 w-6 text-[#e0e0e0]" fill="none">

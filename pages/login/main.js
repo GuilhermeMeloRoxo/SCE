@@ -49,3 +49,35 @@ export async function handleLogin() {
         window.location.href = '/';
     }
 }
+/*
+const openModalBtn = document.getElementById('openModalBtn');
+const closeModalBtn = document.getElementById('closeModalBtn');
+const cancelBtn = document.getElementById('cancel-password');
+const modalOverlay = document.getElementById('modalOverlay');
+const modalContent = document.getElementById('modalContent');
+const passwordForm = document.getElementById('passwordForm');
+
+const openModal = () => {
+    modalOverlay.classList.remove('opacity-0', 'pointer-events-none');
+    modalContent.classList.remove('scale-95');
+    modalContent.classList.add('scale-100');
+};
+
+const closeModal = () => {
+    modalOverlay.classList.add('opacity-0', 'pointer-events-none');
+    modalContent.classList.remove('scale-100');
+    modalContent.classList.add('scale-95');
+    passwordForm.reset();
+};
+
+openModalBtn.addEventListener('click', openModal);
+closeModalBtn.addEventListener('click', closeModal);
+cancelBtn.addEventListener('click', closeModal);
+
+modalOverlay.addEventListener('click', (event) => {
+    if (event.target === modalOverlay) closeModal();
+});
+
+passwordForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+}); */

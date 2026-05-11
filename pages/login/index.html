@@ -39,9 +39,46 @@
                             <use href="/src/assets/icons.svg#carregando"></use>
                         </svg>
                     </button>
-                </button>
+                    <div class="inline-flex text-center mt-2"><p class="pr-1 text-gray-900">Esqueceu a senha?</p><a id="openModalBtn" class="text-blue-900 cursor-pointer hover:underline">Alterar senha</a></div>
                 </div>
             </form>
+                <div id="modalOverlay" class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4 opacity-0 pointer-events-none transition-opacity duration-300">
+                <div id="modalContent" class="w-full max-w-md scale-95 transform overflow-hidden rounded-2xl bg-white p-8 shadow-2xl transition-transform duration-300">
+                <div class="flex items-center justify-between">
+                <h2 class="text-2xl font-bold text-[#0b8aa0]">Alterar Senha</h2>
+                <button id="closeModalBtn" class="text-gray-400 hover:text-gray-600">
+                    <span class="material-symbols-outlined !text-2xl">close</span>
+                </button>
+                </div>
+                <form method="post" id="passwordForm" class="mt-6 space-y-4">
+                    <div class="space-y-5">
+                        <div>
+                            <label class="block text-left text-gray-800 ml-1 mb-1">Nova Senha</label>
+                            <input type="password" id="newPassword" placeholder="Digite sua nova senha" required class="w-full text-sm px-4 py-2.5 border border-gray-400 rounded-3xl focus:ring-2 focus:ring-[#087487] focus:border-transparent outline-none transition">
+                        </div>
+                        <div>
+                            <label class="block text-left text-gray-800 ml-1 mb-1">Confirmar Nova Senha</label>
+                            <input type="password" id="confirmPassword" placeholder="Digite novamente sua nova senha" required class="w-full text-sm px-4 py-2.5 border border-gray-400 rounded-3xl focus:ring-2 focus:ring-[#087487] focus:border-transparent outline-none transition">
+                        </div>
+                    </div>
+                    <div class="mt-8 flex items-center justify-center gap-3">
+                        <button id="cancel-password" type="button" class="px-8 py-2 border border-gray-300 rounded-3xl text-sm font-bold text-[#0b8aa0] hover:bg-gray-100 cursor-pointer shadow-lg transition duration-300 active:scale-95 active:shadow-2xl">
+                        <span id="cancel-pass-text">Cancelar</span>
+                            <svg id="cancel-pass-spinner" class="hidden animate-spin h-6 w-6 text-[#e0e0e0]" fill="none">
+                                <use href="/src/assets/icons.svg#carregando"></use>
+                            </svg>
+                        </button>
+                        <button id="edit-password" type="submit" class="px-6 py-2 bg-[#0b8aa0] hover:bg-[#087487] text-white rounded-3xl text-sm font-bold flex items-center gap-2 hover:bg-teal-800 cursor-pointer shadow-lg transition duration-300 active:scale-95 active:shadow-2xl">
+                        <span class="material-symbols-outlined !text-2xl text-white">check</span>
+                        <span id="password-text">Salvar Alterações</span>
+                            <svg id="password-spinner" class="hidden animate-spin h-6 w-6 text-[#e0e0e0]" fill="none">
+                                <use href="/src/assets/icons.svg#carregando"></use>
+                            </svg>
+                        </button>
+                    </div>
+                </form>
+                </div>
+            </div>
         </div>
     </main>
 
