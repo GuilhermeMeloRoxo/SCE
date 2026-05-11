@@ -1,7 +1,7 @@
 import { handleCadastro, btnCadastro, iniciarValidacao, isUsernameValid } from '/pages/cadastro/main.js';
 import { handleLogin, btnLogin } from '/pages/login/main.js';
 import { renderizarPerfil } from '/pages/perfil/main.js';
-import { dadosPerfil, handleEdit, btnEdit, btnCancel } from '/pages/perfil/editar/main.js';
+import { dadosPerfil, handleEdit, btnEdit } from '/pages/perfil/editar/main.js';
 import '/src/style.css'
 import { supabase } from '/src/supabaseClient.js'
 import { setStorage } from './lib/storage.js'
@@ -231,6 +231,14 @@ function visibilidadeSenha() {
         }
     });
 }
+function voltarCancelar() {
+    if (btnCancel) {
+        btnCancel.disabled = false
+        btnCancel.classList.remove('opacity-80')
+    }
+    document.getElementById('cancel-text')?.classList.remove('hidden');
+    document.getElementById('cancel-spinner')?.classList.add('hidden');
+}
 
 // carregando funções a partir daqui
 document.addEventListener('DOMContentLoaded', () => {
@@ -256,10 +264,18 @@ btnEdit?.addEventListener('click', () => {
     handleForm(document.querySelector('#form-edit'));
 });
 
-btnCancel?.addEventListener('click', () =>{
-    location.reload();
-    document.getElementById('cancel-text').classList.add('hidden');
-    document.getElementById('cancel-spinner').classList.remove('hidden');
+document.getElementById('btn-cancel')?.addEventListener('click', () => {
+    console.log("eu");
+    const btnCancel = document.getElementById('btn-cancel')
+    if (btnCancel) {
+        btnCancel.disabled = true
+        btnCancel.classList.add('opacity-80')
+        document.getElementById('cancel-text').classList.add('hidden');
+        document.getElementById('cancel-spinner').classList.remove('hidden');
+    } setTimeout (() => {         
+        location.reload();    
+    }, 500);
+    voltarCancelar();
 });
 
 document.getElementById('btn-feedback')?.addEventListener('click', async () => {

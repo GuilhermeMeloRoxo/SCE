@@ -152,7 +152,6 @@ export async function dadosPerfil() {
         </main>`;
 }
 export const btnEdit = document.getElementById('btn-edit');
-export const btnCancel = document.getElementById('btn-cancel');
 
 export async function handleEdit() {
     const btnText = document.getElementById('submit-text')
