@@ -1,6 +1,7 @@
 import { handleCadastro, btnCadastro, iniciarValidacao, isUsernameValid } from '/pages/cadastro/main.js';
 import { handleLogin, btnLogin } from '/pages/login/main.js';
-import { renderizarPerfil, renderizarBotãoGithub, conectarGithub } from '/pages/perfil/main.js';
+import { renderizarPerfil } from '/pages/perfil/main.js';
+import { dadosPerfil, handleEdit, btnEdit } from '/pages/perfil/editar/main.js';
 import '/src/style.css'
 import { supabase } from '/src/supabaseClient.js'
 import { setStorage } from './lib/storage.js'
@@ -41,7 +42,6 @@ async function verificarUsuarioLogado() {
         window.location.href = '/';
     }
 }
-
 
 // função para ativar o menu hamburguer
 function configurarMenuHamburguer() {
@@ -123,6 +123,8 @@ function handleForm(form) {
         }
     } else if (form.id === 'form-login') {
         handleLogin();
+    } else if (form.id === 'form-edit') {
+        handleEdit();
     }
 })};
 
@@ -161,13 +163,17 @@ export function mostrarErro(msgErro){
     }, 3000);
 }
 
-// função para lidar com o feedback dos usuários
-
 async function getEmail() {
-    const { data, error } = await supabase.auth.getUser();
-
-    if (data.user) {
-        return data.user.email;
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return null;
+    const { data, error } = await supabase
+        .from('dados_privados')
+        .select('email')
+        .eq('id', user.id)
+        .single();
+    if (error || !data) return null;
+    if (data.email) {
+        return data.email;
     } if (error) {
         mostrarErro('Faça login para enviar seu feedback!');
         window.location.href = '/pages/login/';
@@ -190,8 +196,8 @@ async function handleFeedback(email) {
     } if (btnFeedback && msgFeedback && submitFeedback && formFeedback) {
         formFeedback.addEventListener('submit', (e) => {
             e.preventDefault();
-            if (msgFeedback.value.trim() === '' ||  msgFeedback.value.length < 10 || msgFeedback.value.length > 500) {
-                mostrarErro('Por favor, escreva uma mensagem com no mínimo 10 caracteres e no máximo 500.');
+            if (msgFeedback.value.trim() === '' &&  (msgFeedback.value.length < 10 || msgFeedback.value.length > 500)) {
+                return;
             } else {
                 const confirmar = confirm('Tem certeza que deseja enviar seu feedback?');
                 if (confirmar) {
@@ -235,6 +241,7 @@ document.addEventListener('DOMContentLoaded', () => {
     renderizarPerfil();
     visibilidadeSenha();
     iniciarValidacao();
+    dadosPerfil();
 });
 
 btnCadastro?.addEventListener('click', () => {
@@ -245,6 +252,9 @@ btnLogin?.addEventListener('click', () => {
     handleForm(document.querySelector('#form-login'));
 });
 
+btnEdit?.addEventListener('click', () => {
+    handleForm(document.querySelector('#form-edit'));
+});
 
 document.getElementById('btn-feedback')?.addEventListener('click', async () => {
     const email = await getEmail();
