@@ -120,19 +120,6 @@ export async function dadosPerfil() {
                         </span>
                     </div>
                 </div>
-                <div class="bg-slate-100 max-w-150 border mx-auto mt-10 lg:mt-4 border-gray-300 rounded-xl flex justify-center items-center gap-4 p-4 shadow col-span-2">
-                    <div class="w-16 h-16 bg-[#008b8b] rounded-full flex items-center justify-center text-white shrink-0">
-                        <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 20 20"><path d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"></path></svg>
-                    </div>
-                    <div>
-                        <p class="text-md font-bold">Foto de Perfil</p>
-                        <p class="text-xs text-gray-400 mb-2">Formatos aceitos: JPG, PNG. Tamanho máximo: 2MB.</p>
-                        <button type="button" class="text-white cursor-pointer bg-[#008b8b] rounded-3xl px-4 py-1 text-xs font-bold flex items-center gap-2 hover:bg-[#087487] transition duration-300">
-                        <span class="material-symbols-outlined !text-lg text-white">upload</span>
-                            Alterar Foto
-                        </button>
-                    </div>
-                </div>
                 <div class="md:col-span-2 flex justify-end gap-4 mt-12 lg:mt-8">
                     <button id="btn-cancel" type="button" class="px-8 py-2 border border-gray-300 rounded-3xl text-sm font-bold text-[#008b8b] hover:bg-gray-50 cursor-pointer shadow-lg transition duration-300 active:scale-95 active:shadow-2xl">
                     <span id="cancel-text">Cancelar</span>
@@ -174,7 +161,7 @@ export async function dadosPerfil() {
             document.getElementById('cancel-spinner').classList.remove('hidden');
         } setTimeout (() => {         
             voltarCancelar(btnCancel);
-            window.location.href = 'pages/perfil/';    
+            window.location.href = '/pages/perfil/';    
         }, 500);
     });
 }
@@ -183,7 +170,6 @@ export async function dadosPerfil() {
 export async function handleEdit(btnEdit) {
     const btnText = document.getElementById('submit-text')
     const btnSpinner = document.getElementById('submit-spinner')
-    const form = document.querySelector('#form-login')
     if (btnEdit) {
             btnEdit.disabled = true
             btnEdit.classList.add('opacity-80')
