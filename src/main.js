@@ -231,7 +231,7 @@ function visibilidadeSenha() {
         }
     });
 }
-function voltarCancelar() {
+function voltarCancelar(btnCancel) {
     if (btnCancel) {
         btnCancel.disabled = false
         btnCancel.classList.remove('opacity-80')
@@ -275,7 +275,7 @@ document.getElementById('btn-cancel')?.addEventListener('click', () => {
     } setTimeout (() => {         
         location.reload();    
     }, 500);
-    voltarCancelar();
+    voltarCancelar(btnCancel);
 });
 
 document.getElementById('btn-feedback')?.addEventListener('click', async () => {
