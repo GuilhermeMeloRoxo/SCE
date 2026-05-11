@@ -26,7 +26,7 @@ export async function dadosPerfil() {
                 </div>
             </div>
             <h2 class="text-[26px] font-bold text-gray-900">${data.nome || 'Nome não informado'}</h2>
-            <span class="text-[16px] text-[#087487] mt-2 mb-8">${email}</span>
+            <span class="text-[16px] text-[#087487] mt-2 mb-8">${data.email}</span>
             <div class="w-full space-y-8 text-left border-t mt-4 border-slate-200 pt-6">
                 <div class="mt-8">
                     <span class="block text-[14px] uppercase tracking-[0.2em] text-slate-400 font-bold">Curso</span>
@@ -181,6 +181,12 @@ export async function handleEdit() {
     try {
         const { data: { user } } = await supabase.auth.getUser();
         if (!user) throw new Error("Usuário não logado");
+        const { data, error: erro } = await supabase
+            .rpc('buscar_perfil_usuario', { usuario_id:user.id })
+            .single();
+        if (erro) {
+            console.error('Erro ao buscar dados:', error)
+        }
         if (data.email) {
             const { error: authError } = await supabase.auth.updateUser({
                 email: data.email,
@@ -200,12 +206,13 @@ export async function handleEdit() {
         alert("Dados atualizados com sucesso!");
         voltarBotao();
         location.reload();
-    } catch (erro) {
+        } catch (erro) {
         console.error("Erro ao atualizar:", erro);
         mostrarErro("Falha ao salvar dados.");
         voltarBotao();
-    }
+        }
 }
+
 document.getElementById('btn-cancel')?.addEventListener('click', () => {
     location.reload();
     document.getElementById('cancel-text').classList.add('hidden');
