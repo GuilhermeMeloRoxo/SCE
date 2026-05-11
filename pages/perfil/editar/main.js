@@ -207,9 +207,9 @@ export async function handleEdit() {
         voltarBotao();
         location.reload();
         } catch (erro) {
-        console.error("Erro ao atualizar:", erro);
-        mostrarErro("Falha ao salvar dados.");
-        voltarBotao();
+            console.error("Erro ao atualizar:", erro);
+            mostrarErro("Falha ao salvar dados.");
+            voltarBotao();
         }
 }
 
