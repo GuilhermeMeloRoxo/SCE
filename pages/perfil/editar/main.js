@@ -110,7 +110,7 @@ export async function dadosPerfil() {
                     </div>
                     <div>
                         <label class="block text-sm font-bold m-2">Data de Formação *</label>
-                        <input id="data-formacao" type="text" value="${data.formacao || ''}" pattern="[0-9]{4}\.[0-9]{1}" placeholder="Ex.: 2026.1" class="px-4 py-2.5 w-full border border-gray-300 rounded-3xl text-sm focus:ring-2 focus:ring-[#087487] focus:border-transparent outline-none transition" required>
+                        <input id="data-formacao" type="text" value="${data.termino || ''}" pattern="[0-9]{4}\.[0-9]{1}" placeholder="Ex.: 2026.1" class="px-4 py-2.5 w-full border border-gray-300 rounded-3xl text-sm focus:ring-2 focus:ring-[#087487] focus:border-transparent outline-none transition" required>
                     </div>
                     <div>
                         <label class="block text-sm font-bold m-2">Username *</label>
@@ -150,12 +150,40 @@ export async function dadosPerfil() {
                 </div>
             </form>
         </main>`;
-}
-export const btnEdit = document.getElementById('btn-edit');
+    
+    const btnEdit = document.getElementById('btn-edit');
+    btnEdit?.addEventListener('click', () => {
+    handleEdit(btnEdit);
+    });
 
-export async function handleEdit() {
+    function voltarCancelar(btnCancel) {
+    if (btnCancel) {
+        btnCancel.disabled = false
+        btnCancel.classList.remove('opacity-80')
+    }
+    document.getElementById('cancel-text')?.classList.remove('hidden');
+    document.getElementById('cancel-spinner')?.classList.add('hidden');
+    }
+    const btnCancel = document.getElementById('btn-cancel');
+    btnCancel?.addEventListener('click', () => {
+        const btnCancel = document.getElementById('btn-cancel')
+        if (btnCancel) {
+            btnCancel.disabled = true
+            btnCancel.classList.add('opacity-80')
+            document.getElementById('cancel-text').classList.add('hidden');
+            document.getElementById('cancel-spinner').classList.remove('hidden');
+        } setTimeout (() => {         
+            voltarCancelar(btnCancel);
+            window.location.href = 'pages/perfil/';    
+        }, 500);
+    });
+}
+
+
+export async function handleEdit(btnEdit) {
     const btnText = document.getElementById('submit-text')
     const btnSpinner = document.getElementById('submit-spinner')
+    const form = document.querySelector('#form-login')
     if (btnEdit) {
             btnEdit.disabled = true
             btnEdit.classList.add('opacity-80')
@@ -171,10 +199,12 @@ export async function handleEdit() {
         if (btnText) btnText.classList.remove('hidden')
         if (btnSpinner) btnSpinner.classList.add('hidden')
     }
+
     const nome = document.getElementById('nome-completo').value;
+    const email =document.getElementById('email').value;
     const cpf = document.getElementById('cpf').value;
     const telefone = document.getElementById('telefone').value
-    const matricula = document.getElementById('matricula-intitucional').value;
+    const matricula = document.getElementById('matricula-institucional').value;
     const opcoes = document.getElementById('opcoes').value;
     const formacao = document.getElementById('data-formacao').value;
     const username = document.getElementById('input-username').value;
@@ -189,7 +219,7 @@ export async function handleEdit() {
         }
         if (data.email) {
             const { error: authError } = await supabase.auth.updateUser({
-                email: data.email,
+                email: email,
             });
             if (authError) throw authError;
         }
@@ -201,7 +231,7 @@ export async function handleEdit() {
             p_telefone: telefone,
             p_matricula_institucional: matricula,
             p_curso: opcoes,
-            p_termino: formacao,}).single();
+            p_termino: formacao,});
         if (error) throw error;
         alert("Dados atualizados com sucesso!");
         voltarBotao();

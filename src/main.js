@@ -1,7 +1,7 @@
 import { handleCadastro, btnCadastro, iniciarValidacao, isUsernameValid } from '/pages/cadastro/main.js';
 import { handleLogin, btnLogin } from '/pages/login/main.js';
 import { renderizarPerfil } from '/pages/perfil/main.js';
-import { dadosPerfil, handleEdit, btnEdit } from '/pages/perfil/editar/main.js';
+import { dadosPerfil, handleEdit } from '/pages/perfil/editar/main.js';
 import '/src/style.css'
 import { supabase } from '/src/supabaseClient.js'
 import { setStorage } from './lib/storage.js'
@@ -123,8 +123,6 @@ function handleForm(form) {
         }
     } else if (form.id === 'form-login') {
         handleLogin();
-    } else if (form.id === 'form-edit') {
-        handleEdit();
     }
 })};
 
@@ -231,14 +229,6 @@ function visibilidadeSenha() {
         }
     });
 }
-function voltarCancelar(btnCancel) {
-    if (btnCancel) {
-        btnCancel.disabled = false
-        btnCancel.classList.remove('opacity-80')
-    }
-    document.getElementById('cancel-text')?.classList.remove('hidden');
-    document.getElementById('cancel-spinner')?.classList.add('hidden');
-}
 
 // carregando funções a partir daqui
 document.addEventListener('DOMContentLoaded', () => {
@@ -260,23 +250,6 @@ btnLogin?.addEventListener('click', () => {
     handleForm(document.querySelector('#form-login'));
 });
 
-btnEdit?.addEventListener('click', () => {
-    handleForm(document.querySelector('#form-edit'));
-});
-
-document.getElementById('btn-cancel')?.addEventListener('click', () => {
-    console.log("eu");
-    const btnCancel = document.getElementById('btn-cancel')
-    if (btnCancel) {
-        btnCancel.disabled = true
-        btnCancel.classList.add('opacity-80')
-        document.getElementById('cancel-text').classList.add('hidden');
-        document.getElementById('cancel-spinner').classList.remove('hidden');
-    } setTimeout (() => {         
-        location.reload();    
-    }, 500);
-    voltarCancelar(btnCancel);
-});
 
 document.getElementById('btn-feedback')?.addEventListener('click', async () => {
     const email = await getEmail();
