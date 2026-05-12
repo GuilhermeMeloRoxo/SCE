@@ -1,5 +1,5 @@
 import { supabase } from '../../src/supabaseClient.js'
-import { mostrarErro } from '../../src/main.js'
+import { mostrarAlerta } from '../../src/main.js'
 
 export const btnCadastro = document.getElementById('btn-cadastro');
 
@@ -99,7 +99,7 @@ export async function handleCadastro() {
     if (!isUsernameValid()) {
         const usernameInput = document.getElementById('input-username')
         if (usernameInput) usernameInput.focus()
-        mostrarErro("Por favor, escolha um username válido e disponível antes de prosseguir.")
+        mostrarAlerta('error', "Por favor, escolha um username válido e disponível antes de prosseguir.")
         return
     }
 
@@ -132,12 +132,12 @@ export async function handleCadastro() {
 
     if (erroCpf) {
         console.error(erroCpf);
-        mostrarErro("Erro ao validar dados do formulário.");
+        mostrarAlerta('error', "Erro ao validar dados do formulário.");
         return;
     }
 
     if (cpfExiste) {
-        mostrarErro("Erro: Este CPF já está cadastrado em nosso sistema.");
+        mostrarAlerta('error', "Erro: Este CPF já está cadastrado em nosso sistema.");
         const cpfInput = document.getElementById('input-cpf');
         if (cpfInput) cpfInput.focus();
         return;
@@ -159,9 +159,9 @@ export async function handleCadastro() {
     
       if (authError) {
         if (authError.message.includes("already registered")) {
-          mostrarErro("Erro: Este e-mail já está em uso.")
+          mostrarAlerta('error', "Erro: Este e-mail já está em uso.")
         } else {
-          mostrarErro("Erro no cadastro: " + authError.message)
+          mostrarAlerta('error', "Erro no cadastro: " + authError.message)
         }
         voltarBotao()
         return
@@ -174,7 +174,7 @@ export async function handleCadastro() {
     
     } catch (error) {
       console.error(error)
-      mostrarErro("Ocorreu um erro inesperado ao processar o formulário.")
+      mostrarAlerta('error', "Ocorreu um erro inesperado ao processar o formulário.")
       voltarBotao()
     }
   }

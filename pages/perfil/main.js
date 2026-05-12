@@ -1,4 +1,4 @@
-import { mostrarErro } from '../../src/main.js';
+import { mostrarAlerta } from '../../src/main.js';
 import { supabase } from '../../src/supabaseClient.js'
 
 export async function renderizarPerfil() {
@@ -94,7 +94,7 @@ export async function conectarGithub() {
 
     } catch (error) {
         console.error('Erro ao iniciar autenticação GitHub:', error.message);
-        mostrarErro('Não foi possível conectar ao GitHub. Tente novamente.');
+        mostrarAlerta('error', 'Não foi possível conectar ao GitHub. Tente novamente.');
     }
 }
 export async function salvarUsuarioLogado() {

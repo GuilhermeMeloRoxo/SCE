@@ -1,5 +1,5 @@
 import { supabase } from '../../../src/supabaseClient.js'
-import { mostrarErro } from '../../../src/main.js'
+import { mostrarAlerta } from '../../../src/main.js'
 
 export async function dadosPerfil() {
     const editProfile = document.getElementById('edit-profile');
@@ -209,7 +209,7 @@ export async function handleEdit(btnEdit) {
     const username = document.getElementById('input-username').value;
     const pattern = /^[a-zA-Z0-9_-]{3,20}$/;
     if (!pattern.test(username)) {
-        mostrarErro("Por favor, escolha um username válido antes de prosseguir.");
+        mostrarAlerta('error', "Por favor, escolha um username válido antes de prosseguir.");
         voltarBotao();
         return;
     }
@@ -238,12 +238,12 @@ export async function handleEdit(btnEdit) {
             p_curso: opcoes,
             p_termino: formacao,});
         if (error) throw error;
-        alert("Dados atualizados com sucesso!");
+        mostrarAlerta('ok', "Dados atualizados com sucesso!");
         voltarBotao();
         location.reload();
         } catch (erro) {
             console.error("Erro ao atualizar:", erro);
-            mostrarErro("Falha ao salvar dados.");
+            mostrarAlerta('error', "Falha ao salvar dados.");
             voltarBotao();
         }
 }

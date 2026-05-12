@@ -1,4 +1,4 @@
-import { mostrarErro } from '../../src/main';
+import { mostrarAlerta } from '../../src/main';
 import { supabase } from '../../src/supabaseClient.js'
 
 export const btnLogin = document.getElementById('btn-login');
@@ -37,15 +37,15 @@ export async function handleLogin() {
     // verificando se errou o login ou outro erro
     if (error) {
         if (error.message.includes("Invalid login credentials")) {
-            mostrarErro("Credenciais inválidas");
+            mostrarAlerta('error', "Credenciais inválidas");
             voltarBotao();
         } else {
-            mostrarErro("Erro ao entrar: " + error.message);
+            mostrarAlerta('error', "Erro ao entrar: " + error.message);
             voltarBotao();
         } return;
 
     } if (data.user) {
+        mostrarAlerta('ok', 'Bem vindo(a)!')
         window.location.href = '/';
-        alert("Bem-vindo(a)")
     }
 }

@@ -116,7 +116,7 @@ function handleForm(form) {
     if (form.id === 'form-cadastro') {
         if (!isUsernameValid()) {
             document.getElementById('input-username').focus()
-            mostrarErro('Por favor, corrija o seu username antes de enviar o formulário de cadastro.')
+            mostrarAlerta('error', 'Por favor, corrija o seu username antes de enviar o formulário de cadastro.')
             return null
         } else {
             handleCadastro();
@@ -126,36 +126,43 @@ function handleForm(form) {
     }
 })};
 
-export function mostrarErro(msgErro){
-    // cria o container de alerta
+export function mostrarAlerta(codigo, msg){
 
     const container = document.createElement('div');
     container.id = 'alert-container';
-    // Estiliza para ficar fixo no topo ou em algum lugar padrão
+
     container.className = "fixed top-5 left-1/2 -translate-x-1/2 z-[100] w-full max-w-sm px-3 pointer-events-none"; 
     document.body.appendChild(container);
 
-
-
     const alertDiv = document.createElement('div');
-    alertDiv.className = "flex items-center justify-center gap-x-2 p-2 mb-2 text-red-800 border border-red-300 rounded-lg bg-red-50 animate-bounce-short"; // Adicionei uma animação curta
-    alertDiv.role = "alert";
+    if (codigo === 'error') {
+        alertDiv.className = "flex items-center justify-center gap-x-2 p-2 mb-2 text-red-800 border border-red-300 rounded-lg bg-red-50 animate-bounce-short";
+        alertDiv.role = "alert";
 
-    // HTML interno (Ícone + Mensagem)
-    alertDiv.innerHTML = `
-    <span class="material-symbols-outlined !text-2xl text-red">
-        error
-    </span>
-    <div>
-        <span class="font-medium"> Erro: ${msgErro}</span>
-    </div>
-    `;
+        alertDiv.innerHTML = `
+        <span class="material-symbols-outlined !text-2xl text-red">
+            error
+        </span>
+        <div>
+            <span class="font-medium"> Erro: ${msg}</span>
+        </div>
+        `;
+    } else if (codigo === 'ok') {
+        alertDiv.className = "flex items-center justify-center gap-x-2 p-2 mb-2 text-green-800 border border-green-300 rounded-lg bg-green-50 animate-bounce-short";
+        alertDiv.role = "alert";
 
-    // limpa alertas anteriores antes de mostrar o novo
+        alertDiv.innerHTML = `
+        <span class="material-symbols-outlined !text-2xl text-green">
+            ok
+        </span>
+        <div>
+            <span class="font-medium"> Erro: ${msg}</span>
+        </div>
+        `;
+    }
     container.innerHTML = '';
     container.appendChild(alertDiv);
 
-    // remove o alerta após 3 segundos
     setTimeout(() => {
         alertDiv.remove();
     }, 3000);
@@ -173,7 +180,7 @@ async function getEmail() {
     if (data.email) {
         return data.email;
     } if (error) {
-        mostrarErro('Faça login para enviar seu feedback!');
+        mostrarAlerta('error', 'Faça login para enviar seu feedback!');
         window.location.href = '/pages/login/';
         return null;
     }
@@ -200,7 +207,7 @@ async function handleFeedback(email) {
                 const confirmar = confirm('Tem certeza que deseja enviar seu feedback?');
                 if (confirmar) {
                     setStorage(email, msgFeedback.value);
-                    mostrarErro('Feedback enviado com sucesso! Agradecemos por compartilhar sua opinião conosco.');
+                    mostrarAlerta('ok', 'Feedback enviado com sucesso! Agradecemos por compartilhar sua opinião conosco.');
                     msgFeedback.value = '';
                     camposFeedback.style.display = 'none';
                 }
