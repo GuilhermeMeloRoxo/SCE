@@ -1,7 +1,7 @@
 import { handleCadastro, btnCadastro, iniciarValidacao, isUsernameValid } from '/pages/cadastro/main.js';
 import { handleLogin, btnLogin } from '../pages/login/main.js';
 import { renderizarPerfil } from '../pages/perfil/main.js';
-import { dadosPerfil, handleEdit } from '../pages/perfil/editar/main.js';
+import { dadosPerfil } from '../pages/perfil/editar/main.js';
 import './style.css'
 import { supabase } from './supabaseClient.js'
 import { setStorage } from './lib/storage.js'
