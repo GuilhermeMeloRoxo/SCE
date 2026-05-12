@@ -43,10 +43,6 @@ garantindo conformidade total com as exigências de avaliação do MEC.
 ## Estrutura do Projeto
 
       SCE/
-      ├── components/                            # Componentes reutilizáveis
-      |   ├── footer.html
-      |   ├── navbar.html
-      |   └── search.html
       ├── pages/                                 # Páginas do sistema
       |   ├── cadastro/                          # Página de cadastro
       |   |   ├── index.html
@@ -61,6 +57,10 @@ garantindo conformidade total com as exigências de avaliação do MEC.
       |   |   ├── index.html
       |   |   └── main.js
       ├── public/                                # Imagens e ícones
+      |   ├── components/                        # Componentes reutilizáveis
+      |   |   ├── footer.html
+      |   |   ├── navbar.html
+      |   |   └── search.html
       |   ├── favicon.svg
       |   ├── github.png
       |   ├── instagram.png
