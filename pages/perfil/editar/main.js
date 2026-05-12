@@ -209,7 +209,7 @@ export async function handleEdit(btnEdit) {
     const username = document.getElementById('input-username').value;
     const pattern = /^[a-zA-Z0-9_-]{3,20}$/;
     if (!pattern.test(username)) {
-        mostrarErro('Username Inválido');
+        mostrarErro("Por favor, escolha um username válido antes de prosseguir.")
         voltarBotao();
         return;
     }
