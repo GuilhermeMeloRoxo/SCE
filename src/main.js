@@ -230,6 +230,86 @@ function visibilidadeSenha() {
     });
 }
 
+async function renderizarMural() {
+
+    const container = document.getElementById('mural-posts');
+    if (!container) return null;
+
+    const { data: posts, error } = await supabase
+    .from('mural_completo')
+    .select('*');
+
+    if (error || !posts) {
+        console.error(error);
+    }
+    
+    
+
+    const htmlGerado = posts.map(post => {
+        const imagemPostHtml = post.imagem_url 
+                ? `<div class="mt-3 overflow-hidden rounded-lg border border-gray-100">
+                    <img src="${post.imagem_url}" alt="Imagem do post" class="w-full object-cover max-h-96">
+                </div>` 
+                : ``;
+
+        const temGithub = post.autor_github;
+        const avatarUrl = temGithub 
+        ? `<img src="https://avatars.githubusercontent.com/${post.autor_github}" alt="Foto de ${post.autor_nome}" class="w-10 h-10 object-cover rounded-full">` 
+        : `<svg class="w-10 h-10">
+            <use href="/src/assets/icons.svg#profile"></use>
+            </svg>`;
+        const dataFormatada = new Date(post.post_data).toLocaleDateString('pt-BR', {
+            day: '2-digit',
+            month: 'short'
+        });
+
+        return `
+            <div id="post-${post.post_id}" class="mb-6 bg-white rounded-xl shadow-sm border border-gray-200 p-5">
+                
+                <div class="flex items-center justify-between mb-4">
+                    <div class="flex items-center gap-3">
+                        ${avatarUrl}
+                        <div>
+                            <h3 class="text-sm font-bold text-gray-900 leading-none">${post.autor_nome}</h3>
+                            <span class="text-[11px] text-gray-400">${dataFormatada}</span>
+                        </div>
+                    </div>
+                    
+                    <span class="px-3 py-1 rounded-full text-[14px] font-bold uppercase tracking-wider"
+                        style="background-color: color-mix(in srgb, ${post.tag_cor}, transparent 80%); color: ${post.tag_cor}">
+                        ${post.tag_nome}
+                    </span>
+                </div>
+
+                <div class="post-content">
+                    <p class="text-gray-700 leading-relaxed">${post.post_conteudo}</p>
+                </div>
+                ${imagemPostHtml}
+
+                <div class="flex items-center gap-6 mt-5 pt-4 border-t border-gray-50">
+                    
+                    <button class="btn-curtir flex items-center gap-1.5 group transition" data-id="${post.post_id}">
+                        <span class="material-symbols-outlined text-[22px] text-gray-400 group-hover:text-red-500 transition">
+                            favorite
+                        </span>
+                        <span class="text-sm font-semibold text-gray-500">${post.quantidade_curtidas}</span>
+                    </button>
+
+                    <button class="btn-comentarios flex items-center gap-1.5 group transition" data-id="${post.post_id}">
+                        <span class="material-symbols-outlined text-[22px] text-gray-400 group-hover:text-blue-500 transition">
+                            comment
+                        </span>
+                        <span class="text-sm font-semibold text-gray-500">${post.quantidade_comentarios}</span>
+                    </button>
+
+                </div>
+            </div>`;
+    }).join('');
+    
+    container.innerHTML = htmlGerado;
+
+}
+
 // carregando funções a partir daqui
 document.addEventListener('DOMContentLoaded', () => {
     verificarUsuarioLogado();
@@ -240,6 +320,7 @@ document.addEventListener('DOMContentLoaded', () => {
     visibilidadeSenha();
     iniciarValidacao();
     dadosPerfil();
+    renderizarMural();
 });
 
 btnCadastro?.addEventListener('click', () => {
