@@ -137,12 +137,12 @@ export async function dadosPerfil() {
                 </div>
             </form>
         </main>`;
-    
+
+    document.getElementById('opcoes').value = data.curso || "";
     const btnEdit = document.getElementById('btn-edit');
     btnEdit?.addEventListener('click', () => {
     handleEdit(btnEdit);
     });
-
     function voltarCancelar(btnCancel) {
     if (btnCancel) {
         btnCancel.disabled = false
@@ -187,13 +187,19 @@ export async function handleEdit(btnEdit) {
     }
 
     const nome = document.getElementById('nome-completo').value;
-    const email =document.getElementById('email').value;
+    const email = document.getElementById('email').value;
     const cpf = document.getElementById('cpf').value;
     const telefone = document.getElementById('telefone').value
     const matricula = document.getElementById('matricula-institucional').value;
     const opcoes = document.getElementById('opcoes').value;
     const formacao = document.getElementById('data-formacao').value;
     const username = document.getElementById('input-username').value;
+    const pattern = /^[a-zA-Z0-9_-]{3,20}$/;
+    if (!pattern.test(username)) {
+        mostrarErro('Username Inválido');
+        voltarBotao();
+        return;
+    }
     try {
         const { data: { user } } = await supabase.auth.getUser();
         if (!user) throw new Error("Usuário não logado");
