@@ -128,12 +128,6 @@ function handleForm(form) {
 
 export function mostrarAlerta(codigo, msg){
 
-    const container = document.createElement('div');
-    container.id = 'alert-container';
-
-    container.className = "fixed top-5 left-1/2 -translate-x-1/2 z-[100] w-full max-w-sm px-3 pointer-events-none"; 
-    document.body.appendChild(container);
-
     const alertDiv = document.createElement('div');
     if (codigo === 'error') {
         alertDiv.className = "flex items-center justify-center gap-x-2 p-2 mb-2 text-red-800 border border-red-300 rounded-lg bg-red-50 animate-bounce-short";
@@ -159,7 +153,16 @@ export function mostrarAlerta(codigo, msg){
             <span class="font-medium"> Erro: ${msg}</span>
         </div>
         `;
+    } else {
+        console.error('Código inválido para mostrarAlerta');
+        return null
     }
+    const container = document.createElement('div');
+    container.id = 'alert-container';
+
+    container.className = "fixed top-5 left-1/2 -translate-x-1/2 z-[100] w-full max-w-sm px-3 pointer-events-none"; 
+    document.body.appendChild(container);
+
     container.innerHTML = '';
     container.appendChild(alertDiv);
 
