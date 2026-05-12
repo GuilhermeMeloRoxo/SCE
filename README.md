@@ -63,6 +63,7 @@ garantindo conformidade total com as exigências de avaliação do MEC.
       |   |   └── search.html
       |   ├── favicon.svg
       |   ├── github.png
+      |   ├── icons.svg 
       |   ├── instagram.png
       |   ├── linkedin.png
       |   └── logo.png
