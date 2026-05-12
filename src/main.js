@@ -1,9 +1,9 @@
 import { handleCadastro, btnCadastro, iniciarValidacao, isUsernameValid } from '/pages/cadastro/main.js';
-import { handleLogin, btnLogin } from '/pages/login/main.js';
-import { renderizarPerfil } from '/pages/perfil/main.js';
-import { dadosPerfil, handleEdit } from '/pages/perfil/editar/main.js';
-import '/src/style.css'
-import { supabase } from '/src/supabaseClient.js'
+import { handleLogin, btnLogin } from '../pages/login/main.js';
+import { renderizarPerfil } from '../pages/perfil/main.js';
+import { dadosPerfil, handleEdit } from '../pages/perfil/editar/main.js';
+import './style.css'
+import { supabase } from './supabaseClient.js'
 import { setStorage } from './lib/storage.js'
 /*
 import javascriptLogo from './assets/javascript.svg'
@@ -313,9 +313,9 @@ async function renderizarMural() {
 // carregando funções a partir daqui
 document.addEventListener('DOMContentLoaded', () => {
     verificarUsuarioLogado();
-    inserirHtml('navbar', '/components/navbar.html');
-    inserirHtml('footer', '/components/footer.html');
-    inserirHtml('search', '/components/search.html');
+    inserirHtml('navbar', '../components/navbar.html');
+    inserirHtml('footer', '../components/footer.html');
+    inserirHtml('search', '../components/search.html');
     renderizarPerfil();
     visibilidadeSenha();
     iniciarValidacao();

@@ -1,5 +1,5 @@
-import { supabase } from '/src/supabaseClient.js'
-import { mostrarErro } from '/src/main.js'
+import { supabase } from '../../../src/supabaseClient.js'
+import { mostrarErro } from '../../../src/main.js'
 
 export async function dadosPerfil() {
     const editProfile = document.getElementById('edit-profile');

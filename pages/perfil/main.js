@@ -1,5 +1,5 @@
-import { mostrarErro } from '../../src/main';
-import { supabase } from '/src/supabaseClient.js'
+import { mostrarErro } from '../../src/main.js';
+import { supabase } from '../../src/supabaseClient.js'
 
 export async function renderizarPerfil() {
     const profileContainer = document.getElementById('profile-container');
