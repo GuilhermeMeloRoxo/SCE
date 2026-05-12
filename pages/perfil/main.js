@@ -102,39 +102,54 @@ export async function salvarUsuarioLogado() {
 
     if (session) {
         const user = session.user;
-    
         const githubUsername = user.user_metadata.user_name || user.user_metadata.preferred_username;
-
-        // salvando o usuário na tabela perfis do supabase caso seja primeiro login github
-        const { error } = await supabase.from('perfis')
+        if (session.provider_token) {
+            const { error: error_token } = await supabase
+            .from('dados_privados')
             .update({ 
-                github_user: githubUsername,
-                atualizado_em: new Date(),
-            }).eq('id', user.id)
+                github_token: session.provider_token 
+            }).eq('id', user.id);
 
-        if (error) console.error('Erro ao salvar perfil:', error.message);
-        return githubUsername;
+            if (error_token) {
+                console.error('Erro ao salvar o token na tabela dados_privados:', error_token.message);
+                }
+        }
+
+        if (githubUsername) {
+            const { error_username } = await supabase.from('perfis')
+                .update({ 
+                    github_user: githubUsername,
+                    atualizado_em: new Date(),
+                }).eq('id', user.id);
+            if (error_username) console.error('Erro ao salvar perfil:', error_username.message);
+            return githubUsername;
+        }
     }
+    return null
 }
 export async function renderizarGithub(github_user) {
 
     // verifica se existe o container para o github e se o usuário já está autenticado com o GitHub
     const githubContainer = document.getElementById('github-container');
+    const { data, error } = await supabase
+    .from('dados_privados')
+    .select('github_token')
+    .single();
+
     if (!githubContainer) return null;
-    if (!github_user) {
+    if (!github_user || !data.github_token) {
         github_user = await salvarUsuarioLogado();
-        if (!github_user) return renderizarBotãoGithub();
+        if (!github_user || !data.github_token) return renderizarBotãoGithub();
     };
 
-    const { data: { session } } = await supabase.auth.getSession()
-  
-    if (!session || !session.provider_token) {
+
+    if (!data || error || !data.github_token) {
         console.log("Token do GitHub não encontrado")
         return renderizarBotãoGithub();
     }
-
-    const token = session.provider_token;
+    const token = data.github_token;
     let userData;
+    
     try {
         const userRes = await fetch('https://api.github.com/user', {
             headers: {
@@ -146,6 +161,11 @@ export async function renderizarGithub(github_user) {
         // caso o usuário dê revoke no github
         if (userRes.status === 401) {
             console.error("Token inválido ou revogado");
+            await supabase
+            .from('dados_privados')
+            .update({
+                github_token: null
+            }).eq('id', (await supabase.auth.getUser()).data.user.id);
             return renderizarBotãoGithub();
         }
         userData = await userRes.json();
