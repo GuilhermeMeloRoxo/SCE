@@ -63,8 +63,6 @@ header {
 }
 .menu-hamburger {
     display: block;
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid white;
     border-radius: 999px;
     cursor: pointer;
     padding: 10px;
@@ -136,6 +134,59 @@ header {
 main {
     margin-bottom: auto;
 }
+/* barra de pesquisa */
+#search {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+#search input {    
+    padding: 6px 14px;
+    border: 1px solid #ccc;
+    border-radius: 80px;
+    outline: none;
+    width: 280px;
+    transition: all 0.2s ease;
+    margin: 0 6px;
+}
+#search input:focus {
+    border-color: #087487;
+    background-color: #fff;
+    box-shadow: 0 1px 6px rgba(32,33,36,0.28);
+}
+#btn-search {
+    display: block;
+    background: transparent;
+    border-radius: 999px;
+    color: rgb(58, 57, 57);
+    text-align: center;
+    box-shadow: 0 8px 210px rgba(1, 13, 28, 0.18);
+    transition: all 0.2s ease;
+}
+#btn-search:hover {
+    color: #0b8aa0;
+    cursor: pointer;
+}
+#btn-search:active {
+    transform: scale(0.9);
+    box-shadow: 0 8px 210px #03aac7;
+}
+#btn-send {
+    background: transparent;
+    border-radius: 999px;
+    color: #0b8aa0;
+    box-shadow: 0 8px 210px rgba(1, 13, 28, 0.18);
+    transition: all 0.2s ease;
+    display: none;
+}
+#btn-send:hover {
+    color: #087487;
+    cursor: pointer;
+}
+#btn-send:active {
+    transform: scale(0.9);
+    box-shadow: 0 8px 210px #03aac7;
+}
 /* footer */
 footer {
     bottom: 0;
@@ -174,13 +225,14 @@ footer h5, p {
 }
 /* página inicial */
 .container {
-    justify-content: center;
+    display: flex;
+    flex-direction: column;
     align-items: center;
     margin: 20px auto;
     flex: 1 0 auto;
 }
 .container h1 {
-    padding: 20px 25px;
+    padding: 20px 0;
     font-size: 1.4rem;
     font-weight: bold;
     text-align: center;
@@ -190,6 +242,10 @@ footer h5, p {
     margin: 60px 25px;
 }
 .btn-feedback {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
     font-size: 0.9rem;
     padding: 12px 15px;
     font-weight: bold;
@@ -235,6 +291,13 @@ footer h5, p {
         display: block;
         margin: auto;
         font-size: 1.8rem;
+    }
+    #search {
+        margin-left: auto;
+        margin-right: 16px;
+    }
+    #search input {    
+        width: 320px;
     }
     /* footer */
     footer h5, p {

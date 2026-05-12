@@ -1,3 +1,4 @@
+import { mostrarErro } from '../../src/main';
 import { supabase } from '/src/supabaseClient.js'
 
 export async function renderizarPerfil() {
@@ -11,7 +12,7 @@ export async function renderizarPerfil() {
 
     const { data, error } = await supabase
         .from('perfis')
-        .select('nome, email, github_user, formacao(curso, termino)')
+        .select(`nome, github_user, formacao(curso, termino)`)
         .eq('id', user.id)
         .single();
 
@@ -19,8 +20,8 @@ export async function renderizarPerfil() {
     const temGithub = data && data.github_user;
     const avatarUrl = temGithub 
     ? `<img src="https://avatars.githubusercontent.com/${data.github_user}" alt="Foto de Perfil" class="w-full h-full object-cover rounded-full">` 
-    : `<svg class="w-60 h-60 text-[#0b8aa0]" fill="currentColor">
-            <use href="/src/assets/icons.svg#profile"></use>
+    : `<svg class="w-34 h-34">
+        <use href="/src/assets/icons.svg#profile"></use>
         </svg>`;
     
     profileContainer.innerHTML = `
@@ -28,22 +29,18 @@ export async function renderizarPerfil() {
         <div class="w-48 h-48 rounded-full bg-slate-200 mb-8 border-4 border-white shadow-lg overflow-hidden flex-shrink-0 flex items-center justify-center">
         ${avatarUrl}
         </div>
-
+        
         <div class="text-center w-full">
             <span class="block text-[26px] font-bold text-slate-900 leading-tight">
                 ${data.nome || 'Nome não informado'}
             </span>
-            <span class="block text-slate-500 text-[16px] mt-2">
-                ${data.email || 'Email não informado'}
-            </span>
-            
             <div class="mt-10 space-y-8 text-left border-t border-slate-200 pt-10 px-4">
                 <div>
                     <span class="block text-[12px] uppercase tracking-[0.2em] text-slate-400 font-bold">
                         Curso
                     </span>
                     <span class="flex items-center gap-2 text-1xl font-semibold text-slate-800 mt-1 leading-none">
-                        <span class="material-symbols-outlined">menu_book</span>
+                        <span class="material-symbols-outlined text-[#008b8b]">school</span>
                         ${data.formacao?.curso || 'Curso não informado'}
                     </span>
                 </div>
@@ -53,7 +50,7 @@ export async function renderizarPerfil() {
                         Formado em
                     </span>
                     <span class="flex items-center gap-2 text-1xl font-semibold text-slate-800 mt-1 leading-none">
-                        <span class="material-symbols-outlined">calendar_month</span>
+                        <span class="material-symbols-outlined text-[#008b8b]">calendar_month</span>
                         ${data.formacao?.termino || 'Data não informada'}
                     </span>
                 </div>
@@ -97,7 +94,7 @@ export async function conectarGithub() {
 
     } catch (error) {
         console.error('Erro ao iniciar autenticação GitHub:', error.message);
-        alert('Não foi possível conectar ao GitHub. Tente novamente.');
+        mostrarErro('Não foi possível conectar ao GitHub. Tente novamente.');
     }
 }
 export async function salvarUsuarioLogado() {

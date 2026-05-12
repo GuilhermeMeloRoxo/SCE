@@ -16,18 +16,24 @@
 
         </nav>
     </header>
-
     <!-- postagens do mural -->
     <main class="container">
+        <div id="search" class="search"></div>
         <h1>Mural de Notícias - IFPB JP</h1>
         <div id="mural-posts" class="mural-grid">
-
+            <div class="flex w-full items-center justify-center">
+                <svg class="animate-spin h-20 w-20 mt-30 mb-50 text-[#e0e0e0]" fill="none" viewBox="0 0 24 24">
+                    <use href="/src/assets/icons.svg#carregando"></use>
+                </svg>
+            </div>
         </div>
     </main>
 
     <!-- botão de feedback -->
     <form id="feedback" method="post">
-        <button class="btn-feedback" id="btn-feedback" type="button">Feedback</button>
+        <button class="btn-feedback" id="btn-feedback" type="button">
+            <span class="material-symbols-outlined">feedback</span>
+            Feedback</button>
         <div class="hidden-feedback" id="hidden-feedback">
             <textarea class="msg-feedback" id="msg-feedback" name="mensagem" minlength="10" maxlength="500" placeholder="Deixe o seu comentário aqui, no mínimo 10 caracteres."></textarea>
             <button class="submit-feedback" id="submit-feedback" type="submit">Enviar</button>
