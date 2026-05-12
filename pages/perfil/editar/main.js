@@ -127,7 +127,7 @@ export async function dadosPerfil() {
                        <div>
                            <p class="text-md font-bold">Foto de Perfil</p>
                            <p class="text-xs text-gray-400 mb-2">Formatos aceitos: JPG, PNG. Tamanho máximo: 2MB.</p>
-                           <button type="button" class="text-white cursor-pointer bg-[#008b8b] rounded-3xl px-4 py-1 text-xs font-bold flex items-center gap-2 hover:bg-[#087487] transition duration-300">
+                           <button type="button" class="text-white ml-auto cursor-pointer bg-[#008b8b] rounded-3xl px-4 py-1 text-xs font-bold flex items-center gap-2 hover:bg-[#087487] transition duration-300">
                            <span class="material-symbols-outlined !text-lg text-white">upload</span>
                                Alterar foto
                            </button>
