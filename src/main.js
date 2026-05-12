@@ -313,9 +313,9 @@ async function renderizarMural() {
 // carregando funções a partir daqui
 document.addEventListener('DOMContentLoaded', () => {
     verificarUsuarioLogado();
-    inserirHtml('navbar', '../components/navbar.html');
-    inserirHtml('footer', '../components/footer.html');
-    inserirHtml('search', '../components/search.html');
+    inserirHtml('navbar', '/components/navbar.html');
+    inserirHtml('footer', '/components/footer.html');
+    inserirHtml('search', '/components/search.html');
     renderizarPerfil();
     visibilidadeSenha();
     iniciarValidacao();
