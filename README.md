@@ -38,7 +38,7 @@ garantindo conformidade total com as exigências de avaliação do MEC.
    - git clone https://github.com/GuilhermeMeloRoxo/SCE
 
 ## Demo
-- [Site Online]()
+- [Site SCE](http://sce-wordle-coders.vercel.app/)
 
 ## Estrutura do Projeto
 
