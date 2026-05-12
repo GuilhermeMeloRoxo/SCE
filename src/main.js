@@ -288,14 +288,14 @@ async function renderizarMural() {
 
                 <div class="flex items-center gap-6 mt-5 pt-4 border-t border-gray-50">
                     
-                    <button class="btn-curtir flex items-center gap-1.5 group transition" data-id="${post.post_id}">
+                    <button class="btn-curtir cursor-pointer flex items-center gap-1.5 group transition" data-id="${post.post_id}">
                         <span class="material-symbols-outlined text-[22px] text-gray-400 group-hover:text-red-500 transition">
                             favorite
                         </span>
                         <span class="text-sm font-semibold text-gray-500">${post.quantidade_curtidas}</span>
                     </button>
 
-                    <button class="btn-comentarios flex items-center gap-1.5 group transition" data-id="${post.post_id}">
+                    <button class="btn-comentarios cursor-pointer flex items-center gap-1.5 group transition" data-id="${post.post_id}">
                         <span class="material-symbols-outlined text-[22px] text-gray-400 group-hover:text-blue-500 transition">
                             comment
                         </span>
