@@ -76,6 +76,7 @@ garantindo conformidade total com as exigências de avaliação do MEC.
       ├── index.html                             # Página inicial
       ├── package-lock.json                      
       ├── package.json                           # Gerencia de dependências
+      ├── preview.png
       └── vite.config.js                         # Configuração do Vite
 
 ## Autores
