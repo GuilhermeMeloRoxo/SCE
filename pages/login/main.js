@@ -1,5 +1,5 @@
 import { mostrarErro } from '../../src/main';
-import { supabase } from '/src/supabaseClient.js'
+import { supabase } from '../../src/supabaseClient.js'
 
 export const btnLogin = document.getElementById('btn-login');
 export async function handleLogin() {

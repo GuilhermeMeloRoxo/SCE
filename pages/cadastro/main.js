@@ -1,5 +1,5 @@
-import { supabase } from '/src/supabaseClient.js'
-import { mostrarErro } from '/src/main.js'
+import { supabase } from '../../src/supabaseClient.js'
+import { mostrarErro } from '../../src/main.js'
 
 export const btnCadastro = document.getElementById('btn-cadastro');
 
