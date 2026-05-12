@@ -6,7 +6,7 @@ export const btnCadastro = document.getElementById('btn-cadastro');
 // icones para o campo dinâmico username
 const SPINNER_HTML = `
     <svg class="animate-spin h-[18px] w-[18px] text-[#a0a0a0]" fill="none">
-        <use href="/src/assets/icons.svg#carregando"></use>
+        <use href="/icons.svg#carregando"></use>
     </svg>
 `;
 const SUCCESS_HTML = `<span class="material-symbols-outlined hidden text-emerald-500 font-bold text-xl">check_circle</span>`;

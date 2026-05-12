@@ -21,7 +21,7 @@ export async function renderizarPerfil() {
     const avatarUrl = temGithub 
     ? `<img src="https://avatars.githubusercontent.com/${data.github_user}" alt="Foto de Perfil" class="w-full h-full object-cover rounded-full">` 
     : `<svg class="w-34 h-34">
-        <use href="/src/assets/icons.svg#profile"></use>
+        <use href="/icons.svg#profile"></use>
         </svg>`;
     
     profileContainer.innerHTML = `
@@ -68,7 +68,7 @@ export function renderizarBotãoGithub() {
             <p class="text-sm text-slate-500 mb-4">Conecte seu GitHub para exibir suas contribuições recentes.</p>
             <button id="btn-github" class="inline-flex items-center gap-2 rounded-full bg-slate-900 px-6 py-2.5 text-sm font-semibold text-white transition hover:bg-slate-700 cursor-pointer">
                 <svg class="w-6 h-6 text-black" fill="white">
-                    <use href="/src/assets/icons.svg#github"></use>
+                    <use href="/icons.svg#github"></use>
                 </svg>
                 Conectar GitHub
             </button>
@@ -216,7 +216,7 @@ githubContainer.innerHTML = `
         <div class="flex items-center gap-4">
             <div class="bg-black p-1 rounded-lg">
                 <svg class="w-8 h-8 transition-transform duration-300 group-hover:scale-110" fill="white">
-                    <use href="/src/assets/icons.svg#github"></use>
+                    <use href="/icons.svg#github"></use>
                 </svg>
             </div>
             <div>
@@ -239,7 +239,7 @@ githubContainer.innerHTML = `
                             fill="none" 
                             stroke="currentColor" 
                             stroke-width="1.5">
-                            <use href="/src/assets/icons.svg#star"></use>
+                            <use href="/icons.svg#star"></use>
                             </svg>
                             <span class="text-[12px] font-bold transition-all duration-300 group-hover/item:scale-110">${repo.stargazers_count}</span>
                         </div>

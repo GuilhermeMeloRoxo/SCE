@@ -256,7 +256,7 @@ async function renderizarMural() {
         const avatarUrl = temGithub 
         ? `<img src="https://avatars.githubusercontent.com/${post.autor_github}" alt="Foto de ${post.autor_nome}" class="w-10 h-10 object-cover rounded-full">` 
         : `<svg class="w-10 h-10">
-            <use href="/src/assets/icons.svg#profile"></use>
+            <use href="/icons.svg#profile"></use>
             </svg>`;
         const dataFormatada = new Date(post.post_data).toLocaleDateString('pt-BR', {
             day: '2-digit',

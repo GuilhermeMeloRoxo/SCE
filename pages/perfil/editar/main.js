@@ -16,7 +16,7 @@ export async function dadosPerfil() {
     const avatarUrl = temGithub 
     ? `<img src="https://avatars.githubusercontent.com/${data.github_user}" alt="Foto de Perfil" class="w-full h-full object-cover rounded-full">` 
     : `<svg class="w-34 h-34">
-        <use href="/src/assets/icons.svg#profile"></use>
+        <use href="/icons.svg#profile"></use>
         </svg>`;
     editProfile.innerHTML = `
         <aside class="w-full md:w-1/3 bg-slate-50 rounded-xl shadow-md border border-gray-100 p-8 flex flex-col items-center text-center">
@@ -137,14 +137,14 @@ export async function dadosPerfil() {
                     <button id="btn-cancel" type="button" class="px-8 py-2 border border-gray-300 rounded-3xl text-sm font-bold text-[#0b8aa0] hover:bg-gray-100 cursor-pointer shadow-lg transition duration-300 active:scale-95 active:shadow-2xl">
                     <span id="cancel-text">Cancelar</span>
                         <svg id="cancel-spinner" class="hidden animate-spin h-6 w-6 text-[#e0e0e0]" fill="none">
-                            <use href="/src/assets/icons.svg#carregando"></use>
+                            <use href="/icons.svg#carregando"></use>
                         </svg>
                     </button>
                     <button id="btn-edit" type="submit" class="px-6 py-2 bg-[#0b8aa0] hover:bg-[#087487] text-white rounded-3xl text-sm font-bold flex items-center gap-2 hover:bg-teal-800 cursor-pointer shadow-lg transition duration-300 active:scale-95 active:shadow-2xl">
                     <span class="material-symbols-outlined !text-2xl text-white">check</span>
                     <span id="submit-text">Salvar Alterações</span>
                         <svg id="submit-spinner" class="hidden animate-spin h-6 w-6 text-[#e0e0e0]" fill="none">
-                            <use href="/src/assets/icons.svg#carregando"></use>
+                            <use href="/icons.svg#carregando"></use>
                         </svg>
                     </button>
                 </div>
