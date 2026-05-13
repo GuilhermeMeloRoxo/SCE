@@ -1,16 +1,11 @@
-import { handleCadastro, btnCadastro, iniciarValidacao, isUsernameValid } from '/pages/cadastro/main.js';
+import { handleCadastro, btnCadastro, iniciarValidacao, isUsernameValid } from '../pages/cadastro/main.js';
 import { handleLogin, btnLogin } from '../pages/login/main.js';
 import { renderizarPerfil } from '../pages/perfil/main.js';
-import { dadosPerfil, handleEdit } from '../pages/perfil/editar/main.js';
+import { dadosPerfil } from '../pages/perfil/editar/main.js';
 import './style.css'
 import { supabase } from './supabaseClient.js'
 import { setStorage } from './lib/storage.js'
-/*
-import javascriptLogo from './assets/javascript.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
-import { setupCounter } from './counter.js'
-*/
+
 
 // função de logout
 function fazerLogout() {
@@ -116,7 +111,7 @@ function handleForm(form) {
     if (form.id === 'form-cadastro') {
         if (!isUsernameValid()) {
             document.getElementById('input-username').focus()
-            mostrarErro('Por favor, corrija o seu username antes de enviar o formulário de cadastro.')
+            mostrarAlerta('error', 'Por favor, corrija o seu username antes de enviar o formulário de cadastro.')
             return null
         } else {
             handleCadastro();
@@ -126,36 +121,46 @@ function handleForm(form) {
     }
 })};
 
-export function mostrarErro(msgErro){
-    // cria o container de alerta
+export function mostrarAlerta(codigo, msg){
 
+    const alertDiv = document.createElement('div');
+    if (codigo === 'error') {
+        alertDiv.className = "flex items-center justify-center gap-x-2 p-2 mb-2 text-red-800 border border-red-300 rounded-lg bg-red-50 animate-bounce-short";
+        alertDiv.role = "alert";
+
+        alertDiv.innerHTML = `
+        <span class="material-symbols-outlined !text-2xl text-red">
+            error
+        </span>
+        <div>
+            <span class="font-medium"> Erro: ${msg}</span>
+        </div>
+        `;
+    } else if (codigo === 'ok') {
+        alertDiv.className = "flex items-center justify-center gap-x-2 p-2 mb-2 text-green-800 border border-green-300 rounded-lg bg-green-50 animate-bounce-short";
+        alertDiv.role = "alert";
+
+        alertDiv.innerHTML = `
+        <span class="material-symbols-outlined !text-2xl text-green">
+            check
+        </span>
+        <div>
+            <span class="font-medium"> Ok: ${msg}</span>
+        </div>
+        `;
+    } else {
+        console.error('Código inválido para mostrarAlerta');
+        return null
+    }
     const container = document.createElement('div');
     container.id = 'alert-container';
-    // Estiliza para ficar fixo no topo ou em algum lugar padrão
+
     container.className = "fixed top-5 left-1/2 -translate-x-1/2 z-[100] w-full max-w-sm px-3 pointer-events-none"; 
     document.body.appendChild(container);
 
-
-
-    const alertDiv = document.createElement('div');
-    alertDiv.className = "flex items-center justify-center gap-x-2 p-2 mb-2 text-red-800 border border-red-300 rounded-lg bg-red-50 animate-bounce-short"; // Adicionei uma animação curta
-    alertDiv.role = "alert";
-
-    // HTML interno (Ícone + Mensagem)
-    alertDiv.innerHTML = `
-    <span class="material-symbols-outlined !text-2xl text-red">
-        error
-    </span>
-    <div>
-        <span class="font-medium"> Erro: ${msgErro}</span>
-    </div>
-    `;
-
-    // limpa alertas anteriores antes de mostrar o novo
     container.innerHTML = '';
     container.appendChild(alertDiv);
 
-    // remove o alerta após 3 segundos
     setTimeout(() => {
         alertDiv.remove();
     }, 3000);
@@ -173,43 +178,77 @@ async function getEmail() {
     if (data.email) {
         return data.email;
     } if (error) {
-        mostrarErro('Faça login para enviar seu feedback!');
+        mostrarAlerta('error', 'Faça login para enviar seu feedback!');
         window.location.href = '/pages/login/';
         return null;
     }
 }
 
 // função para lidar com o feedback dos usuários
-async function handleFeedback(email) {
-    const formFeedback = document.getElementById('feedback');
+function configurarEventosFeedback() {
     const camposFeedback = document.getElementById('hidden-feedback');
-    const btnFeedback = document.getElementById('btn-feedback');
-    const msgFeedback = document.getElementById('msg-feedback');
-    const submitFeedback = document.getElementById('submit-feedback');
+    const formFeedback = document.getElementById('feedback');
 
-    if (camposFeedback.style.display === 'none' || camposFeedback.style.display === '') {
-        camposFeedback.style.display = 'block';
-    } else {
-        camposFeedback.style.display = 'none';
-    } if (btnFeedback && msgFeedback && submitFeedback && formFeedback) {
-        formFeedback.addEventListener('submit', (e) => {
-            e.preventDefault();
-            if (msgFeedback.value.trim() === '' &&  (msgFeedback.value.length < 10 || msgFeedback.value.length > 500)) {
-                return;
-            } else {
-                const confirmar = confirm('Tem certeza que deseja enviar seu feedback?');
-                if (confirmar) {
-                    setStorage(email, msgFeedback.value);
-                    mostrarErro('Feedback enviado com sucesso! Agradecemos por compartilhar sua opinião conosco.');
-                    msgFeedback.value = '';
-                    camposFeedback.style.display = 'none';
-                }
-            } 
-        });
-    }
-};
+    if (!camposFeedback || !formFeedback) return;
+
+    camposFeedback.addEventListener('click', (e) => {
+        const clicouFechar = e.target.closest('[data-fechar="true"]');
+        const clicouForaDoCard = e.target === camposFeedback;
+
+        if (clicouFechar || clicouForaDoCard) {
+            formFeedback.reset();
+            formFeedback.removeAttribute('data-user-email');
+            camposFeedback.classList.add('hidden');
+        }
+    });
+
+    formFeedback.addEventListener('submit', (e) => {
+        e.preventDefault();
+
+        const email = formFeedback.getAttribute('data-user-email');
+        if (!email) return;
+
+        const tipoFeedback = formFeedback.querySelector('select')?.value;
+        const assuntoFeedback = formFeedback.querySelector('input[type="text"]')?.value || "Sem assunto";
+        const msgFeedback = document.getElementById('msg-feedback');
+        const mensagemLimpa = msgFeedback?.value.trim() || "";
+
+        if (mensagemLimpa.length < 10 || mensagemLimpa.length > 500 || tipoFeedback === "") {
+            mostrarAlerta('error', 'Selecione um tipo de feedback e digite entre 10 e 500 caracteres.');
+            return;
+        }
+
+        if (confirm('Tem certeza que deseja enviar seu feedback?')) {
+            const dadosFeedback = {
+                tipo: tipoFeedback,
+                assunto: assuntoFeedback,
+                mensagem: mensagemLimpa,
+                data: new Date().toISOString()
+            };
+
+            setStorage(email, dadosFeedback);
+            mostrarAlerta('ok', 'Feedback enviado com sucesso!');
+            
+            formFeedback.reset();
+            formFeedback.removeAttribute('data-user-email');
+            camposFeedback.classList.add('hidden');
+        }
+    });
+}
+
+function handleFeedback(email, btnFeedback, feedbackText, feedbackSpinner) {
+    const camposFeedback = document.getElementById('hidden-feedback');
+    const formFeedback = document.getElementById('feedback');
+
+    if (formFeedback) {
+        formFeedback.setAttribute('data-user-email', email);
+    } camposFeedback?.classList.remove('hidden');
+    btnFeedback.disabled = false;
+    feedbackText.classList.remove('hidden');
+    feedbackSpinner.classList.add('hidden');
+}
+
 function visibilidadeSenha() {
-    // verifica se existe algum dos formulários na página
     const formLogin = document.getElementById('form-login')
     const formCadastro = document.getElementById('form-cadastro')
     if (!formCadastro && !formLogin) return null;
@@ -231,7 +270,6 @@ function visibilidadeSenha() {
 }
 
 async function renderizarMural() {
-
     const container = document.getElementById('mural-posts');
     if (!container) return null;
 
@@ -243,8 +281,6 @@ async function renderizarMural() {
         console.error(error);
     }
     
-    
-
     const htmlGerado = posts.map(post => {
         const imagemPostHtml = post.imagem_url 
                 ? `<div class="mt-3 overflow-hidden rounded-lg border border-gray-100">
@@ -252,11 +288,10 @@ async function renderizarMural() {
                 </div>` 
                 : ``;
 
-        const temGithub = post.autor_github;
-        const avatarUrl = temGithub 
-        ? `<img src="https://avatars.githubusercontent.com/${post.autor_github}" alt="Foto de ${post.autor_nome}" class="w-10 h-10 object-cover rounded-full">` 
+        const avatarUrl = post.autor_avatar
+        ? `<img src="${post.autor_avatar}?t=${new Date().getTime()}" alt="Foto de ${post.autor_nome}" class="w-10 h-10 object-cover rounded-full">` 
         : `<svg class="w-10 h-10">
-            <use href="/src/assets/icons.svg#profile"></use>
+            <use href="/icons.svg#profile"></use>
             </svg>`;
         const dataFormatada = new Date(post.post_data).toLocaleDateString('pt-BR', {
             day: '2-digit',
@@ -321,6 +356,7 @@ document.addEventListener('DOMContentLoaded', () => {
     iniciarValidacao();
     dadosPerfil();
     renderizarMural();
+    configurarEventosFeedback();
 });
 
 btnCadastro?.addEventListener('click', () => {
@@ -331,10 +367,15 @@ btnLogin?.addEventListener('click', () => {
     handleForm(document.querySelector('#form-login'));
 });
 
-
 document.getElementById('btn-feedback')?.addEventListener('click', async () => {
+    const btnFeedback = document.getElementById('btn-feedback');
+    const feedbackText = document.getElementById('feedback-text');
+    const feedbackSpinner = document.getElementById('feedback-spinner');
+    btnFeedback.disabled = true;
+    feedbackText.classList.add('hidden');
+    feedbackSpinner.classList.remove('hidden');
     const email = await getEmail();
     if (email !== null) {
-        handleFeedback(email);
+        handleFeedback(email, btnFeedback, feedbackText, feedbackSpinner);
     }
 });

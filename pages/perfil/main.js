@@ -1,4 +1,4 @@
-import { mostrarErro } from '../../src/main.js';
+import { mostrarAlerta } from '../../src/main.js';
 import { supabase } from '../../src/supabaseClient.js'
 
 export async function renderizarPerfil() {
@@ -11,18 +11,29 @@ export async function renderizarPerfil() {
     if (!user) return null;
 
     const { data, error } = await supabase
-        .from('perfis')
-        .select(`nome, github_user, formacao(curso, termino)`)
-        .eq('id', user.id)
-        .single();
+    .from('perfis')
+    .select('nome, github_user, avatar_url, formacao(curso, termino)')
+    .eq('id', user.id)
+    .single();
 
     if (error || !data) return null;
-    const temGithub = data && data.github_user;
-    const avatarUrl = temGithub 
-    ? `<img src="https://avatars.githubusercontent.com/${data.github_user}" alt="Foto de Perfil" class="w-full h-full object-cover rounded-full">` 
+
+    let urlPublica = null;
+
+    if (data.avatar_url) {
+        const { data: storageData } = supabase
+            .storage
+            .from('avatares')
+            .getPublicUrl(data.avatar_url);
+            
+        urlPublica = storageData.publicUrl;
+    }
+    const avatarUrl = urlPublica
+    ? `<img src="${urlPublica}?t=${new Date().getTime()}" alt="Foto de Perfil" class="w-full h-full object-cover rounded-full">`
     : `<svg class="w-34 h-34">
-        <use href="/src/assets/icons.svg#profile"></use>
+        <use href="/icons.svg#profile"></use>
         </svg>`;
+
     
     profileContainer.innerHTML = `
         <!-- container foto -->
@@ -68,7 +79,7 @@ export function renderizarBotãoGithub() {
             <p class="text-sm text-slate-500 mb-4">Conecte seu GitHub para exibir suas contribuições recentes.</p>
             <button id="btn-github" class="inline-flex items-center gap-2 rounded-full bg-slate-900 px-6 py-2.5 text-sm font-semibold text-white transition hover:bg-slate-700 cursor-pointer">
                 <svg class="w-6 h-6 text-black" fill="white">
-                    <use href="/src/assets/icons.svg#github"></use>
+                    <use href="/icons.svg#github"></use>
                 </svg>
                 Conectar GitHub
             </button>
@@ -94,7 +105,7 @@ export async function conectarGithub() {
 
     } catch (error) {
         console.error('Erro ao iniciar autenticação GitHub:', error.message);
-        mostrarErro('Não foi possível conectar ao GitHub. Tente novamente.');
+        mostrarAlerta('error', 'Não foi possível conectar ao GitHub. Tente novamente.');
     }
 }
 export async function salvarUsuarioLogado() {
@@ -102,39 +113,54 @@ export async function salvarUsuarioLogado() {
 
     if (session) {
         const user = session.user;
-    
         const githubUsername = user.user_metadata.user_name || user.user_metadata.preferred_username;
-
-        // salvando o usuário na tabela perfis do supabase caso seja primeiro login github
-        const { error } = await supabase.from('perfis')
+        if (session.provider_token) {
+            const { error: error_token } = await supabase
+            .from('dados_privados')
             .update({ 
-                github_user: githubUsername,
-                atualizado_em: new Date(),
-            }).eq('id', user.id)
+                github_token: session.provider_token 
+            }).eq('id', user.id);
 
-        if (error) console.error('Erro ao salvar perfil:', error.message);
-        return githubUsername;
+            if (error_token) {
+                console.error('Erro ao salvar o token na tabela dados_privados:', error_token.message);
+                }
+        }
+
+        if (githubUsername) {
+            const { error_username } = await supabase.from('perfis')
+                .update({ 
+                    github_user: githubUsername,
+                    atualizado_em: new Date(),
+                }).eq('id', user.id);
+            if (error_username) console.error('Erro ao salvar perfil:', error_username.message);
+            return githubUsername;
+        }
     }
+    return null
 }
 export async function renderizarGithub(github_user) {
 
     // verifica se existe o container para o github e se o usuário já está autenticado com o GitHub
     const githubContainer = document.getElementById('github-container');
+    const { data, error } = await supabase
+    .from('dados_privados')
+    .select('github_token')
+    .single();
+
     if (!githubContainer) return null;
-    if (!github_user) {
+    if (!github_user || !data.github_token) {
         github_user = await salvarUsuarioLogado();
-        if (!github_user) return renderizarBotãoGithub();
+        if (!github_user || !data.github_token) return renderizarBotãoGithub();
     };
 
-    const { data: { session } } = await supabase.auth.getSession()
-  
-    if (!session || !session.provider_token) {
+
+    if (!data || error || !data.github_token) {
         console.log("Token do GitHub não encontrado")
         return renderizarBotãoGithub();
     }
-
-    const token = session.provider_token;
+    const token = data.github_token;
     let userData;
+    
     try {
         const userRes = await fetch('https://api.github.com/user', {
             headers: {
@@ -146,6 +172,11 @@ export async function renderizarGithub(github_user) {
         // caso o usuário dê revoke no github
         if (userRes.status === 401) {
             console.error("Token inválido ou revogado");
+            await supabase
+            .from('dados_privados')
+            .update({
+                github_token: null
+            }).eq('id', (await supabase.auth.getUser()).data.user.id);
             return renderizarBotãoGithub();
         }
         userData = await userRes.json();
@@ -196,7 +227,7 @@ githubContainer.innerHTML = `
         <div class="flex items-center gap-4">
             <div class="bg-black p-1 rounded-lg">
                 <svg class="w-8 h-8 transition-transform duration-300 group-hover:scale-110" fill="white">
-                    <use href="/src/assets/icons.svg#github"></use>
+                    <use href="/icons.svg#github"></use>
                 </svg>
             </div>
             <div>
@@ -219,7 +250,7 @@ githubContainer.innerHTML = `
                             fill="none" 
                             stroke="currentColor" 
                             stroke-width="1.5">
-                            <use href="/src/assets/icons.svg#star"></use>
+                            <use href="/icons.svg#star"></use>
                             </svg>
                             <span class="text-[12px] font-bold transition-all duration-300 group-hover/item:scale-110">${repo.stargazers_count}</span>
                         </div>
