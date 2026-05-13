@@ -73,7 +73,7 @@ export async function dadosPerfil() {
                         <input id="cpf" type="text" value="${data.cpf_aberto}" placeholder="Ex.: 123.456.789-00" pattern="[0-9]{3}.[0-9]{3}.[0-9]{3}-[0-9]{2}" class="px-4 py-2.5 w-full border border-gray-300 rounded-3xl text-sm focus:ring-2 focus:ring-[#087487] focus:border-transparent outline-none transition" required>
                     </div>
                     <div>
-                        <label class="block text-sm font-bold m-2">Telefone</label>
+                        <label class="block text-sm font-bold m-2">Telefone (opcional)</label>
                         <input id="telefone" value="${data.telefone || ''}" type="tel" placeholder="Ex.: 83987654321" pattern="[0-9]{2}9[0-9]{8}" class="px-4 py-2.5 w-full border border-gray-300 rounded-3xl text-sm focus:ring-2 focus:ring-[#087487] focus:border-transparent outline-none transition">
                     </div>
                 </div>
@@ -120,21 +120,21 @@ export async function dadosPerfil() {
                         </span>
                     </div>
                 </div>
-                <div class="bg-slate-100 max-w-150 border mx-auto mt-10 lg:mt-4 border-gray-300 rounded-xl flex justify-center items-center gap-4 p-4 shadow col-span-2">
-                       <div class="w-16 h-16 bg-[#008b8b] rounded-full flex items-center justify-center text-white shrink-0">
-                           <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 20 20"><path d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"></path></svg>
+                <div class="bg-slate-100 max-w-150 border mx-auto mt-10 lg:mt-4 border-gray-300 rounded-2xl flex justify-center items-center gap-4 p-4 shadow col-span-2">
+                       <div class="w-16 h-16 bg-[#0b8aa0] rounded-full flex items-center justify-center text-white shrink-0">
+                           <svg class="w-8 mr-0.6 h-8" fill="currentColor" viewBox="0 0 20 20"><path d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"></path></svg>
                        </div>
                        <div>
                            <p class="text-md font-bold">Foto de Perfil</p>
                            <p class="text-xs text-gray-400 mb-2">Formatos aceitos: JPG, PNG. Tamanho máximo: 2MB.</p>
-                           <button type="button" class="text-white ml-auto cursor-pointer bg-[#008b8b] rounded-3xl px-4 py-1 text-xs font-bold flex items-center gap-2 hover:bg-[#087487] transition duration-300">
+                           <button type="button" class="text-white ml-auto cursor-pointer bg-[#0b8aa0] rounded-3xl px-4 py-1 text-xs font-bold flex items-center gap-2 hover:bg-[#087487] transition duration-300">
                            <span class="material-symbols-outlined !text-lg text-white">upload</span>
                                Alterar foto
                            </button>
                        </div>
                 </div>
                 <div class="md:col-span-2 flex justify-end gap-4 mt-12 lg:mt-8">
-                    <button id="btn-cancel" type="button" class="px-8 py-2 border border-gray-300 rounded-3xl text-sm font-bold text-[#0b8aa0] hover:bg-gray-100 cursor-pointer shadow-lg transition duration-300 active:scale-95 active:shadow-2xl">
+                    <button id="btn-cancel" type="button" class="px-8 py-2 border border-gray-300 rounded-3xl text-sm font-bold text-[b8aa0] hover:bg-gray-100 cursor-pointer shadow-lg transition duration-300 active:scale-95 active:shadow-2xl">
                     <span id="cancel-text">Cancelar</span>
                         <svg id="cancel-spinner" class="hidden animate-spin h-6 w-6 text-[#e0e0e0]" fill="none">
                             <use href="/icons.svg#carregando"></use>
