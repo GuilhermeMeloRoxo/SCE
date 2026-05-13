@@ -3,7 +3,6 @@ import { mostrarAlerta } from '../../src/main.js'
 
 export const btnCadastro = document.getElementById('btn-cadastro');
 
-// icones para o campo dinâmico username
 const SPINNER_HTML = `
     <svg class="animate-spin h-[18px] w-[18px] text-[#a0a0a0]" fill="none">
         <use href="/icons.svg#carregando"></use>
@@ -21,19 +20,16 @@ export function iniciarValidacao() {
 
   if (!usernameInput || !iconsContainer) return
 
-  // injetar o ícone passado como parâmetro
   function exibirIcone(htmlConteudo) {
     iconsContainer.innerHTML = htmlConteudo
     iconsContainer.classList.remove('hidden')
   }
 
-  // esconder o container de ícones
   function ocultarContainer() {
     iconsContainer.innerHTML = ''
     iconsContainer.classList.add('hidden')
   }
 
-  // verificar se tem o número de caracteres mínimos
   async function verificarUsername(username) {
     if (!username || username.length < 3) {
       exibirIcone(ERROR_HTML)
@@ -47,7 +43,7 @@ export function iniciarValidacao() {
       const { error, count } = await supabase
         .from('perfis')
         .select('username', { count: 'exact', head: true })
-        .ilike('username', username) //compara ambos usernames com ambos em minúsculas
+        .ilike('username', username)
 
       if (error) throw error
       if (count > 0) {
@@ -84,7 +80,6 @@ export function iniciarValidacao() {
   })
 }
 
-// retoran true ou false para saber se o formulário pode ser enviado ou nao
 export function isUsernameValid() {
   return usernameValido
 }
@@ -95,7 +90,6 @@ export async function handleCadastro() {
     const btnText = document.getElementById('btn-text')
     const btnSpinner = document.getElementById('btn-spinner')
 
-    // 1. Bloqueia o envio imediatamente se o validador dinâmico estiver falso
     if (!isUsernameValid()) {
         const usernameInput = document.getElementById('input-username')
         if (usernameInput) usernameInput.focus()
@@ -103,7 +97,6 @@ export async function handleCadastro() {
         return
     }
 
-    // Altera o estado visual do botão para carregamento
     if (btnCadastro) {
         btnCadastro.disabled = true
         btnCadastro.classList.add('opacity-80')
@@ -144,15 +137,14 @@ export async function handleCadastro() {
     }
     
     try {
-      // 1. Cadastra a conta de autenticação enviando dados extras nos metadados
       const { data: authData, error: authError } = await supabase.auth.signUp({
-        email, // Enviado para o Trigger para ler e salvar em 'dados_privados'
+        email,
         password: senha,
         options: {
           data: {
-            username: username, // Enviado para a Trigger ler e salvar em 'perfis'
-            nome: nome,         // Enviado para a Trigger ler e salvar em 'perfis'
-            cpf: cpf            // Enviado para a Trigger ler e salvar em 'dados_privados'
+            username: username, 
+            nome: nome,         
+            cpf: cpf            
           }
         }
       })
@@ -167,9 +159,8 @@ export async function handleCadastro() {
         return
       }
     
-      // 2. Se chegou aqui, as Triggers do banco já criaram o perfil e os dados privados de forma segura!
       if (authData.user) {
-        window.location.href = "/pages/login/"
+        mostrarAlerta('ok', 'Quase lá, agora confirme seu email para prosseguir para a aplicação!')
       }
     
     } catch (error) {
