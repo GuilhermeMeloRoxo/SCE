@@ -246,7 +246,7 @@ export async function dadosPerfil() {
 
         canvas.toBlob(async (blob) => {
             if (!blob){
-                return mostrarAlertar('error', "Erro ao processar o corte da imagem.")
+                return mostrarAlerta('error', "Erro ao processar o corte da imagem.")
             }
             const webpFile = new File([blob], "avatar.webp", { type: "image/webp" })
             cropperModal.classList.add('hidden')
@@ -283,8 +283,10 @@ export async function dadosPerfil() {
         }, 'image/webp', 0.80)
     });
     document.getElementById('opcoes').value = data.curso || "";
+    const formEdit = document.getElementById('form-edit');
     const btnEdit = document.getElementById('btn-edit');
-    btnEdit?.addEventListener('click', () => {
+    formEdit?.addEventListener('submit', (event) => {
+        event.preventDefault();
         handleEdit(btnEdit);
     });
     function voltarCancelar(btnCancel) {
@@ -353,11 +355,15 @@ export async function handleEdit(btnEdit) {
         if (erro) {
             console.error('Erro ao buscar dados:', error)
         }
-        if (data.email) {
+        if (email !== data.email) {
             const { error: authError } = await supabase.auth.updateUser({
                 email: email,
             });
-            if (authError) throw authError;
+            if (authError) {
+                console.error('Erro ao atualizar email:', authError);
+                throw new Error(`Não foi possível atualizar o email: ${authError.message}`);
+            }
+            alert('Te enviamos um email confirmando a mudança de endereço de email!')
         }
         const { error } = await supabase.rpc('edicao_perfil_usuario', {
             p_user_id: user.id,
@@ -376,5 +382,7 @@ export async function handleEdit(btnEdit) {
             console.error("Erro ao atualizar:", erro);
             mostrarAlerta('error', "Falha ao salvar dados.");
             voltarBotao();
+            return
         }
+    window.location.href = "/pages/perfil/";
 }
