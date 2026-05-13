@@ -46,63 +46,63 @@ garantindo conformidade total com as exigências de avaliação do MEC.
    chaves de criptografia, armazenamento e as configurações de autenticação diretamente no
    painel web do [Supabase](https://supabase.com). Siga os passos abaixo:
 
-                     1. Criar o Projeto e Estrutura Inicial
-                     - Crie uma conta gratuita em [supabase.com](https://supabase.com) e inicie um novo projeto.
-                     - No painel do seu projeto, acesse o SQL Editor no menu lateral esquerdo.
-                     - Clique em New query para abrir um editor em branco.
-                     - Abra o arquivo `schema.sql` disponível na raiz deste repositório, copie todo o seu
-                     conteúdo e cole no editor.
-                     - Clique no botão Run (Executar) no canto superior direito do editor.
-                     
-                     2. Configurar o Cofre de Chaves (Vault)
-                     A aplicação utiliza criptografia avançada para proteger os CPFs dos usuários. Você precisa
-                     registrar a chave secreta no cofre do Supabase:
-                     - No menu lateral esquerdo, navegue até Project Settings > Vault.
-                     - Na aba Secrets, clique em Add new secret e adicione o seguinte registro:
-                     * Name: `chave_criptografia_cpf`
-                     * Secret: (Digite uma senha forte ou texto longo de sua preferência)
-                     
-                     3. Criar os Buckets de Armazenamento (Storage)
-                     O projeto gerencia imagens publicamente. Você deve criar as pastas de armazenamento manualmente:
-                     - No menu lateral esquerdo, clique em Storage.
-                     - Clique em New Bucket e configure o primeiro diretório:
-                     * Name: `avatares`
-                     * Public bucket: Ative esta opção (Deixe marcado como público).
-                     - Clique em New Bucket novamente e crie o segundo diretório:
-                     * Name: `posts_imagens`
-                     * Public bucket: Ative esta opção (Deixe marcado como público).
-                     - Crie políticas de inserção/atualização para usuários autenticados e política de leitura para todos.
-                     
-                     4. Configurar Provedores de Autenticação (Auth)
-                     
-                     Provedor 1: E-mail (Padrão)
-                     - Vá em Authentication > Providers > Email.
-                     - Para facilitar os testes em ambiente local de desenvolvimento, desative a opção Confirm email.
-                     - Clique em Save.
-                     
-                     Provedor 2: GitHub (OAuth)
-                     Como as chaves de acesso são vinculadas ao seu perfil pessoal do GitHub, você precisa
-                     registrar uma aplicação própria:
-                     - No seu GitHub pessoal, acesse: Settings > Developer Settings > OAuth Apps > New OAuth App.
-                     - Preencha os campos obrigatórios:
-                     * Application Name: Nome do seu projeto local.
-                     * Homepage URL: `http://localhost:5173` (ou a url correspondente do seu app).
-                     * Authorization callback URL: Para obter este endereço, volte ao painel do Supabase,
-                     acesse Authentication > Providers > GitHub e copie o endereço listado no
-                     campo Redirect URL. Cole este valor no formulário do GitHub.
-                     - Clique em Register application.
-                     - Na tela seguinte, clique no botão Generate a new client secret.
-                     - Copie o Client ID e o Client Secret gerados.
-                     - Retorne ao painel do Supabase, ative a opção Enable GitHub provider, cole as duas
-                     credenciais nos campos correspondentes e clique em Save.
-                     
-                     5. Configuração das Variáveis de Ambiente
-                     Por fim, vá em Project Settings > API no painel do Supabase, copie as credenciais
-                     de acesso públicas e configure o seu arquivo `.env` local da aplicação:
-                     
-                     .env
-                     NEXT_PUBLIC_SUPABASE_URL=seu_project_url_aqui
-                     NEXT_PUBLIC_SUPABASE_ANON_KEY=sua_anon_public_key_aqui
+               1. Criar o Projeto e Estrutura Inicial
+               - Crie uma conta gratuita em [supabase.com](https://supabase.com) e inicie um novo projeto.
+               - No painel do seu projeto, acesse o SQL Editor no menu lateral esquerdo.
+               - Clique em New query para abrir um editor em branco.
+               - Abra o arquivo schema.sql disponível na raiz deste repositório, copie todo o seu
+               conteúdo e cole no editor.
+               - Clique no botão Run (Executar) no canto superior direito do editor.
+               
+               2. Configurar o Cofre de Chaves (Vault)
+               A aplicação utiliza criptografia avançada para proteger os CPFs dos usuários. Você precisa
+               registrar a chave secreta no cofre do Supabase:
+               - No menu lateral esquerdo, navegue até Project Settings > Vault.
+               - Na aba Secrets, clique em Add new secret e adicione o seguinte registro:
+                  * Name: chave_criptografia_cpf
+                  * Secret: (Digite uma senha forte ou texto longo de sua preferência)
+               
+               3. Criar os Buckets de Armazenamento (Storage)
+               O projeto gerencia imagens publicamente. Você deve criar as pastas de armazenamento manualmente:
+               - No menu lateral esquerdo, clique em Storage.
+               - Clique em New Bucket e configure o primeiro diretório:
+                  * Name: avatares
+                  * Public bucket: Ative esta opção (Deixe marcado como público).
+               - Clique em New Bucket novamente e crie o segundo diretório:
+                  * Name: posts_imagens
+                  * Public bucket: Ative esta opção (Deixe marcado como público).
+               - Crie políticas de inserção/atualização para usuários autenticados e política de leitura para todos.
+               
+               4. Configurar Provedores de Autenticação (Auth)
+               
+               Provedor 1: E-mail (Padrão)
+               - Vá em Authentication > Providers > Email.
+               - Para facilitar os testes em ambiente local de desenvolvimento, desative a opção Confirm email.
+               - Clique em Save.
+               
+               Provedor 2: GitHub (OAuth)
+               Como as chaves de acesso são vinculadas ao seu perfil pessoal do GitHub, você precisa
+               registrar uma aplicação própria:
+               - No seu GitHub pessoal, acesse: Settings > Developer Settings > OAuth Apps > New OAuth App.
+               - Preencha os campos obrigatórios:
+                  * Application Name: Nome do seu projeto local.
+                  * Homepage URL:`http://localhost:5173 (ou a url correspondente do seu app).
+                  * Authorization callback URL: Para obter este endereço, volte ao painel do Supabase,
+                  acesse Authentication > Providers > GitHub e copie o endereço listado no
+                  campo Redirect URL. Cole este valor no formulário do GitHub.
+               - Clique em Register application.
+               - Na tela seguinte, clique no botão Generate a new client secret.
+               - Copie o Client ID e o Client Secret gerados.
+               - Retorne ao painel do Supabase, ative a opção Enable GitHub provider, cole as duas
+               credenciais nos campos correspondentes e clique em Save.
+               
+               5. Configuração das Variáveis de Ambiente
+               Por fim, vá em Project Settings > API no painel do Supabase, copie as credenciais
+               de acesso públicas e configure o seu arquivo .env local da aplicação:
+               
+               .env
+               NEXT_PUBLIC_SUPABASE_URL=seu_project_url_aqui
+               NEXT_PUBLIC_SUPABASE_ANON_KEY=sua_anon_public_key_aqui
          
 4. Dê start na aplicação:
    - npm run dev
