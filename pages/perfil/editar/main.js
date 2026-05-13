@@ -154,15 +154,15 @@ export async function dadosPerfil() {
     document.getElementById('opcoes').value = data.curso || "";
     const btnEdit = document.getElementById('btn-edit');
     btnEdit?.addEventListener('click', () => {
-    handleEdit(btnEdit);
+        handleEdit(btnEdit);
     });
     function voltarCancelar(btnCancel) {
-    if (btnCancel) {
-        btnCancel.disabled = false
-        btnCancel.classList.remove('opacity-80')
-    }
-    document.getElementById('cancel-text')?.classList.remove('hidden');
-    document.getElementById('cancel-spinner')?.classList.add('hidden');
+        if (btnCancel) {
+            btnCancel.disabled = false
+            btnCancel.classList.remove('opacity-80')
+        }
+        document.getElementById('cancel-text')?.classList.remove('hidden');
+        document.getElementById('cancel-spinner')?.classList.add('hidden');
     }
     const btnCancel = document.getElementById('btn-cancel');
     btnCancel?.addEventListener('click', () => {
