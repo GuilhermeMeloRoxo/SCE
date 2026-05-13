@@ -32,30 +32,28 @@
     <!-- botão de feedback -->
     <form id="feedback" method="post" class="relative">
         
-        <!-- Botão que abre o feedback (conforme o design lateral) -->
         <button class="flex items-center gap-2 px-6 py-3 bg-[#0b8aa0] text-white rounded-full hover:bg-[#087487] cursor-pointer transition-all shadow-lg" id="btn-feedback" type="button">
-            <span class="material-symbols-outlined text-xl">chat</span>
-            <span class="font-bold">Enviar Feedback</span>
+            <span id="chat" class="material-symbols-outlined text-xl">chat</span>
+            <span id="feedback-text" class="font-bold">Enviar Feedback</span>
+            <svg id="feedback-spinner" class="hidden animate-spin h-6 w-6 text-[#e0e0e0]" fill="none">
+                <use href="/icons.svg#carregando"></use>
+            </svg>
         </button>
 
-        <!-- Modal (O "hidden-feedback" agora como um Card flutuante) -->
-        <!-- Remova 'hidden' para visualizar enquanto estiliza -->
         <div id="hidden-feedback" class="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
             
             <div class="bg-white w-full max-w-lg rounded-2xl shadow-2xl overflow-hidden relative p-8">
                 
-                <!-- Cabeçalho do Modal -->
                 <div class="flex items-center justify-between m-2">
                     <div class="flex items-center gap-3 text-[#0b8aa0]">
                         <span class="material-symbols-outlined !text-2xl">chat</span>
-                        <h2 class="text-2xl font-bold text-[#0b8aa0]">Enviar Feedback</h2>
+                        <span class="text-2xl font-bold text-[#0b8aa0]">Enviar Feedback</span>
                     </div>
                     <button type="button" data-fechar="true" class="material-symbols-outlined text-gray-800 cursor-pointer !text-3xl">close</button>
                 </div>
                 
                 <p class="text-gray-500 text-sm mt-4 mb-6 text-center italic">Sua opinião é muito importante para nós!</p>
 
-                <!-- Campos do Formulário -->
                 <div class="space-y-4">
                     <div>
                         <label class="block text-sm font-bold m-2">Tipo de Feedback *</label>
@@ -81,27 +79,27 @@
 
                     <div>
                         <label class="block text-sm font-bold m-2">Mensagem *</label>
-                        <textarea required class="w-full px-4 py-2.5 bg-gray-50 border border-gray-300 rounded-3xl h-34 resize-none text-sm focus:ring-2 focus:ring-[#087487] focus:border-transparent outline-none transition" 
-                            name="mensagem" minlength="10" maxlength="500" 
+                        <textarea required id="msg-feedback" class="w-full px-4 py-2.5 bg-gray-50 border border-gray-300 rounded-3xl h-34 resize-none text-sm focus:ring-2 focus:ring-[#087487] focus:border-transparent outline-none transition" 
+                            name="mensagem" minlength="10" maxlength="500"
                             placeholder="Conte-nos o que você pensa, sugestões, problemas ou elogios."></textarea>
-                    </div>
+                        </div>
                 </div>
 
-                <!-- Botões de Ação -->
                 <div class="flex items-center justify-end gap-4 mt-8">
-                    <button type="button" data-fechar="true" class="px-6 py-2 border border-gray-300 rounded-3xl text-sm font-bold text-[#0b8aa0] hover:bg-gray-100 cursor-pointer shadow-lg transition duration-300 active:scale-95 active:shadow-2xl">Cancelar
+                    <button type="button" id="cancel-feedback" data-fechar="true" class="px-6 py-2 border border-gray-300 rounded-3xl text-sm font-bold text-[#0b8aa0] hover:bg-gray-100 cursor-pointer shadow-lg transition duration-300 active:scale-95 active:shadow-2xl">
                         <svg id="cancel-feedback-spinner" class="hidden animate-spin h-6 w-6 text-[#e0e0e0]" fill="none">
                             <use href="/icons.svg#carregando"></use>
                         </svg>
+                        <span id="cancel-feedback-text">Cancelar</span>
                     </button>
-                    <button type="submit" class="px-8 py-2 bg-[#0b8aa0] hover:bg-[#087487] text-white rounded-3xl text-sm font-bold flex items-center gap-2 cursor-pointer shadow-lg transition duration-300 active:scale-95 active:shadow-2xl">Enviar
+                    <button type="submit" id="submit-feedback" class="px-8 py-2 bg-[#0b8aa0] hover:bg-[#087487] text-white rounded-3xl text-sm font-bold flex items-center gap-2 cursor-pointer shadow-lg transition duration-300 active:scale-95 active:shadow-2xl">
                         <svg id="submit-feedback-spinner" class="hidden animate-spin h-6 w-6 text-[#e0e0e0]" fill="none">
                             <use href="/icons.svg#carregando"></use>
                         </svg>
+                        <span id="submit-feedback-text">Enviar</span>
                     </button>
                 </div>
 
-                <!-- Rodapé do Modal -->
                 <div class="mt-6 flex items-center justify-center gap-2 text-[12px] text-gray-400 font-bold">
                     <span class="material-symbols-outlined !text-sm">lock</span>
                     Suas informações são sigilosas e utilizadas apenas para melhorias.
@@ -110,7 +108,6 @@
         </div>
     </form>
 
-    <!-- autoexplicativo-->
     <footer>
         <div id="footer">
 

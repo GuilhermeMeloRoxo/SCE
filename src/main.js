@@ -147,10 +147,10 @@ export function mostrarAlerta(codigo, msg){
 
         alertDiv.innerHTML = `
         <span class="material-symbols-outlined !text-2xl text-green">
-            ok
+            check
         </span>
         <div>
-            <span class="font-medium"> Erro: ${msg}</span>
+            <span class="font-medium"> Ok: ${msg}</span>
         </div>
         `;
     } else {
@@ -196,23 +196,20 @@ function configurarEventosFeedback() {
 
     if (!camposFeedback || !formFeedback) return;
 
-    // Gerencia o fechamento do modal
     camposFeedback.addEventListener('click', (e) => {
         const clicouFechar = e.target.closest('[data-fechar="true"]');
         const clicouForaDoCard = e.target === camposFeedback;
 
         if (clicouFechar || clicouForaDoCard) {
             formFeedback.reset();
-            formFeedback.removeAttribute('data-user-email'); // Limpa o dado do DOM
+            formFeedback.removeAttribute('data-user-email');
             camposFeedback.classList.add('hidden');
         }
     });
 
-    // Gerencia o envio do formulário
     formFeedback.addEventListener('submit', (e) => {
         e.preventDefault();
 
-        // Recupera o e-mail armazenado no próprio elemento do formulário
         const email = formFeedback.getAttribute('data-user-email');
         if (!email) return;
 
@@ -221,7 +218,7 @@ function configurarEventosFeedback() {
         const msgFeedback = document.getElementById('msg-feedback');
         const mensagemLimpa = msgFeedback?.value.trim() || "";
 
-        if (mensagemLimpa.length < 10 || mensagemLimpa.length > 500 || tipoFeedback === "Selecione uma opção") {
+        if (mensagemLimpa.length < 10 || mensagemLimpa.length > 500 || tipoFeedback === "") {
             mostrarAlerta('error', 'Selecione um tipo de feedback e digite entre 10 e 500 caracteres.');
             return;
         }
@@ -234,7 +231,6 @@ function configurarEventosFeedback() {
                 data: new Date().toISOString()
             };
 
-            // Envia o e-mail recuperado do DOM e os dados estruturados
             setStorage(email, dadosFeedback);
             mostrarAlerta('ok', 'Feedback enviado com sucesso!');
             
@@ -245,21 +241,19 @@ function configurarEventosFeedback() {
     });
 }
 
-// FUNÇÃO 2: Seu fluxo original intacto, chamada no clique do botão principal
-function handleFeedback(email) {
+function handleFeedback(email, btnFeedback, feedbackText, feedbackSpinner) {
     const camposFeedback = document.getElementById('hidden-feedback');
     const formFeedback = document.getElementById('feedback');
 
     if (formFeedback) {
-        // Injeta o e-mail de forma encapsulada no próprio elemento HTML
         formFeedback.setAttribute('data-user-email', email);
-    }
-
-    // Abre o modal removendo a classe do Tailwind
-    camposFeedback?.classList.remove('hidden');
+    } camposFeedback?.classList.remove('hidden');
+    btnFeedback.disabled = false;
+    feedbackText.classList.remove('hidden');
+    feedbackSpinner.classList.add('hidden');
 }
+
 function visibilidadeSenha() {
-    // verifica se existe algum dos formulários na página
     const formLogin = document.getElementById('form-login')
     const formCadastro = document.getElementById('form-cadastro')
     if (!formCadastro && !formLogin) return null;
@@ -281,7 +275,6 @@ function visibilidadeSenha() {
 }
 
 async function renderizarMural() {
-
     const container = document.getElementById('mural-posts');
     if (!container) return null;
 
@@ -293,8 +286,6 @@ async function renderizarMural() {
         console.error(error);
     }
     
-    
-
     const htmlGerado = posts.map(post => {
         const imagemPostHtml = post.imagem_url 
                 ? `<div class="mt-3 overflow-hidden rounded-lg border border-gray-100">
@@ -383,8 +374,14 @@ btnLogin?.addEventListener('click', () => {
 });
 
 document.getElementById('btn-feedback')?.addEventListener('click', async () => {
+    const btnFeedback = document.getElementById('btn-feedback');
+    const feedbackText = document.getElementById('feedback-text');
+    const feedbackSpinner = document.getElementById('feedback-spinner');
+    btnFeedback.disabled = true;
+    feedbackText.classList.add('hidden');
+    feedbackSpinner.classList.remove('hidden');
     const email = await getEmail();
     if (email !== null) {
-        handleFeedback(email);
+        handleFeedback(email, btnFeedback, feedbackText, feedbackSpinner);
     }
 });
