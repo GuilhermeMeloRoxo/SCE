@@ -35,8 +35,11 @@ export async function handleLogin() {
         if (error.message.includes("Invalid login credentials")) {
             mostrarAlerta('error', "Credenciais inválidas");
             voltarBotao();
+        }else if (error.message.includes("Email not confirmed")){
+            mostrarAlerta('error', "Confirme seu email antes de logar no site")
+            voltarBotao();
         } else {
-            mostrarAlerta('error', "Erro ao entrar: " + error.message);
+            mostrarAlerta('error', error.message);
             voltarBotao();
         } return;
 
