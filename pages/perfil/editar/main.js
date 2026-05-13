@@ -1,5 +1,7 @@
 import { supabase } from '../../../src/supabaseClient.js'
 import { mostrarAlerta } from '../../../src/main.js'
+import 'cropperjs/dist/cropper.css'
+import Cropper from 'cropperjs'
 
 export async function dadosPerfil() {
     const editProfile = document.getElementById('edit-profile');
@@ -12,12 +14,22 @@ export async function dadosPerfil() {
     if (error) {
         console.error('Erro ao buscar dados:', error)
     }
-    const temGithub = data && data.github_user;
-    const avatarUrl = temGithub 
-    ? `<img src="https://avatars.githubusercontent.com/${data.github_user}" alt="Foto de Perfil" class="w-full h-full object-cover rounded-full">` 
+    let urlPublica = null;
+
+    if (data.avatar_url) {
+        const { data: storageData } = supabase
+            .storage
+            .from('avatares')
+            .getPublicUrl(data.avatar_url);
+            
+        urlPublica = storageData.publicUrl;
+    }
+    const avatarUrl = urlPublica
+    ? `<img src="${urlPublica}?t=${new Date().getTime()}" alt="Foto de Perfil" class="w-full h-full object-cover rounded-full">`
     : `<svg class="w-34 h-34">
         <use href="/icons.svg#profile"></use>
         </svg>`;
+
     editProfile.innerHTML = `
         <aside class="w-full md:w-1/3 bg-slate-50 rounded-xl shadow-md border border-gray-100 p-8 flex flex-col items-center text-center">
             <div class="relative mb-6 mt-4">
@@ -124,15 +136,18 @@ export async function dadosPerfil() {
                        <div class="w-16 h-16 bg-[#0b8aa0] rounded-full flex items-center justify-center text-white shrink-0">
                            <svg class="w-8 mr-0.6 h-8" fill="currentColor" viewBox="0 0 20 20"><path d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"></path></svg>
                        </div>
-                       <div>
-                           <p class="text-md font-bold">Foto de Perfil</p>
-                           <p class="text-xs text-gray-400 mb-2">Formatos aceitos: JPG, PNG. Tamanho máximo: 2MB.</p>
-                           <button type="button" class="text-white ml-auto cursor-pointer bg-[#0b8aa0] rounded-3xl px-4 py-1 text-xs font-bold flex items-center gap-2 hover:bg-[#087487] transition duration-300">
-                           <span class="material-symbols-outlined !text-lg text-white">upload</span>
-                               Alterar foto
-                           </button>
-                       </div>
-                </div>
+                        <div>
+                            <p class="text-md font-bold">Foto de Perfil</p>
+                            <p class="text-xs text-gray-400 mb-2">Formatos aceitos: JPG, PNG. Tamanho máximo: 5MB.</p>
+                            
+                            <label for="avatar-input" class="text-white ml-auto cursor-pointer bg-[#0b8aa0] rounded-3xl px-4 py-1 text-xs font-bold flex items-center justify-center gap-2 hover:bg-[#087487] transition duration-300 w-fit">
+                                <span class="material-symbols-outlined !text-lg text-white">upload</span>
+                                Alterar foto
+                            </label>
+
+                            <input id="avatar-input" type="file" accept="image/png, image/jpeg, image/jpg" class="hidden"/>
+                        </div>
+                    </div>
                 <div class="md:col-span-2 flex justify-end gap-4 mt-12 lg:mt-8">
                     <button id="btn-cancel" type="button" class="px-8 py-2 border border-gray-300 rounded-3xl text-sm font-bold text-[b8aa0] hover:bg-gray-100 cursor-pointer shadow-lg transition duration-300 active:scale-95 active:shadow-2xl">
                     <span id="cancel-text">Cancelar</span>
@@ -149,8 +164,124 @@ export async function dadosPerfil() {
                     </button>
                 </div>
             </form>
+            <div id="cropper-modal" class="fixed inset-0 bg-black/80 flex flex-col items-center justify-center p-4 z-50 hidden">
+                <div class="bg-slate-900 p-6 rounded-2xl max-w-md w-full flex flex-col gap-4 border border-slate-700">
+                <h3 class="text-white font-bold text-lg">Ajustar Foto de Perfil</h3>
+                
+                <div class="w-full max-h-80 overflow-hidden bg-black rounded-lg flex items-center justify-center">
+                    <img id="cropper-image" class="block max-w-full" src="" alt="Cortar">
+                </div>
+
+                <div class="flex justify-center gap-4 text-white">
+                    <button type="button" id="btn-zoom-in" class="bg-slate-800 px-3 py-1 rounded-lg hover:bg-slate-700 font-bold">+</button>
+                    <button type="button" id="btn-zoom-out" class="bg-slate-800 px-3 py-1 rounded-lg hover:bg-slate-700 font-bold">-</button>
+                </div>
+
+                <div class="flex justify-end gap-2 mt-2">
+                    <button type="button" id="btn-cancel-crop" class="text-slate-400 hover:text-white px-4 py-2 text-sm font-semibold">Cancelar</button>
+                    <button type="button" id="btn-save-crop" class="bg-[#008b8b] hover:bg-[#087487] text-white px-4 py-2 rounded-xl text-sm font-bold">Confirmar</button>
+                </div>
+                </div>
+            </div>
         </main>`;
 
+    const avatarInput = document.getElementById('avatar-input')
+    const cropperModal = document.getElementById('cropper-modal')
+    const cropperImage = document.getElementById('cropper-image')
+
+    const btnSaveCrop = document.getElementById('btn-save-crop')
+    const btnCancelCrop = document.getElementById('btn-cancel-crop')
+    const btnZoomIn = document.getElementById('btn-zoom-in')
+    const btnZoomOut = document.getElementById('btn-zoom-out')
+
+    let cropper = null;
+
+    avatarInput.addEventListener('change', async (event) => {
+        const file = event.target.files[0]
+        if (!file) return
+
+        const allowedTypes = ['image/png', 'image/jpeg', 'image/jpg']
+        if (!allowedTypes.includes(file.type)) {
+            mostrarAlerta('error', "Por favor, selecione apenas imagens JPG ou PNG.")
+            avatarInput.value = ''
+            return
+        }
+
+        const MAX_INPUT_SIZE = 5 * 1024 * 1024 
+        if (file.size > MAX_INPUT_SIZE) {
+            mostrarAlerta('error', "A imagem original é muito grande. O limite máximo é de 5MB.")
+            avatarInput.value = ''
+            return
+        }
+
+        cropperImage.src = URL.createObjectURL(file)
+        cropperModal.classList.remove('hidden')
+
+        if (cropper) cropper.destroy()
+
+        cropper = new Cropper(cropperImage, {
+            aspectRatio: 1,
+            viewMode: 1,
+            dragMode: 'move',
+            background: false,
+            autoCropArea: 1,
+        })
+    });
+
+    btnZoomIn.addEventListener('click', () => cropper?.zoom(0.1))
+    btnZoomOut.addEventListener('click', () => cropper?.zoom(-0.1))
+
+    btnCancelCrop.addEventListener('click', () => {
+    cropperModal.classList.add('hidden')
+    avatarInput.value = ''
+    })
+
+    btnSaveCrop.addEventListener('click', async () => {
+        if (!cropper) return
+
+        const canvas = cropper.getCroppedCanvas({
+            width: 400,
+            height: 400
+        })
+
+        canvas.toBlob(async (blob) => {
+            if (!blob){
+                return mostrarAlertar('error', "Erro ao processar o corte da imagem.")
+            }
+            const webpFile = new File([blob], "avatar.webp", { type: "image/webp" })
+            cropperModal.classList.add('hidden')
+
+            try {
+                const { data: { user } } = await supabase.auth.getUser()
+                if (!user) throw new Error("Usuário não autenticado")
+
+                const filePath = `${user.id}/avatar_pic.webp`
+
+                const { error: uploadError } = await supabase.storage
+                    .from('avatares')
+                    .upload(filePath, webpFile, { upsert: true })
+
+                if (uploadError) throw uploadError
+
+                const { error: dbError } = await supabase
+                    .from('perfis')
+                    .update({ avatar_url: filePath })
+                    .eq('id', user.id)
+
+                if (dbError) throw dbError
+
+                const formAvatarContainer = document.querySelector('#form-edit .bg-slate-100 div.rounded-full')
+                if (formAvatarContainer) {
+                    formAvatarContainer.innerHTML = `<img src="${canvas.toDataURL('image/webp')}" class="w-full h-full object-cover rounded-full">`
+                }
+
+                mostrarAlerta('ok', "Sua foto de perfil foi ajustada e salva com sucesso!")
+            } catch (error) {
+            console.error("Erro no processamento do upload:", error)
+            mostrarAlerta('error', "Ocorreu um erro ao salvar sua nova foto de perfil no servidor.")
+            }
+        }, 'image/webp', 0.80)
+    });
     document.getElementById('opcoes').value = data.curso || "";
     const btnEdit = document.getElementById('btn-edit');
     btnEdit?.addEventListener('click', () => {

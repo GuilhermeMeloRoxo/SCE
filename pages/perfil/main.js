@@ -11,18 +11,29 @@ export async function renderizarPerfil() {
     if (!user) return null;
 
     const { data, error } = await supabase
-        .from('perfis')
-        .select(`nome, github_user, formacao(curso, termino)`)
-        .eq('id', user.id)
-        .single();
+    .from('perfis')
+    .select('nome, github_user, avatar_url, formacao(curso, termino)')
+    .eq('id', user.id)
+    .single();
 
     if (error || !data) return null;
-    const temGithub = data && data.github_user;
-    const avatarUrl = temGithub 
-    ? `<img src="https://avatars.githubusercontent.com/${data.github_user}" alt="Foto de Perfil" class="w-full h-full object-cover rounded-full">` 
+
+    let urlPublica = null;
+
+    if (data.avatar_url) {
+        const { data: storageData } = supabase
+            .storage
+            .from('avatares')
+            .getPublicUrl(data.avatar_url);
+            
+        urlPublica = storageData.publicUrl;
+    }
+    const avatarUrl = urlPublica
+    ? `<img src="${urlPublica}?t=${new Date().getTime()}" alt="Foto de Perfil" class="w-full h-full object-cover rounded-full">`
     : `<svg class="w-34 h-34">
         <use href="/icons.svg#profile"></use>
         </svg>`;
+
     
     profileContainer.innerHTML = `
         <!-- container foto -->

@@ -5,12 +5,7 @@ import { dadosPerfil } from '../pages/perfil/editar/main.js';
 import './style.css'
 import { supabase } from './supabaseClient.js'
 import { setStorage } from './lib/storage.js'
-/*
-import javascriptLogo from './assets/javascript.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
-import { setupCounter } from './counter.js'
-*/
+
 
 // função de logout
 function fazerLogout() {
@@ -293,9 +288,8 @@ async function renderizarMural() {
                 </div>` 
                 : ``;
 
-        const temGithub = post.autor_github;
-        const avatarUrl = temGithub 
-        ? `<img src="https://avatars.githubusercontent.com/${post.autor_github}" alt="Foto de ${post.autor_nome}" class="w-10 h-10 object-cover rounded-full">` 
+        const avatarUrl = post.autor_avatar
+        ? `<img src="${post.autor_avatar}?t=${new Date().getTime()}" alt="Foto de ${post.autor_nome}" class="w-10 h-10 object-cover rounded-full">` 
         : `<svg class="w-10 h-10">
             <use href="/icons.svg#profile"></use>
             </svg>`;
