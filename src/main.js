@@ -275,31 +275,32 @@ async function renderizarMural() {
 
     const { data: posts, error } = await supabase
     .from('mural_completo')
-    .select('*');
+    .select('*')
+    .order('post_data', { ascending: false });
 
     if (error || !posts) {
         console.error(error);
     }
     
     const htmlGerado = posts.map(post => {
-        const imagemPostHtml = post.imagem_url 
-                ? `<div class="mt-3 overflow-hidden rounded-lg border border-gray-100">
-                    <img src="${post.imagem_url}" alt="Imagem do post" class="w-full object-cover max-h-96">
-                </div>` 
-                : ``;
+    const imagemPostHtml = post.imagem_url 
+            ? `<div class="mt-4 overflow-hidden rounded-lg border border-gray-100 bg-slate-50 flex items-center justify-center w-full max-w-[600px] mx-auto">
+                <img src="${post.imagem_url}" alt="Imagem do post" class="w-full h-full object-contain">
+            </div>` 
+            : ``;
 
         const avatarUrl = post.autor_avatar
         ? `<img src="${post.autor_avatar}?t=${new Date().getTime()}" alt="Foto de ${post.autor_nome}" class="w-10 h-10 object-cover rounded-full">` 
-        : `<svg class="w-10 h-10">
-            <use href="/icons.svg#profile"></use>
-            </svg>`;
+        : `<svg class="w-10 h-10"><use href="/icons.svg#profile"></use></svg>`;
+        
         const dataFormatada = new Date(post.post_data).toLocaleDateString('pt-BR', {
             day: '2-digit',
             month: 'short'
         });
 
         return `
-            <div id="post-${post.post_id}" class="mb-6 bg-white rounded-xl shadow-sm border border-gray-200 p-5">
+            <div id="post-${post.post_id}" class="mb-6 bg-white rounded-xl shadow-sm border border-gray-200 p-8 max-w-2xl mx-auto flex flex-col items-center">
+            <div class="w-full max-w-[600px] text-left">
                 
                 <div class="flex items-center justify-between mb-4">
                     <div class="flex items-center gap-3">
@@ -310,35 +311,35 @@ async function renderizarMural() {
                         </div>
                     </div>
                     
-                    <span class="px-3 py-1 rounded-full text-[14px] font-bold uppercase tracking-wider"
-                        style="background-color: color-mix(in srgb, ${post.tag_cor}, transparent 80%); color: ${post.tag_cor}">
+                    <span class="px-3 py-1 rounded-full text-[12px] font-bold uppercase tracking-wider"
+                        style="background-color: color-mix(in srgb, ${post.tag_cor}, transparent 90%); color: ${post.tag_cor}">
                         ${post.tag_nome}
                     </span>
                 </div>
 
-                <div class="post-content">
-                    <p class="text-gray-700 leading-relaxed">${post.post_conteudo}</p>
+                <div class="post-content mb-4">
+                    <p class="text-gray-700 text-sm leading-relaxed">${post.post_conteudo}</p>
                 </div>
-                ${imagemPostHtml}
+                
+            </div>
+            ${imagemPostHtml}
+            <div class="w-full max-w-[600px] flex items-center gap-6 mt-5 pt-4 border-t border-gray-100">
+                <button class="btn-curtir cursor-pointer flex items-center gap-1.5 group transition" data-id="${post.post_id}">
+                    <span class="material-symbols-outlined text-[20px] text-gray-400 group-hover:text-red-500 transition">
+                        favorite
+                    </span>
+                    <span class="text-xs font-semibold text-gray-500">${post.quantidade_curtidas}</span>
+                </button>
 
-                <div class="flex items-center gap-6 mt-5 pt-4 border-t border-gray-50">
-                    
-                    <button class="btn-curtir cursor-pointer flex items-center gap-1.5 group transition" data-id="${post.post_id}">
-                        <span class="material-symbols-outlined text-[22px] text-gray-400 group-hover:text-red-500 transition">
-                            favorite
-                        </span>
-                        <span class="text-sm font-semibold text-gray-500">${post.quantidade_curtidas}</span>
-                    </button>
+                <button class="btn-comentarios cursor-pointer flex items-center gap-1.5 group transition" data-id="${post.post_id}">
+                    <span class="material-symbols-outlined text-[20px] text-gray-400 group-hover:text-blue-500 transition">
+                        comment
+                    </span>
+                    <span class="text-xs font-semibold text-gray-500">${post.quantidade_comentarios}</span>
+                </button>
+            </div>
 
-                    <button class="btn-comentarios cursor-pointer flex items-center gap-1.5 group transition" data-id="${post.post_id}">
-                        <span class="material-symbols-outlined text-[22px] text-gray-400 group-hover:text-blue-500 transition">
-                            comment
-                        </span>
-                        <span class="text-sm font-semibold text-gray-500">${post.quantidade_comentarios}</span>
-                    </button>
-
-                </div>
-            </div>`;
+        </div>`;
     }).join('');
     
     container.innerHTML = htmlGerado;
