@@ -343,7 +343,62 @@ async function renderizarMural() {
     }).join('');
     
     container.innerHTML = htmlGerado;
+    container.addEventListener('click', async function (e) {
+        const button = e.target.closest('.btn-curtir');
+        if (!button) return;
 
+        if (button.disabled) return;
+        button.disabled = true;
+
+        const postId = button.dataset.id;
+        
+        const { data: { user } } = await supabase.auth.getUser();
+        
+        if (!user) {
+            mostrarAlerta('error', 'Você precisa estar logado para curtir.');
+            button.disabled = false;
+            return;
+        }
+
+        const icon = button.querySelector('.material-symbols-outlined');
+        const countSpan = button.querySelector('.text-xs');
+        let count = parseInt(countSpan.innerText);
+        
+        const jaCurtiu = icon.classList.contains('text-red-500');
+
+        if (jaCurtiu) {
+            const { error } = await supabase
+                .from('curtidas')
+                .delete()
+                .eq('post_id', postId)
+                .eq('id', user.id);
+
+            if (!error) {
+                icon.classList.remove('text-red-500', 'fill-red-500');
+                icon.classList.add('text-gray-400');
+                countSpan.innerText = count - 1;
+            } else {
+                console.error('Erro ao descurtir:', error.message);
+            }
+        } else {
+            const { error } = await supabase
+                .from('curtidas')
+                .insert([
+                    { post_id: postId, id: user.id }
+                ]);
+
+            if (!error) {
+                icon.classList.remove('text-gray-400');
+                icon.classList.add('text-red-500', 'fill-red-500');
+                countSpan.innerText = count + 1;
+            } else {
+                if (error.code !== '23505') { 
+                    console.error('Erro ao curtir:', error.message);
+                }
+            }
+        }
+        button.disabled = false;
+    });
 }
 
 // carregando funções a partir daqui
