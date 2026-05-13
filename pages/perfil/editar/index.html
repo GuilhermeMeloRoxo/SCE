@@ -68,15 +68,15 @@
                     <div class="space-y-4">
                         <div>
                             <label class="block text-sm font-bold m-2">Nome Completo *</label>
-                            <input id="nome-completo" type="text" placeholder="Digite seu nome completo" pattern="[A-Za-zÀ-ÖØ-öø-ÿ\s]+ [A-Za-zÀ-ÖØ-öø-ÿ\s]+$" class="px-4 py-2.5 w-full border border-gray-300 rounded-3xl text-sm focus:ring-2 focus:ring-[#087487] focus:border-transparent outline-none transition required">
+                            <input id="nome-completo" type="text" placeholder="Digite seu nome completo" pattern="[A-Za-zÀ-ÖØ-öø-ÿ\s]+ [A-Za-zÀ-ÖØ-öø-ÿ\s]+$" class="px-4 py-2.5 w-full border border-gray-300 rounded-3xl text-sm focus:ring-2 focus:ring-[#087487] focus:border-transparent outline-none transition" required>
                         </div>
                         <div>
                             <label class="block text-sm font-bold m-2">Email *</label>
-                            <input id="email" type="email" placeholder="Ex.: nome@exemplo.com" class="px-4 py-2.5 w-full border border-gray-300 rounded-3xl text-sm focus:ring-2 focus:ring-[#087487] focus:border-transparent outline-none transition required">
+                            <input id="email" type="email" placeholder="Ex.: nome@exemplo.com" class="px-4 py-2.5 w-full border border-gray-300 rounded-3xl text-sm focus:ring-2 focus:ring-[#087487] focus:border-transparent outline-none transition" required>
                         </div>
                         <div>
                             <label class="block text-sm font-bold m-2">CPF *</label>
-                            <input id="cpf" type="text" placeholder="Ex.: 123.456.789-00" pattern="[0-9]{3}.[0-9]{3}.[0-9]{3}-[0-9]{2}" class="px-4 py-2.5 w-full border border-gray-300 rounded-3xl text-sm focus:ring-2 focus:ring-[#087487] focus:border-transparent outline-none transition required">
+                            <input id="cpf" type="text" placeholder="Ex.: 123.456.789-00" pattern="[0-9]{3}.[0-9]{3}.[0-9]{3}-[0-9]{2}" class="px-4 py-2.5 w-full border border-gray-300 rounded-3xl text-sm focus:ring-2 focus:ring-[#087487] focus:border-transparent outline-none transition" required>
                         </div>
                         <div>
                             <label class="block text-sm font-bold m-2">Telefone</label>
@@ -86,7 +86,7 @@
                     <div class="space-y-4">
                         <div>
                             <label class="block text-sm font-bold m-2">Matrícula Institucional *</label>
-                            <input id="matricula-institucional" type="text" placeholder="Ex.: 20261230012" pattern="[0-9]{9}[0-9]*|[0-9]{7}" class="px-4 py-2.5 w-full border border-gray-300 rounded-3xl text-sm focus:ring-2 focus:ring-[#087487] focus:border-transparent outline-none transition required">
+                            <input id="matricula-institucional" type="text" placeholder="Ex.: 20261230012" pattern="[0-9]{9}[0-9]*|[0-9]{7}" class="px-4 py-2.5 w-full border border-gray-300 rounded-3xl text-sm focus:ring-2 focus:ring-[#087487] focus:border-transparent outline-none transition" required>
                         </div>
                         <div>
                             <label class="block text-sm font-bold m-2">Egressos/Docentes *</label>
@@ -146,7 +146,7 @@
                                 <use href="/icons.svg#carregando"></use>
                             </svg>
                         </button>
-                        <button id="btn-edit" type="submit" class="px-6 py-2 bg-[#0b8aa0] hover:bg-[#087487] text-white rounded-3xl text-sm font-bold flex items-center gap-2 hover:bg-teal-800 cursor-pointer shadow-lg transition duration-300 active:scale-95 active:shadow-2xl">
+                        <button id="btn-edit" type="submit" class="px-6 py-2 bg-[#0b8aa0] hover:bg-[#087487] text-white rounded-3xl text-sm font-bold flex items-center gap-2 cursor-pointer shadow-lg transition duration-300 active:scale-95 active:shadow-2xl">
                         <span class="material-symbols-outlined !text-2xl text-white">check</span>
                         <span id="submit-text">Salvar Alterações</span>
                             <svg id="submit-spinner" class="hidden animate-spin h-6 w-6 text-[#e0e0e0]" fill="none">
