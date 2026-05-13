@@ -1,4 +1,4 @@
-import { handleCadastro, btnCadastro, iniciarValidacao, isUsernameValid } from '/pages/cadastro/main.js';
+import { handleCadastro, btnCadastro, iniciarValidacao, isUsernameValid } from '../pages/cadastro/main.js';
 import { handleLogin, btnLogin } from '../pages/login/main.js';
 import { renderizarPerfil } from '../pages/perfil/main.js';
 import { dadosPerfil } from '../pages/perfil/editar/main.js';
@@ -190,34 +190,74 @@ async function getEmail() {
 }
 
 // função para lidar com o feedback dos usuários
-async function handleFeedback(email) {
-    const formFeedback = document.getElementById('feedback');
+function configurarEventosFeedback() {
     const camposFeedback = document.getElementById('hidden-feedback');
-    const btnFeedback = document.getElementById('btn-feedback');
-    const msgFeedback = document.getElementById('msg-feedback');
-    const submitFeedback = document.getElementById('submit-feedback');
+    const formFeedback = document.getElementById('feedback');
 
-    if (camposFeedback.style.display === 'none' || camposFeedback.style.display === '') {
-        camposFeedback.style.display = 'block';
-    } else {
-        camposFeedback.style.display = 'none';
-    } if (btnFeedback && msgFeedback && submitFeedback && formFeedback) {
-        formFeedback.addEventListener('submit', (e) => {
-            e.preventDefault();
-            if (msgFeedback.value.trim() === '' &&  (msgFeedback.value.length < 10 || msgFeedback.value.length > 500)) {
-                return;
-            } else {
-                const confirmar = confirm('Tem certeza que deseja enviar seu feedback?');
-                if (confirmar) {
-                    setStorage(email, msgFeedback.value);
-                    mostrarAlerta('ok', 'Feedback enviado com sucesso! Agradecemos por compartilhar sua opinião conosco.');
-                    msgFeedback.value = '';
-                    camposFeedback.style.display = 'none';
-                }
-            } 
-        });
+    if (!camposFeedback || !formFeedback) return;
+
+    // Gerencia o fechamento do modal
+    camposFeedback.addEventListener('click', (e) => {
+        const clicouFechar = e.target.closest('[data-fechar="true"]');
+        const clicouForaDoCard = e.target === camposFeedback;
+
+        if (clicouFechar || clicouForaDoCard) {
+            formFeedback.reset();
+            formFeedback.removeAttribute('data-user-email'); // Limpa o dado do DOM
+            camposFeedback.classList.add('hidden');
+        }
+    });
+
+    // Gerencia o envio do formulário
+    formFeedback.addEventListener('submit', (e) => {
+        e.preventDefault();
+
+        // Recupera o e-mail armazenado no próprio elemento do formulário
+        const email = formFeedback.getAttribute('data-user-email');
+        if (!email) return;
+
+        const tipoFeedback = formFeedback.querySelector('select')?.value;
+        const assuntoFeedback = formFeedback.querySelector('input[type="text"]')?.value || "Sem assunto";
+        const msgFeedback = document.getElementById('msg-feedback');
+        const mensagemLimpa = msgFeedback?.value.trim() || "";
+
+        if (mensagemLimpa.length < 10 || mensagemLimpa.length > 500 || tipoFeedback === "Selecione uma opção") {
+            mostrarAlerta('error', 'Selecione um tipo de feedback e digite entre 10 e 500 caracteres.');
+            return;
+        }
+
+        if (confirm('Tem certeza que deseja enviar seu feedback?')) {
+            const dadosFeedback = {
+                tipo: tipoFeedback,
+                assunto: assuntoFeedback,
+                mensagem: mensagemLimpa,
+                data: new Date().toISOString()
+            };
+
+            // Envia o e-mail recuperado do DOM e os dados estruturados
+            setStorage(email, dadosFeedback);
+            mostrarAlerta('ok', 'Feedback enviado com sucesso!');
+            
+            formFeedback.reset();
+            formFeedback.removeAttribute('data-user-email');
+            camposFeedback.classList.add('hidden');
+        }
+    });
+}
+
+// FUNÇÃO 2: Seu fluxo original intacto, chamada no clique do botão principal
+function handleFeedback(email) {
+    const camposFeedback = document.getElementById('hidden-feedback');
+    const formFeedback = document.getElementById('feedback');
+
+    if (formFeedback) {
+        // Injeta o e-mail de forma encapsulada no próprio elemento HTML
+        formFeedback.setAttribute('data-user-email', email);
     }
-};
+
+    // Abre o modal removendo a classe do Tailwind
+    camposFeedback?.classList.remove('hidden');
+}
 function visibilidadeSenha() {
     // verifica se existe algum dos formulários na página
     const formLogin = document.getElementById('form-login')
@@ -331,6 +371,7 @@ document.addEventListener('DOMContentLoaded', () => {
     iniciarValidacao();
     dadosPerfil();
     renderizarMural();
+    configurarEventosFeedback();
 });
 
 btnCadastro?.addEventListener('click', () => {
@@ -340,7 +381,6 @@ btnCadastro?.addEventListener('click', () => {
 btnLogin?.addEventListener('click', () => {
     handleForm(document.querySelector('#form-login'));
 });
-
 
 document.getElementById('btn-feedback')?.addEventListener('click', async () => {
     const email = await getEmail();
