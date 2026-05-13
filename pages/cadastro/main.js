@@ -160,7 +160,8 @@ export async function handleCadastro() {
       }
     
       if (authData.user) {
-        mostrarAlerta('ok', 'Quase lá, agora confirme seu email para prosseguir para a aplicação!')
+        //mostrarAlerta('ok', 'Quase lá, agora confirme seu email para prosseguir para a aplicação!')
+        window.location.href = '/'; // redirecionando enquanto não tem confirmação de email
       }
     
     } catch (error) {
