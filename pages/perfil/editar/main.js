@@ -73,31 +73,31 @@ export async function dadosPerfil() {
             <form id="form-edit" method="post" class="w-full max-w-4xl p-4 lg:grid lg:grid-cols-2 lg:gap-10">
                 <div class="space-y-4">
                     <div>
-                        <label class="block text-sm font-bold m-2">Nome Completo *</label>
-                        <input id="nome-completo" type="text" value="${data.nome}" placeholder="Digite seu nome completo" class="px-4 py-2.5 w-full border border-gray-300 rounded-3xl text-sm focus:ring-2 focus:ring-[#087487] focus:border-transparent outline-none transition" required>
+                        <label class="block text-sm font-bold m-2" for="nome-completo">Nome Completo *</label>
+                        <input id="nome-completo" name="nome-completo" type="text" value="${data.nome}" placeholder="Digite seu nome completo" class="px-4 py-2.5 w-full border border-gray-300 rounded-3xl text-sm focus:ring-2 focus:ring-[#087487] focus:border-transparent outline-none transition" required>
                     </div>
                     <div>
-                        <label class="block text-sm font-bold m-2">Email *</label>
-                        <input id="email" type="email" value="${data.email}" placeholder="Ex.: nome@exemplo.com" class="px-4 py-2.5 w-full border border-gray-300 rounded-3xl text-sm focus:ring-2 focus:ring-[#087487] focus:border-transparent outline-none transition" required>
+                        <label class="block text-sm font-bold m-2" for="email">Email *</label>
+                        <input id="email" name="email" type="email" value="${data.email}" placeholder="Ex.: nome@exemplo.com" class="px-4 py-2.5 w-full border border-gray-300 rounded-3xl text-sm focus:ring-2 focus:ring-[#087487] focus:border-transparent outline-none transition" required>
                     </div>
                     <div>
-                        <label class="block text-sm font-bold m-2">CPF *</label>
-                        <input id="cpf" type="text" value="${data.cpf_aberto}" placeholder="Ex.: 123.456.789-00" pattern="[0-9]{3}.[0-9]{3}.[0-9]{3}-[0-9]{2}" class="px-4 py-2.5 w-full border border-gray-300 rounded-3xl text-sm focus:ring-2 focus:ring-[#087487] focus:border-transparent outline-none transition" required>
+                        <label class="block text-sm font-bold m-2" for="cpf">CPF *</label>
+                        <input id="cpf" name="cpf" type="text" value="${data.cpf_aberto}" placeholder="Ex.: 123.456.789-00" pattern="[0-9]{3}.[0-9]{3}.[0-9]{3}-[0-9]{2}" class="px-4 py-2.5 w-full border border-gray-300 rounded-3xl text-sm focus:ring-2 focus:ring-[#087487] focus:border-transparent outline-none transition" required>
                     </div>
                     <div>
-                        <label class="block text-sm font-bold m-2">Telefone (opcional)</label>
-                        <input id="telefone" value="${data.telefone || ''}" type="tel" placeholder="Ex.: 83987654321" pattern="[0-9]{2}9[0-9]{8}" class="px-4 py-2.5 w-full border border-gray-300 rounded-3xl text-sm focus:ring-2 focus:ring-[#087487] focus:border-transparent outline-none transition">
+                        <label class="block text-sm font-bold m-2" for="telefone">Telefone (opcional)</label>
+                        <input id="telefone" name="telefone" value="${data.telefone || ''}" type="tel" placeholder="Ex.: 83987654321" pattern="[0-9]{2}9[0-9]{8}" class="px-4 py-2.5 w-full border border-gray-300 rounded-3xl text-sm focus:ring-2 focus:ring-[#087487] focus:border-transparent outline-none transition">
                     </div>
                 </div>
                 <div class="space-y-4">
                     <div>
-                        <label class="block text-sm font-bold m-2">Matrícula Institucional *</label>
-                        <input id="matricula-institucional" value="${data.matricula_institucional || ""}" type="text" placeholder="Ex.: 20261230012" pattern="[0-9]{9}[0-9]*|[0-9]{7}" class="px-4 py-2.5 w-full border border-gray-300 rounded-3xl text-sm focus:ring-2 focus:ring-[#087487] focus:border-transparent outline-none transition" required>
+                        <label class="block text-sm font-bold m-2" for="matricula-institucional">Matrícula Institucional *</label>
+                        <input id="matricula-institucional" name="matricula-institucional" value="${data.matricula_institucional || ""}" type="text" placeholder="Ex.: 20261230012" pattern="[0-9]{9}[0-9]*|[0-9]{7}" class="px-4 py-2.5 w-full border border-gray-300 rounded-3xl text-sm focus:ring-2 focus:ring-[#087487] focus:border-transparent outline-none transition" required>
                     </div>
                     <div>
-                        <label class="block text-sm font-bold m-2">Egressos/Docentes *</label>
+                        <label class="block text-sm font-bold m-2" for="opcoes">Egressos/Docentes *</label>
                         <div class="relative">
-                            <select id="opcoes" required class="px-4 py-2.5 w-full cursor-pointer border border-gray-300 rounded-3xl text-sm focus:ring-2 focus:ring-[#087487] focus:border-transparent outline-none transition appearance-none bg-white">
+                            <select id="opcoes" name="opcoes" required class="px-4 py-2.5 w-full cursor-pointer border border-gray-300 rounded-3xl text-sm focus:ring-2 focus:ring-[#087487] focus:border-transparent outline-none transition appearance-none bg-white">
                                 <option value="" disabled selected>Selecione uma opção</option>
                                 <optgroup label="Cursos Superiores">
                                     <option value="Engenharia Elétrica">Engenharia Elétrica</option>
@@ -121,12 +121,12 @@ export async function dadosPerfil() {
                         </div>
                     </div>
                     <div>
-                        <label class="block text-sm font-bold m-2">Data de Formação *</label>
-                        <input id="data-formacao" type="text" value="${data.termino || ''}" pattern="[0-9]{4}\.[0-9]{1}" placeholder="Ex.: 2026.1" class="px-4 py-2.5 w-full border border-gray-300 rounded-3xl text-sm focus:ring-2 focus:ring-[#087487] focus:border-transparent outline-none transition" required>
+                        <label class="block text-sm font-bold m-2" for="data-formacao">Data de Formação *</label>
+                        <input id="data-formacao" name="data-formacao" type="text" value="${data.termino || ''}" pattern="[0-9]{4}\.[0-9]{1}" placeholder="Ex.: 2026.1" class="px-4 py-2.5 w-full border border-gray-300 rounded-3xl text-sm focus:ring-2 focus:ring-[#087487] focus:border-transparent outline-none transition" required>
                     </div>
                     <div>
-                        <label class="block text-sm font-bold m-2">Username *</label>
-                        <input type="text" id="input-username" value="${data.username}" placeholder="Ex.: nome_sobrenome" title="Digite no mínimo 3 dígitos (letras, números, hífen e/ou underline) e no máximo 20" class="px-4 py-2.5 w-full border border-gray-300 rounded-3xl text-sm focus:ring-2 focus:ring-[#087487] focus:border-transparent outline-none transition" required>
+                        <label class="block text-sm font-bold m-2" for="input-username">Username *</label>
+                        <input type="text" id="input-username" name="input-username" value="${data.username}" placeholder="Ex.: nome_sobrenome" title="Digite no mínimo 3 dígitos (letras, números, hífen e/ou underline) e no máximo 20" class="px-4 py-2.5 w-full border border-gray-300 rounded-3xl text-sm focus:ring-2 focus:ring-[#087487] focus:border-transparent outline-none transition" required>
                         <span id="icons-username" class="absolute right-4 bottom-1/2 translate-y-1/2 w-[18px] h-[18px]">
                             
                         </span>
@@ -246,7 +246,7 @@ export async function dadosPerfil() {
 
         canvas.toBlob(async (blob) => {
             if (!blob){
-                return mostrarAlertar('error', "Erro ao processar o corte da imagem.")
+                return mostrarAlerta('error', "Erro ao processar o corte da imagem.")
             }
             const webpFile = new File([blob], "avatar.webp", { type: "image/webp" })
             cropperModal.classList.add('hidden')
@@ -283,8 +283,10 @@ export async function dadosPerfil() {
         }, 'image/webp', 0.80)
     });
     document.getElementById('opcoes').value = data.curso || "";
+    const formEdit = document.getElementById('form-edit');
     const btnEdit = document.getElementById('btn-edit');
-    btnEdit?.addEventListener('click', () => {
+    formEdit?.addEventListener('submit', (event) => {
+        event.preventDefault();
         handleEdit(btnEdit);
     });
     function voltarCancelar(btnCancel) {
@@ -353,11 +355,15 @@ export async function handleEdit(btnEdit) {
         if (erro) {
             console.error('Erro ao buscar dados:', error)
         }
-        if (data.email) {
+        if (email !== data.email) {
             const { error: authError } = await supabase.auth.updateUser({
                 email: email,
             });
-            if (authError) throw authError;
+            if (authError) {
+                console.error('Erro ao atualizar email:', authError);
+                throw new Error(`Não foi possível atualizar o email: ${authError.message}`);
+            }
+            alert('Te enviamos um email confirmando a mudança de endereço de email!')
         }
         const { error } = await supabase.rpc('edicao_perfil_usuario', {
             p_user_id: user.id,
@@ -376,5 +382,7 @@ export async function handleEdit(btnEdit) {
             console.error("Erro ao atualizar:", erro);
             mostrarAlerta('error', "Falha ao salvar dados.");
             voltarBotao();
+            return
         }
+    window.location.href = "/pages/perfil/";
 }
