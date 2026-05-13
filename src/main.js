@@ -284,7 +284,7 @@ async function renderizarMural() {
     
     const htmlGerado = posts.map(post => {
     const imagemPostHtml = post.imagem_url 
-            ? `<div class="mt-4 overflow-hidden rounded-lg border border-gray-100 bg-slate-50 flex items-center justify-center w-full max-w-[600px] h-[450px] mx-auto">
+            ? `<div class="mt-4 overflow-hidden rounded-lg border border-gray-100 bg-slate-50 flex items-center justify-center w-full max-w-[600px] mx-auto">
                 <img src="${post.imagem_url}" alt="Imagem do post" class="w-full h-full object-contain">
             </div>` 
             : ``;
@@ -317,7 +317,6 @@ async function renderizarMural() {
                     </span>
                 </div>
 
-                <!-- Conteúdo de Texto -->
                 <div class="post-content mb-4">
                     <p class="text-gray-700 text-sm leading-relaxed">${post.post_conteudo}</p>
                 </div>
