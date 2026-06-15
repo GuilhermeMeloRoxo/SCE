@@ -7,23 +7,6 @@ import { supabase } from './supabaseClient.js'
 import { setStorage } from './lib/storage.js'
 
 
-// função de logout
-function fazerLogout() {
-    const linkLogout = document.getElementById('link-logout');
-
-    if (linkLogout) {
-        linkLogout.addEventListener('click', async (e) => {
-            e.preventDefault();
-
-            const { error } = await supabase.auth.signOut();
-            if (error) {
-                console.error("Erro ao sair:", error.message);
-            } else {
-                window.location.href = '/pages/login/';
-            }
-        });
-    }
-}
 async function verificarUsuarioLogado() {
     const { data: { user }, error } = await supabase.auth.getUser()
 
@@ -59,112 +42,6 @@ function configurarMenuHamburguer() {
     }
 }
 
-// função para ativar o input de pesquisa
-function configurarPesquisa() {
-    const btnPesquisar = document.getElementById('btn-search');
-    const btnEnviar = document.getElementById('btn-send');
-    const inputPesquisar = document.getElementById('search-input')
-
-    if (btnPesquisar && btnEnviar && inputPesquisar) {
-        btnPesquisar.addEventListener('click', () => {
-            inputPesquisar.focus();
-        });
-        inputPesquisar.addEventListener('focusin', () => {
-            btnPesquisar.style.display = 'none';
-            btnEnviar.style.display = 'block';
-        });
-        inputPesquisar.addEventListener('focusout', (event) => {
-            if (event.relatedTarget !== btnEnviar) {
-                btnPesquisar.style.display = 'block';
-                btnEnviar.style.display = 'none';
-            }
-        });
-    }
-}
-
-// função para adicionar os componentes html (barra de navegação, footer, etc)
-function inserirHtml(id, caminho) {
-    const idElemento = document.getElementById(id);
-    
-    if (idElemento) {
-        fetch(caminho)
-            .then(response => {
-                if (!response.ok) throw new Error("Erro ao carregar o componente");
-                return response.text();
-            }).then(html => {
-                idElemento.innerHTML = html;
-                if (id === 'navbar') {
-                    configurarMenuHamburguer();
-                    fazerLogout();
-                } else if (id === 'search') {
-                    configurarPesquisa();
-                }
-            }).catch(error => console.error(error));
-    }
-};
-
-// função para lidar com os botões de cadastro e login
-function handleForm(form) {
-    form.addEventListener('submit', async (e) => {
-    e.preventDefault()
-    
-    if (form.id === 'form-cadastro') {
-        if (!isUsernameValid()) {
-            document.getElementById('input-username').focus()
-            mostrarAlerta('error', 'Por favor, corrija o seu username antes de enviar o formulário de cadastro.')
-            return null
-        } else {
-            handleCadastro();
-        }
-    } else if (form.id === 'form-login') {
-        handleLogin();
-    }
-})};
-
-export function mostrarAlerta(codigo, msg){
-
-    const alertDiv = document.createElement('div');
-    if (codigo === 'error') {
-        alertDiv.className = "flex items-center justify-center gap-x-2 p-2 mb-2 text-red-800 border border-red-300 rounded-lg bg-red-50 animate-bounce-short";
-        alertDiv.role = "alert";
-
-        alertDiv.innerHTML = `
-        <span class="material-symbols-outlined !text-2xl text-red">
-            error
-        </span>
-        <div>
-            <span class="font-medium"> Erro: ${msg}</span>
-        </div>
-        `;
-    } else if (codigo === 'ok') {
-        alertDiv.className = "flex items-center justify-center gap-x-2 p-2 mb-2 text-green-800 border border-green-300 rounded-lg bg-green-50 animate-bounce-short";
-        alertDiv.role = "alert";
-
-        alertDiv.innerHTML = `
-        <span class="material-symbols-outlined !text-2xl text-green">
-            check
-        </span>
-        <div>
-            <span class="font-medium"> Ok: ${msg}</span>
-        </div>
-        `;
-    } else {
-        console.error('Código inválido para mostrarAlerta');
-        return null
-    }
-    const container = document.createElement('div');
-    container.id = 'alert-container';
-
-    container.className = "fixed top-5 left-1/2 -translate-x-1/2 z-[100] w-full max-w-sm px-3 pointer-events-none"; 
-    document.body.appendChild(container);
-
-    container.innerHTML = '';
-    container.appendChild(alertDiv);
-
-    setTimeout(() => {
-        alertDiv.remove();
-    }, 3000);
-}
 
 async function getEmail() {
     const { data: { user } } = await supabase.auth.getUser();
