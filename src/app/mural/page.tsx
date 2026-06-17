@@ -7,13 +7,13 @@ import { Navbar } from "@/components/Navbar";
 import { SearchBar } from "@/components/SearchBar";
 import { LoadingIcon } from "@/components/Icons";
 import { obterUsuarioAtual } from "@/services/auth";
+import { formatarDataMural } from "@/utils/formatters";
 import { 
   buscarPostsCurtidos,
   buscarPostsMural, 
   gerenciarCurtida, 
   enviarFeedback 
 } from "@/services/mural";
-import { formatarDataMural } from "../utils/formatters";
 
 export default function Mural() {
     const { mostrarAlerta } = useAlerta();
@@ -87,24 +87,24 @@ export default function Mural() {
     };
 
     const handleFeedbackSubmit = async (e: React.SubmitEvent) => {
-    e.preventDefault();
-    setIsFeedbackLoading(true);
+        e.preventDefault();
+        setIsFeedbackLoading(true);
 
-    try {
-        const resultado = await enviarFeedback(tipoFeedback, assunto, mensagem);
+        try {
+            const resultado = await enviarFeedback(tipoFeedback, assunto, mensagem);
 
-        if (resultado.success) {
-        mostrarAlerta("ok", "Feedback enviado com sucesso!");
-        setTipoFeedback("");
-        setAssunto("");
-        setMensagem("");
-        setIsFeedbackOpen(false);
+            if (resultado.success) {
+            mostrarAlerta("ok", "Feedback enviado com sucesso!");
+            setTipoFeedback("");
+            setAssunto("");
+            setMensagem("");
+            setIsFeedbackOpen(false);
+            }
+        } catch (err: any) {
+            mostrarAlerta("error", err.message);
+        } finally {
+            setIsFeedbackLoading(false);
         }
-    } catch (err: any) {
-        mostrarAlerta("error", err.message);
-    } finally {
-        setIsFeedbackLoading(false);
-    }
     };
     return (
         <>
