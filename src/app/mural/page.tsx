@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { useAlerta } from "@/context/AlertContext";
 import { Navbar } from "@/components/Navbar";
 import { SearchBar } from "@/components/SearchBar";
@@ -16,6 +17,7 @@ import {
 } from "@/services/mural";
 
 export default function Mural() {
+    const router = useRouter();
     const { mostrarAlerta } = useAlerta();
     
     const [posts, setPosts] = useState<any[]>([]);
@@ -44,6 +46,8 @@ export default function Mural() {
                     const idsDosPosts = listaPosts.map((p) => p.post_id);
                     const curtidasSet = await buscarPostsCurtidos(currentUser.id, idsDosPosts);
                     setPostsCurtidos(curtidasSet);
+                } else if (!currentUser) {
+                    router.push('/');
                 }
             } catch (err) {
             mostrarAlerta("error", "Não foi possível carregar as publicações.");

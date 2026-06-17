@@ -52,7 +52,7 @@ export default function Cadastro() {
     const handleUsernameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       setUsername(e.target.value.trim());
     };
-    const handleCadastroSubmit = async (e: React.FormEvent) => {
+    const handleCadastroSubmit = async (e: React.SubmitEvent) => {
       e.preventDefault();
       setIsLoading(true);
 
