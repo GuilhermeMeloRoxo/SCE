@@ -6,6 +6,17 @@ import './style.css'
 import { supabase } from './supabaseClient.js'
 import { setStorage } from './lib/storage.js'
 
+async function verificarUsuarioLogado() {
+  const user = obterUsuarioAtual();
+  const paginaAtual = window.location.pathname
+  const paginaPublica = paginaAtual.includes('login') || paginaAtual.includes('cadastro')
+  if (!user && !paginaPublica) {
+      window.location.href = '/pages/login/';
+  } else if (user && paginaPublica) {
+      window.location.href = '/';
+  }
+}
+
 // função para ativar o menu hamburguer
 function configurarMenuHamburguer() {
     const btnHamburger = document.getElementById('btn-hamburguer');

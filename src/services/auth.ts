@@ -66,15 +66,14 @@ export async function obterUsuarioAtual() {
 }
 
 export async function verificarUsuarioLogado() {
-    const user = obterUsuarioAtual();
-    const paginaAtual = window.location.pathname
-    const paginaPublica = paginaAtual.includes('login') || paginaAtual.includes('cadastro')
-
-    if (!user && !paginaPublica) {
-        window.location.href = '/pages/login/';
-    } else if (user && paginaPublica) {
-        window.location.href = '/';
-    }
+  const user = obterUsuarioAtual();
+  const paginaAtual = window.location.pathname
+  const paginaPublica = paginaAtual.includes('login') || paginaAtual.includes('cadastro')
+  if (!user && !paginaPublica) {
+      window.location.href = '/pages/login/';
+  } else if (user && paginaPublica) {
+      window.location.href = '/';
+  }
 }
 
 export async function loginUsuario(email: string, senha: string) {
