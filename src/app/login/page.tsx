@@ -13,7 +13,6 @@ export default function Login() {
     const [senha, setSenha] = useState("");
     const [isLoading, setIsLoading] = useState(false);
     const [mostrarSenha, setMostrarSenha] = useState(false);
-    const emailInputRef = useRef<HTMLInputElement>(null);
     const formRef = useRef<HTMLFormElement>(null);
     const handleLoginSubmit = async (e: React.SubmitEvent) => {
         e.preventDefault();
@@ -33,15 +32,12 @@ export default function Login() {
         } catch (error: any) {
             if (error.message.includes("Invalid login credentials")) {
                 mostrarAlerta('error', "Credenciais inválidas");
-                emailInputRef.current?.focus();
             } else if (error.message.includes("Email not confirmed")){
                 mostrarAlerta('error', "Confirme seu email antes de logar no site");
-                emailInputRef.current?.focus();
             } else {
                 mostrarAlerta('error', error.message);
-                emailInputRef.current?.focus();
-            }
-        } setIsLoading(false);
+            } setIsLoading(false);
+          }
     }
 
     return (
@@ -54,7 +50,6 @@ export default function Login() {
                 <div>
                     <label className="block text-sm font-bold m-2" htmlFor="input-email">Email</label>
                     <input 
-                        ref={emailInputRef}
                         id="input-email"
                         className="px-4 py-2.5 w-full border border-gray-300 rounded-3xl text-sm focus:ring-2 focus:ring-[#087487] focus:border-transparent outline-none transition text-zinc-900"
                         type="email" 
