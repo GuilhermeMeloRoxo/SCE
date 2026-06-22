@@ -65,17 +65,6 @@ export async function obterUsuarioAtual() {
   } return user;
 }
 
-export async function verificarUsuarioLogado() {
-  const user = obterUsuarioAtual();
-  const paginaAtual = window.location.pathname
-  const paginaPublica = paginaAtual.includes('login') || paginaAtual.includes('cadastro')
-  if (!user && !paginaPublica) {
-      window.location.href = '/pages/login/';
-  } else if (user && paginaPublica) {
-      window.location.href = '/';
-  }
-}
-
 export async function loginUsuario(email: string, senha: string) {
   const { data, error } = await supabase.auth.signInWithPassword({
       email: email,
