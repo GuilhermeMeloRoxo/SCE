@@ -25,6 +25,7 @@ export default function Cadastro() {
     const emailInputRef = useRef<HTMLInputElement>(null);
 
     useEffect(() => {
+      document.title = "Cadastro - SCE";
       if (!username) {
         setUsernameStatus("idle");
         return;
