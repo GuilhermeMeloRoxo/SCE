@@ -1,5 +1,4 @@
 "use client";
-
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
@@ -30,7 +29,6 @@ export default function Perfil() {
     }
 
     useEffect(() => {
-        document.title = "Seu Perfil - SCE"; 
         async function carregarDados() {
             try {
                 const currentUser = await obterUsuarioAtual();
@@ -38,7 +36,7 @@ export default function Perfil() {
                 if (!currentUser) {
                     router.push('/');
                     throw new Error();
-                }
+                } router.push('/perfil');
                 const { data, error } = await supabase
                     .from('perfis')
                     .select('nome, github_user, avatar_url, formacao(curso, termino)')

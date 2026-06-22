@@ -6,21 +6,6 @@ import './style.css'
 import { supabase } from './supabaseClient.js'
 import { setStorage } from './lib/storage.js'
 
-
-async function verificarUsuarioLogado() {
-    const { data: { user }, error } = await supabase.auth.getUser()
-
-    const paginaAtual = window.location.pathname
-    const ehPaginaPublica = paginaAtual.includes('login') || paginaAtual.includes('cadastro')
-
-    if (!user && !ehPaginaPublica) {
-        // Se não houver usuário logado, manda de volta para o login
-        window.location.href = '/pages/login/';
-    } else if (user && ehPaginaPublica) {
-        window.location.href = '/';
-    }
-}
-
 // função para ativar o menu hamburguer
 function configurarMenuHamburguer() {
     const btnHamburger = document.getElementById('btn-hamburguer');
@@ -39,25 +24,6 @@ function configurarMenuHamburguer() {
             navMenu.classList.remove('active');
         }
         });
-    }
-}
-
-
-async function getEmail() {
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return null;
-    const { data, error } = await supabase
-        .from('dados_privados')
-        .select('email')
-        .eq('id', user.id)
-        .single();
-    if (error || !data) return null;
-    if (data.email) {
-        return data.email;
-    } if (error) {
-        mostrarAlerta('error', 'Faça login para enviar seu feedback!');
-        window.location.href = '/pages/login/';
-        return null;
     }
 }
 
@@ -125,7 +91,6 @@ function handleFeedback(email, btnFeedback, feedbackText, feedbackSpinner) {
     feedbackSpinner.classList.add('hidden');
 }
 
-
 // carregando funções a partir daqui
 document.addEventListener('DOMContentLoaded', () => {
     verificarUsuarioLogado();
@@ -138,14 +103,6 @@ document.addEventListener('DOMContentLoaded', () => {
     dadosPerfil();
     renderizarMural();
     configurarEventosFeedback();
-});
-
-btnCadastro?.addEventListener('click', () => {
-    handleForm(document.querySelector('#form-cadastro'));
-});
-
-btnLogin?.addEventListener('click', () => {
-    handleForm(document.querySelector('#form-login'));
 });
 
 document.getElementById('btn-feedback')?.addEventListener('click', async () => {

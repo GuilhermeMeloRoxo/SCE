@@ -3,13 +3,10 @@ import { supabase } from "./supabase";
 export async function fazerLogout() {
     try {
         const { error } = await supabase.auth.signOut();
-        
         if (error) {
         console.error("Ocorreu um erro inesperado: ", error.message);
         return { success: false, error };
-        }
-
-        return { success: true };
+        } return { success: true };
   } catch (e) {
     console.error("Erro na comunicação com o servidor:", e);
     return { success: false, error: e };
@@ -21,8 +18,7 @@ export async function cadastrarUsuario(
   username: string,
   email: string, 
   cpf: string,
-  senha: string) 
-  {
+  senha: string) {
     const { data: userData, error: authError } = await supabase.auth.signUp({
       email,
       password: senha,
@@ -34,12 +30,10 @@ export async function cadastrarUsuario(
         }
       }
     })
-  
     if (authError) {
       throw authError;
-    }
-    return userData;
-  }
+    } return userData;
+}
 
 export async function verificarCPF(cpf: string) {
   const { data: cpfExiste, error: erroCpf } = await supabase
@@ -48,10 +42,7 @@ export async function verificarCPF(cpf: string) {
   if (erroCpf) {
     console.error("Erro na RPC de CPF:", erroCpf);
     throw new Error("Erro ao validar dados do formulário.");
-  }
-
-
-  return cpfExiste; 
+  } return cpfExiste; 
 }
 
 export async function verificarUsernameDisponivel(username: string) {
@@ -63,9 +54,7 @@ export async function verificarUsernameDisponivel(username: string) {
   if (error) {
     console.error('Erro ao validar username:', error.message);
     throw error;
-  }
-
-  return count === 0;
+  } return count === 0;
 }
 
 export async function obterUsuarioAtual() {
@@ -73,6 +62,26 @@ export async function obterUsuarioAtual() {
   if (error) {
     console.error("Erro ao obter usuário atual:", error.message);
     return null;
-  }
-  return user;
+  } return user;
+}
+
+export async function verificarUsuarioLogado() {
+    const user = obterUsuarioAtual();
+    const paginaAtual = window.location.pathname
+    const paginaPublica = paginaAtual.includes('login') || paginaAtual.includes('cadastro')
+
+    if (!user && !paginaPublica) {
+        window.location.href = '/pages/login/';
+    } else if (user && paginaPublica) {
+        window.location.href = '/';
+    }
+}
+
+export async function loginUsuario(email: string, senha: string) {
+  const { data, error } = await supabase.auth.signInWithPassword({
+      email: email,
+      password: senha,
+  });
+  if (error) throw error;
+  return data?.user;
 }

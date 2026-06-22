@@ -25,7 +25,6 @@ export default function Cadastro() {
     const emailInputRef = useRef<HTMLInputElement>(null);
 
     useEffect(() => {
-      document.title = "Cadastro - SCE";
       if (!username) {
         setUsernameStatus("idle");
         return;
@@ -79,7 +78,7 @@ export default function Cadastro() {
         }
 
       } catch (error: any) {
-        if (error.message.includes("already registered")) {
+        if (error.message.includes("Already registered")) {
           mostrarAlerta("error", "Esse email já está registrado no sistema!")
           emailInputRef.current?.focus();
         } else {
