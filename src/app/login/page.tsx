@@ -46,7 +46,7 @@ export default function Login() {
             <div className="text-right mt-2 mb-6"><Link className="text-sm font-bold text-[#0b8aa0] py-2 px-4 border-2 shadow-xl rounded-3xl hover:bg-[#0b8aa0] hover:text-white hover:border-[#0b8aa0]" href="/pages/cadastro/">Criar Perfil</Link></div>
             <div className="flex justify-center pb-8"><Image className="h-30 shadow-xl rounded-full sm:h-35" src="/logo.png" alt="Logo SCE" /></div>
             <h1 className="text-2xl font-bold text-[#0b8aa0] m-2 pb-4">Acessar Perfil</h1>
-            <form ref={formRef} onSubmit={handleLoginSubmit} className="space-y-5" method="post">
+            <form ref={formRef} onSubmit={handleLoginSubmit} className="space-y-5">
                 <div>
                     <label className="block text-sm font-bold m-2" htmlFor="input-email">Email</label>
                     <input 

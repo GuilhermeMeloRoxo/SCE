@@ -26,7 +26,7 @@ export async function cadastrarUsuario(
         data: {
           username: username, 
           nome: nome,         
-          cpf: cpf            
+          cpf: cpf,          
         }
       }
     })
@@ -68,7 +68,7 @@ export async function obterUsuarioAtual() {
 export async function loginUsuario(email: string, senha: string) {
   const { data, error } = await supabase.auth.signInWithPassword({
       email: email,
-      password: senha,
+      password: senha
   });
   if (error) throw error;
   return data?.user;

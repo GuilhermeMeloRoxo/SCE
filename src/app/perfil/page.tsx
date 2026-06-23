@@ -14,7 +14,6 @@ export default function Perfil() {
     const [loading, setLoading] = useState(true);
     const [user, setUser] = useState<any>(null);
     const [perfil, setPerfil] = useState<PerfilData | null>(null);
-    const [botoesBloqueados, setBotoesBloqueados] = useState<{ [key: string]: boolean }>({});
 
     interface Formacao {
         curso: string | null;
@@ -74,7 +73,7 @@ export default function Perfil() {
         }
         carregarDados();
     }, []);
-
+    if (!user) return mostrarAlerta("error", "Você precisa estar logado para acessar o seu perfil");
     return (
         <>
         <Navbar />
