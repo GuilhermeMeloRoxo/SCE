@@ -1,13 +1,50 @@
-"use client"
+"use client";
+import { useState, useEffect, useRef } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { fazerLogout } from "@/services/auth";
 import { useAlerta } from "@/context/AlertContext";
-import Image from "next/image";
+import { buscarPerfilPublico, fazerLogout, obterUsuarioAtual } from "@/services/auth";
 
-export function Navbar() {
-    const router = useRouter();
-    const { mostrarAlerta } = useAlerta();
+interface NavbarProps {
+  username?: string;
+}
+export function Navbar({ username }: NavbarProps) {
+  const router = useRouter();
+  const { mostrarAlerta } = useAlerta();
+  const [caminho, setCaminho] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (username) {
+      setCaminho('/perfil/' + username);
+      return;
+    }
+    if (caminho) return;
+
+    async function carregarDadosUsuario() {
+      try {
+        const { user } = await obterUsuarioAtual();
+        const { data } = await buscarPerfilPublico(user.id);
+        if (data?.username) {
+          setCaminho('/perfil/' + data.username);
+        }
+      } catch (e: any) {
+        if (e.message?.includes('NOT AUTHENTICATED')) {
+          mostrarAlerta('error', 'Você precisa estar autenticado para acessar essa página');
+          router.push('/login');
+        } else {
+          mostrarAlerta('error', 'Ocorreu um erro inesperado');
+          router.push('/login');
+        }
+      }
+    } carregarDadosUsuario();
+    }, [username, router, mostrarAlerta]);
+
+    const [menuAtivo, setMenuAtivo] = useState(false);
+    
+    const btnRef = useRef<HTMLButtonElement>(null);
+    const menuRef = useRef<HTMLUListElement>(null);
+
     const handleLogoutClick = async (e: React.MouseEvent) => {
         e.preventDefault();
         const resultado = await fazerLogout();
@@ -18,33 +55,57 @@ export function Navbar() {
             mostrarAlerta("error", "Erro ao encerrar a sessão. Tente novamente.");
         }
     };
+
+    useEffect(() => {
+        function fecharMenuNoCliqueFora(e: MouseEvent) {
+            if (
+                menuAtivo &&
+                menuRef.current && 
+                btnRef.current && 
+                !menuRef.current.contains(e.target as Node) && 
+                !btnRef.current.contains(e.target as Node)
+            ) {
+                setMenuAtivo(false);
+            }
+        }
+
+        document.addEventListener("click", fecharMenuNoCliqueFora);
+        return () => document.removeEventListener("click", fecharMenuNoCliqueFora);
+    }, [menuAtivo]);
+
     return (
         <header>
             <div className="logo">
-                <Image src="/logo.png" alt="Logo SCE" width={24} height={24} />
-                </div>
+                <Image src="/logo.png" alt="Logo SCE" width={60} height={60} className="logo" />
+            </div>
                 
             <div className="sce-title" id="sce-title-mobile">SCE</div>
             <div className="sce-title" id="sce-title-pc">Sistema de Controle de Egressos</div>
 
-            <button className="menu-hamburger" id="btn-hamburguer">
+            <button 
+                id="btn-hamburguer" // <--- GARANTA QUE ESTA LINHA ESTEJA AQUI
+                ref={btnRef}
+                className={`menu-hamburger ${menuAtivo ? 'active' : ''}`} 
+                onClick={() => setMenuAtivo(!menuAtivo)}
+            >
                 <span className="linha"></span>
                 <span className="linha"></span>
                 <span className="linha"></span>
             </button>
 
-            <ul className="nav-menu" id="nav-menu">
+
+            <ul ref={menuRef} className={`nav-menu ${menuAtivo ? 'active' : ''}`} id="nav-menu">
                 <li>
                     <div>
-                        <Link href="/">
-                        <span className="material-symbols-outlined">home</span>
-                        <p>Home</p>
+                        <Link href="/" onClick={() => setMenuAtivo(false)}>
+                            <span className="material-symbols-outlined">home</span>
+                            <p>Home</p>
                         </Link>
                     </div>
                 </li>
                 <li>
                     <div>
-                        <Link href="/perfil">
+                        <Link href={caminho || "#"} onClick={() => setMenuAtivo(false)}>
                             <span className="material-symbols-outlined">account_circle</span> 
                             <p>Seu Perfil</p>
                         </Link>

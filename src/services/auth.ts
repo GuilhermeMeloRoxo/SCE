@@ -1,12 +1,15 @@
-import { supabase } from "./supabase";
+'use server'
+import { notFound } from "next/navigation";
+import { getSupabase } from "./supabase";
 
 export async function fazerLogout() {
     try {
-        const { error } = await supabase.auth.signOut();
-        if (error) {
-        console.error("Ocorreu um erro inesperado: ", error.message);
-        return { success: false, error };
-        } return { success: true };
+      const supabase = await getSupabase();
+      const { error } = await supabase.auth.signOut();
+      if (error) {
+      console.error("Ocorreu um erro inesperado: ", error.message);
+      return { success: false, error };
+      } return { success: true };
   } catch (e) {
     console.error("Erro na comunicação com o servidor:", e);
     return { success: false, error: e };
@@ -19,6 +22,7 @@ export async function cadastrarUsuario(
   email: string, 
   cpf: string,
   senha: string) {
+    const supabase = await getSupabase();
     const { data: userData, error: authError } = await supabase.auth.signUp({
       email,
       password: senha,
@@ -36,6 +40,7 @@ export async function cadastrarUsuario(
 }
 
 export async function verificarCPF(cpf: string) {
+  const supabase = await getSupabase();
   const { data: cpfExiste, error: erroCpf } = await supabase
     .rpc('verificar_cpf_existente', { cpf_teste: cpf });
 
@@ -46,6 +51,7 @@ export async function verificarCPF(cpf: string) {
 }
 
 export async function verificarUsernameDisponivel(username: string) {
+  const supabase = await getSupabase();
   const { error, count } = await supabase
     .from('perfis')
     .select('username', { count: 'exact', head: true })
@@ -58,14 +64,39 @@ export async function verificarUsernameDisponivel(username: string) {
 }
 
 export async function obterUsuarioAtual() {
-  const { data: { user }, error } = await supabase.auth.getUser();
-  if (error) {
+  const supabase = await getSupabase();
+  const { data, error } = await supabase.auth.getUser();
+  if (error || !data?.user?.id) {
     console.error("Erro ao obter usuário atual:", error.message);
-    return null;
-  } return user;
+    throw new Error('NOT AUTHENTICATED');
+  }
+  return data;
 }
 
+export async function buscarPerfilPublico(nomeOuId) {
+  let eq: string;
+  if (nomeOuId.length <= 12) {
+    eq = 'username';
+  } else {
+    eq = 'id';
+  }
+    const supabase = await getSupabase();
+    const { data, error } = await supabase
+    .from("perfis_publicos")
+    .select("*")
+    .eq(eq, nomeOuId)
+    .single();
+
+    if (error || !data) {
+        console.error("Erro ao buscar perfil público:", error?.message);
+      throw new Error('PROFILE_NOT_FOUND');
+    }
+    return { data };
+}
+
+
 export async function loginUsuario(email: string, senha: string) {
+  const supabase = await getSupabase();
   const { data, error } = await supabase.auth.signInWithPassword({
       email: email,
       password: senha

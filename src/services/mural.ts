@@ -1,6 +1,8 @@
-import { supabase } from "./supabase";
+'use server'
+import { getSupabase } from "./supabase";
 
 export async function buscarPostsMural() {
+  const supabase = await getSupabase();
   const { data: posts, error } = await supabase
     .from("mural_completo")
     .select("*")
@@ -15,6 +17,7 @@ export async function buscarPostsMural() {
 }
 
 export async function gerenciarCurtida(postId: string, userId: string, jaCurtiu: boolean) {
+  const supabase = await getSupabase();
   try {
     if (jaCurtiu) {
       const { error } = await supabase
@@ -41,6 +44,7 @@ export async function gerenciarCurtida(postId: string, userId: string, jaCurtiu:
 }
 
 export async function enviarFeedback(tipo: string, assunto: string, mensagem: string) {
+  const supabase = await getSupabase();
   const { error } = await supabase
     .from("feedbacks")
     .insert([{ tipo, assunto, mensagem }]);
@@ -50,6 +54,7 @@ export async function enviarFeedback(tipo: string, assunto: string, mensagem: st
 }
 
 export async function buscarPostsCurtidos(userId: string, postIds: string[]) {
+  const supabase = await getSupabase();
   if (!userId || postIds.length === 0) return new Set();
 
   const { data, error } = await supabase

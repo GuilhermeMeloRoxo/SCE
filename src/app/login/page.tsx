@@ -21,13 +21,10 @@ export default function Login() {
             if (!formRef.current) {
                 throw new Error("Referência do formulário não está pronta ou é inválida.");
             }
-            const formDados = new FormData(formRef.current);
-            const email = formDados.get('email')?.toString() || '';
-            const senha = formDados.get('senha')?.toString() || '';
             const dados = await loginUsuario(email, senha);
             if (dados) {
                 mostrarAlerta('ok', 'Bem-vindo(a)!');
-                router.push('/mural');
+                router.push('/');
             }
         } catch (error: any) {
             if (error.message.includes("Invalid login credentials")) {
@@ -44,7 +41,7 @@ export default function Login() {
         <main className="bg-slate-50 p-8 shadow-2xl w-full max-w-2xl sm:rounded-2xl sm:mt-15 sm:px-18 lg:mx-auto">
         <div>
             <div className="text-right mt-2 mb-6"><Link className="text-sm font-bold text-[#0b8aa0] py-2 px-4 border-2 shadow-xl rounded-3xl hover:bg-[#0b8aa0] hover:text-white hover:border-[#0b8aa0]" href="/pages/cadastro/">Criar Perfil</Link></div>
-            <div className="flex justify-center pb-8"><Image className="h-30 shadow-xl rounded-full sm:h-35" src="/logo.png" alt="Logo SCE" /></div>
+            <div className="flex justify-center pb-8"><Image width={140} height={240} className="h-30 shadow-xl rounded-full sm:h-35" src="/logo.png" alt="Logo SCE" /></div>
             <h1 className="text-2xl font-bold text-[#0b8aa0] m-2 pb-4">Acessar Perfil</h1>
             <form ref={formRef} onSubmit={handleLoginSubmit} className="space-y-5">
                 <div>

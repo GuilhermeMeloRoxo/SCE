@@ -5,15 +5,15 @@ export function Footer() {
         <footer>
         <div className="social-icons">
             <a href="https://github.com/ifpb" target="_blank" className="github">
-                <Image src="/github.png" alt="GitHub" width={24} height={24} />
+                <Image src="/github.png" alt="GitHub" width={40} height={40} />
             </a>
             
             <a href="https://www.instagram.com/ifpb.joaopessoa/" target="_blank" className="instagram">
-                <Image src="/instagram.png" alt="Instagram" width={24} height={24} />
+                <Image src="/instagram.png" alt="Instagram" width={60} height={60} />
             </a>
             
             <a href="https://www.linkedin.com/school/ifpb/" target="_blank" className="linkedin">
-                <Image src="/linkedin.png" alt="LinkedIn" width={24} height={24} />
+                <Image src="/linkedin.png" alt="LinkedIn" width={60} height={60} />
             </a>
         </div>
         </footer> 
