@@ -23,8 +23,8 @@ garantindo conformidade total com as exigências de avaliação do MEC.
 - Sistema de Conexões
 
 ## Tecnologias Utilizadas
-- Frontend: HTML, CSS, Tailwind, Vanilla JS
-- Backend: Node.js
+- Frontend: HTML, CSS, Tailwind, React JS
+- Backend: Node.js, Next.js, TypeScript
 - Database: Supabase
 
 ## Como Executar
