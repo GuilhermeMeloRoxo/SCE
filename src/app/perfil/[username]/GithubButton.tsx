@@ -10,8 +10,11 @@ export default function GithubButton() {
 
   const handleVinculo = async () => {
     try {
-      await conectarGithub(pathname);
+      const urlRedirecionamento = await conectarGithub(pathname);
 
+      if (urlRedirecionamento) {
+        window.location.assign(urlRedirecionamento);
+      }
     } catch (err) {
       mostrarAlerta('error', 'Erro ao conectar no GitHub, tente novamente.');
       console.error('Erro ao conectar GitHub:', err);

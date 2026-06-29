@@ -4,7 +4,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useAlerta } from "@/context/AlertContext";
-import { buscarPerfilPublico, fazerLogout, obterUsuarioAtual } from "@/services/auth";
+import { fazerLogout, obterUsuarioAtual } from "@/services/auth";
+import { buscarPerfilPublico } from "@/services/profile";
 
 interface NavbarProps {
   username?: string;
@@ -83,7 +84,7 @@ export function Navbar({ username }: NavbarProps) {
             <div className="sce-title" id="sce-title-pc">Sistema de Controle de Egressos</div>
 
             <button 
-                id="btn-hamburguer" // <--- GARANTA QUE ESTA LINHA ESTEJA AQUI
+                id="btn-hamburguer"
                 ref={btnRef}
                 className={`menu-hamburger ${menuAtivo ? 'active' : ''}`} 
                 onClick={() => setMenuAtivo(!menuAtivo)}
@@ -113,7 +114,7 @@ export function Navbar({ username }: NavbarProps) {
                 </li>
                 <li>
                     <div>
-                        <Link href="#" onClick={handleLogoutClick}>
+                        <Link href="#" onClick={handleLogoutClick} id="logout">
                             <span className="material-symbols-outlined">logout</span>
                             <p>Logout</p>
                         </Link>

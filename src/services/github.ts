@@ -1,5 +1,6 @@
 'use server'
-import { getSupabase } from "./supabase";
+import { obterUsuarioAtual } from "./auth";
+import { getSupabase } from "./supabaseServer";
 
 export async function conectarGithub(pathname: string) {
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
@@ -17,23 +18,11 @@ export async function conectarGithub(pathname: string) {
 }
 
 export async function buscarRepositoriosGithub(github_user: string) {
-  const supabase = await getSupabase();
-
-  const { data: { user }, error: userError } = await supabase.auth.getUser();
-
-  if (userError || !user) {
-    console.error("Erro ao obter usuário:", userError?.message);
-    throw new Error("Usuário não autenticado no sistema.");
-  }
-
-  const identidadeGithub = user.identities?.find(
-    (identidade) => identidade.provider === 'github'
-  );
-
-  const tokenGithub = (identidadeGithub?.identity_data as any)?.access_token || (identidadeGithub as any)?.provider_token;
+  const tokenGithub = await buscarTokenGithub();
   if (!tokenGithub) {
-    return { error: 'TOKEN_EXPIRADO_OU_AUSENTE' };
+    return { error: 'TOKEN_AUSENTE' };
   }
+
   const reposRes = await fetch(
     `https://api.github.com/users/${github_user}/repos?sort=pushed&direction=desc&per_page=2`,
     { 
@@ -45,9 +34,9 @@ export async function buscarRepositoriosGithub(github_user: string) {
   );
 
   if (reposRes.status === 401) {
-    return { error: 'TOKEN_EXPIRADO_OU_AUSENTE' };
+    return { error: 'TOKEN_EXPIRADO' };
   } else if (!reposRes.ok) {
-    throw new Error('Falha na API do GitHub');
+    return { error: 'ERRO_API_GITHUB', status: reposRes.status };
   }
   const dados = await reposRes.json();
   return { data: dados };
@@ -55,30 +44,52 @@ export async function buscarRepositoriosGithub(github_user: string) {
 
 
 export async function obterUsuarioGithub() {
-  const supabase = await getSupabase();
-
-  const { data: { user }, error: userError } = await supabase.auth.getUser();
-
-  if (userError || !user) {
-    console.error("Erro ao obter usuário:", userError?.message);
-    throw new Error("Usuário não autenticado no sistema.");
+  const tokenGithub = await buscarTokenGithub();
+  if (!tokenGithub) {
+    return { error: 'TOKEN_AUSENTE' };
   }
+
+  const userRes = await fetch('https://api.github.com/user', {
+    headers: {
+      Authorization: `Bearer ${tokenGithub}`,
+      Accept: "application/vnd.github+json"
+    }
+  });
+
+  if (userRes.status === 401) {
+    return { error: 'TOKEN_EXPIRADO' };
+  }
+
+  if (!userRes.ok) {
+    return { error: 'ERRO_API_GITHUB', status: userRes.status };
+  }
+  
+  return await userRes.json();
+}
+
+export async function desvincularGithub() {
+  const supabase = await getSupabase();
+  const { user } = await obterUsuarioAtual();
 
   const identidadeGithub = user.identities?.find(
     (identidade) => identidade.provider === 'github'
   );
-
-  const tokenGithub = (identidadeGithub?.identity_data as any)?.access_token || (identidadeGithub as any)?.provider_token;
-  if (!tokenGithub) {
-    return { error: 'TOKEN_EXPIRADO_OU_AUSENTE' };
-  }
-  const userRes = await fetch('https://api.github.com/user', {
-            headers: {
-                Authorization: `Bearer ${tokenGithub}`,
-                "Accept": "application/vnd.github+json"
-            }
-        });
-
-  return await userRes.json();
+  await supabase.auth.unlinkIdentity(identidadeGithub);
 }
-    
+
+async function buscarTokenGithub() {
+  const supabase = await getSupabase();
+  const { user } = await obterUsuarioAtual();
+  const { data: tokenData } = await supabase
+    .from('tokens')
+    .select('access_token')
+    .eq('user_id', user.id)
+    .single();
+
+  const tokenGithub = tokenData?.access_token;
+
+  if (!tokenGithub) {
+    return { error: 'TOKEN_AUSENTE' };
+  }
+  return tokenGithub
+}

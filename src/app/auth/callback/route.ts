@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { getSupabase } from '@/services/supabase';
+import { getSupabase } from '@/services/supabaseServer';
 
 export async function GET(request: Request) {
   const { searchParams, origin } = new URL(request.url);
@@ -8,11 +8,12 @@ export async function GET(request: Request) {
 
   if (code) {
     const supabase = await getSupabase();
-    
+
     const { data, error } = await supabase.auth.exchangeCodeForSession(code);
-    
+
     if (!error && data?.user) {
       const usuarioLogado = data.user;
+      const tokenGithub = data.session?.provider_token;
 
       const githubIdentity = usuarioLogado.identities?.find(
         (id) => id.provider === 'github'
@@ -28,6 +29,18 @@ export async function GET(request: Request) {
             .eq('id', usuarioLogado.id);
         }
       }
+
+      if (tokenGithub) {
+        await supabase
+          .from('tokens')
+          .upsert({
+            user_id: usuarioLogado.id,
+            provider: 'github',
+            access_token: tokenGithub,
+            updated_at: new Date().toISOString()
+          });
+      }
+
       return NextResponse.redirect(`${origin}${next}`);
     }
   }

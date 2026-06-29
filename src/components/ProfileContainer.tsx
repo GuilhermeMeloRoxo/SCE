@@ -1,5 +1,5 @@
 'use client'
-import { buscarPerfilPublico } from '@/services/auth';
+import { buscarPerfilPublico } from '@/services/profile';
 import { ProfileIcon } from '@/components/Icons';
 import Image from 'next/image';
 import { useState, useEffect } from 'react';
@@ -34,12 +34,33 @@ export function ProfileContainer({ username }: ProfileContainerProps) {
   }, [username]);
 
   if (carregando) {
-    return <p className="text-gray-500">Buscando informações de perfil...</p>;
+    return (
+      <div className="w-full flex-shrink-0 lg:w-[350px] bg-slate-50 p-10 flex flex-col items-center justify-center border-r border-slate-200" id="profile-container">
+        <div className="animate-pulse flex flex-col items-center w-full">
+            <div className="w-48 h-48 rounded-full bg-slate-200 mb-8 border-4 border-white shadow-lg"></div>
+            <div className="space-y-3 flex flex-col items-center w-full">
+                <div className="h-8 w-3/4 bg-slate-200 rounded-lg"></div>
+                <div className="h-4 w-1/2 bg-slate-200 rounded-md"></div>
+            </div>
+            <div className="mt-12 space-y-8 text-left w-full border-t border-slate-200 pt-10 px-4">
+                <div className="space-y-2">
+                    <div className="h-3 w-16 bg-slate-200 rounded uppercase"></div>
+                    <div className="h-6 w-full bg-slate-200 rounded-md"></div>
+                </div>
+                <div className="space-y-2">
+                    <div className="h-3 w-24 bg-slate-200 rounded uppercase"></div>
+                    <div className="h-6 w-3/4 bg-slate-200 rounded-md"></div>
+                </div>
+            </div>
+            <div className="mt-10 h-10 w-full bg-slate-200 rounded-xl"></div>
+        </div>
+      </div>
+    );
   }
 
   const avatar = data?.avatar ? (
     <Image
-      src={data.avatar}
+      src={`${data.avatar}?t=${Date.now()}`}
       alt="Foto de Perfil"
       width={400}
       height={400}
@@ -49,7 +70,7 @@ export function ProfileContainer({ username }: ProfileContainerProps) {
     <ProfileIcon className="w-34 h-34" />
   );
     return (
-        <>
+      <div className="w-full flex-shrink-0 lg:w-[350px] bg-slate-50 p-10 flex flex-col items-center justify-center border-r border-slate-200" id="profile-container">
         <div className="w-48 h-48 rounded-full bg-slate-200 mb-8 border-4 border-white shadow-lg overflow-hidden flex-shrink-0 flex items-center justify-center">
         {avatar}
         </div>
@@ -80,6 +101,6 @@ export function ProfileContainer({ username }: ProfileContainerProps) {
                 </div>
             </div>
         </div>
-        </>
+      </div>
     );
 }
