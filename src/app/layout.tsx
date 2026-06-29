@@ -4,7 +4,10 @@ import { Footer } from "@/components/Footer";
 import { AlertProvider } from '@/context/AlertContext';
 
 export const metadata: Metadata = {
-    title: 'Mural - SCE',
+    title: {
+        default: 'Mural - SCE',
+        template: '%s | SCE'
+    },
     description: 'Mural de Notícias do Sistema de Controle de Egressos',
 };
 
@@ -15,7 +18,7 @@ export default function Rootlayout({
 }) {
     return (
         <html lang="pt-br">
-            <body className="bg-white flex items-center sm:justify-center">
+            <body className="bg-white flex sm:justify-center">
                 <AlertProvider>
                     {children}
                     <Footer />

@@ -67,18 +67,20 @@ export default function Mural() {
             const resultado = await gerenciarCurtida(postId, user.id, jaCurtiu);
 
             if (resultado.success) {
-            setPosts((prev) => prev.map((post) => 
-                post.post_id === postId 
-                ? { ...post, quantidade_curtidas: post.quantidade_curtidas + (jaCurtiu ? -1 : 1) } 
-                : post
-            ));
+            setPosts((prev) =>
+                prev.map((post) =>
+                post.post_id === postId
+                    ? { ...post, quantidade_curtidas: post.quantidade_curtidas + (jaCurtiu ? -1 : 1) }
+                    : post
+                )
+            );
 
             setPostsCurtidos((prevSet) => {
                 const novoSet = new Set(prevSet);
                 if (jaCurtiu) {
                 novoSet.delete(postId);
                 } else {
-                novoSet.add(postId); 
+                novoSet.add(postId);
                 }
                 return novoSet;
             });
@@ -192,14 +194,18 @@ export default function Mural() {
                         <button
                             disabled={botoesBloqueados[post.post_id]}
                             onClick={() => handleCurtir(post.post_id, curtidoPeloUsuario)}
-                            className="cursor-pointer flex items-center gap-1.5 group transition"
+                            className={`flex items-center gap-1.5 group transition ${botoesBloqueados[post.post_id] ? "cursor-not-allowed opacity-70" : "cursor-pointer"}`}
                         >
-                            <span
-                            className={`material-symbols-outlined text-[20px] transition group-hover:text-red-500
-                                ${curtidoPeloUsuario ? "text-red-500 fill-red-500" : "text-gray-400"}`}
-                            >
-                            favorite
-                            </span>
+                            {botoesBloqueados[post.post_id] ? (
+                                <span className="h-5 w-5 animate-spin rounded-full border-2 border-gray-300 border-t-red-500" />
+                            ) : (
+                                <span
+                                className={`material-symbols-outlined text-[20px] transition group-hover:text-red-500
+                                    ${curtidoPeloUsuario ? "text-red-500 fill-red-500" : "text-gray-400"}`}
+                                >
+                                favorite
+                                </span>
+                            )}
                             <span className="text-xs font-semibold text-gray-500">{post.quantidade_curtidas}</span>
                         </button>
 
