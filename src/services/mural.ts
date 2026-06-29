@@ -1,5 +1,5 @@
-'use server'
-import { getSupabase } from "./supabase";
+'use server';
+import { getSupabase } from "./supabaseServer";
 
 export async function buscarPostsMural() {
   const supabase = await getSupabase();
@@ -18,27 +18,49 @@ export async function buscarPostsMural() {
 
 export async function gerenciarCurtida(postId: string, userId: string, jaCurtiu: boolean) {
   const supabase = await getSupabase();
+
   try {
     if (jaCurtiu) {
-      const { error } = await supabase
+      const { error: deleteError, data: deletedData } = await supabase
         .from("curtidas")
         .delete()
         .eq("post_id", postId)
-        .eq("id", userId);
+        .eq("id", userId)
+        .select();
 
-      if (error) throw error;
+      if (deleteError) throw deleteError;
+      if (!Array.isArray(deletedData) || deletedData.length === 0) {
+        throw new Error("Nenhuma curtida encontrada para remover.");
+      }
     } else {
-      const { error } = await supabase
+      const { error: insertError, data: insertedData } = await supabase
         .from("curtidas")
-        .insert([{ post_id: postId, id: userId }]);
+        .insert([{ post_id: postId, id: userId }])
+        .select();
 
-      // erro 23505 significa chave duplicada
-      if (error && error.code !== "23505") throw error;
+      if (insertError) throw insertError;
+      if (!Array.isArray(insertedData) || insertedData.length === 0) {
+        throw new Error("Falha ao criar a curtida.");
+      }
     }
 
-    return { success: true };
+    const { data: postAtual, error: postError } = await supabase
+      .from("posts")
+      .select("post_id, quantidade_curtidas")
+      .eq("post_id", postId)
+      .maybeSingle();
+
+    if (postError) throw postError;
+    if (!postAtual) {
+      throw new Error("Post não encontrado após atualizar curtida.");
+    }
+
+    return {
+      success: true,
+      quantidade_curtidas: postAtual.quantidade_curtidas,
+    };
   } catch (error: any) {
-    console.error("Erro ao gerenciar curtida no banco:", error.message);
+    console.error("Erro ao gerenciar curtida no banco:", error.message || error);
     return { success: false, error };
   }
 }
