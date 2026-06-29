@@ -72,7 +72,7 @@ export default function Cadastro() {
 
         const dados = await cadastrarUsuario(nome, username, email, cpf, senha);
         if (dados.session){
-          router.push('/mural');
+          router.push('/');
         } else {
           mostrarAlerta("ok", "Cadastro realizado! Confira seu email para ativar sua conta.")
         }
@@ -91,7 +91,7 @@ export default function Cadastro() {
       <main className="bg-slate-50 p-8 shadow-2xl w-full max-w-2xl sm:rounded-2xl sm:mt-15 sm:px-18 lg:mx-auto">
         <div>
           <div className="flex justify-center pb-8">
-            <Image src="/logo.png" alt="Logo SCE" width={24} height={24} />
+            <Image src="/logo.png" alt="Logo SCE" width={160} height={160} className='shadow-xl rounded-full h-20 w-20 sm:h-40 sm:w-40' />
           </div>
           <h1 className="text-2xl font-bold text-[#0b8aa0] m-2 pb-4">Criar Perfil</h1>
           
@@ -120,7 +120,7 @@ export default function Cadastro() {
                   type="text" 
                   value={username}
                   onChange={handleUsernameChange}
-                  minLength={3} 
+                  minLength={4} 
                   pattern="[A-Za-z0-9\-]+"
                   title="Permitido apenas letras, números e hífen." 
                   placeholder="Digite seu nome de usuário" 
