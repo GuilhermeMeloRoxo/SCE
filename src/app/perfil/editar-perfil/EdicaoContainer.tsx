@@ -1,0 +1,567 @@
+"use client";
+
+import { ChangeEvent, SubmitEvent, useEffect, useRef, useState } from "react";
+import { verificarUsernameDisponivel, obterUsuarioAtual } from "@/services/auth";
+import { useAlerta } from "@/context/AlertContext";
+import { buscarPerfilCompleto } from "@/services/profile";
+import { getSupabaseBrowserClient } from "@/services/supabaseBrowser";
+import { formatarCPF, formatarTelefone } from "@/utils/formatters";
+import Cropper from "cropperjs";
+import "cropperjs/dist/cropper.css";
+
+export interface FormValues {
+  nome: string;
+  username: string;
+  email: string;
+  cpf: string;
+  senha: string | null;
+  matricula: string;
+  formacao: string;
+  curso: string;
+  telefone: string;
+}
+
+interface EdicaoContainerProps {
+  isLoading?: boolean;
+  usuarioId?: string;
+  onSubmit?: (values: FormValues) => Promise<void> | void;
+  onProfileLoaded?: (values: FormValues) => void;
+}
+
+const initialValues: FormValues = {
+  nome: "",
+  username: "",
+  email: "",
+  cpf: "",
+  senha: null,
+  matricula: "",
+  formacao: "",
+  curso: "",
+  telefone: "",
+};
+
+export default function EdicaoContainer({ isLoading = false, usuarioId, onSubmit, onProfileLoaded }: EdicaoContainerProps) {
+  const { mostrarAlerta } = useAlerta();
+  const [values, setValues] = useState<FormValues>(initialValues);
+  const [mostrarSenha, setMostrarSenha] = useState(false);
+  const [currentUsername, setCurrentUsername] = useState("");
+  const [usernameStatus, setUsernameStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
+  const [showCropperModal, setShowCropperModal] = useState(false);
+  const [selectedAvatarUrl, setSelectedAvatarUrl] = useState<string | null>(null);
+  const [avatarPreviewUrl, setAvatarPreviewUrl] = useState<string | null>(null);
+  const [isUploadingAvatar, setIsUploadingAvatar] = useState(false);
+  const imageCropperRef = useRef<HTMLImageElement | null>(null);
+  const cropperInstanceRef = useRef<Cropper | null>(null);
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+
+  useEffect(() => {
+    let isActive = true;
+
+    const carregarPerfil = async () => {
+      try {
+        const idParaBuscar = usuarioId ?? (await obterUsuarioAtual()).user?.id;
+
+        if (!idParaBuscar) {
+          return;
+        }
+
+        const resultado = await buscarPerfilCompleto(idParaBuscar);
+
+        if (!resultado.data || !isActive) {
+          return;
+        }
+
+        const dadosCarregados: FormValues = {
+          nome: resultado.data.nome ?? "",
+          username: resultado.data.username ?? "",
+          email: resultado.data.email ?? "",
+          cpf: formatarCPF(resultado.data.cpf_descriptografado ?? ""),
+          senha: null,
+          matricula: resultado.data.matricula_institucional ?? "",
+          formacao: resultado.data.termino ?? "",
+          curso: resultado.data.curso ?? "",
+          telefone: resultado.data.telefone ?? "",
+        };
+
+        setCurrentUsername(resultado.data.username ?? "");
+        setValues(dadosCarregados);
+        onProfileLoaded?.(dadosCarregados);
+      } catch (error) {
+        console.error("Erro ao carregar perfil para edição:", error);
+      }
+    };
+
+    carregarPerfil();
+
+    return () => {
+      isActive = false;
+    };
+  }, [usuarioId, onProfileLoaded]);
+
+  useEffect(() => {
+    if (!showCropperModal || !selectedAvatarUrl || !imageCropperRef.current) {
+      return;
+    }
+
+    cropperInstanceRef.current?.destroy();
+    cropperInstanceRef.current = new Cropper(imageCropperRef.current, {
+      aspectRatio: 1,
+      viewMode: 1,
+      dragMode: "move",
+      autoCropArea: 1,
+      background: false,
+      responsive: true,
+    });
+
+    return () => {
+      cropperInstanceRef.current?.destroy();
+      cropperInstanceRef.current = null;
+    };
+  }, [showCropperModal, selectedAvatarUrl]);
+
+  useEffect(() => {
+    if (!values.username) {
+      setUsernameStatus("idle");
+      return;
+    }
+
+    if (values.username.length < 4) {
+      setUsernameStatus("error");
+      return;
+    }
+
+    if (values.username === currentUsername) {
+      setUsernameStatus("success");
+      return;
+    }
+
+    setUsernameStatus("loading");
+
+    const timer = window.setTimeout(async () => {
+      try {
+        const disponivel = await verificarUsernameDisponivel(values.username);
+        setUsernameStatus(disponivel ? "success" : "error");
+      } catch {
+        setUsernameStatus("error");
+      }
+    }, 1000);
+
+    return () => window.clearTimeout(timer);
+  }, [currentUsername, values.username]);
+
+  const handleUsernameChange = (event: ChangeEvent<HTMLInputElement>) => {
+    setValues((prev) => ({ ...prev, username: event.target.value.trim() }));
+  };
+
+  const handleCpfChange = (event: ChangeEvent<HTMLInputElement>) => {
+    setValues((prev) => ({ ...prev, cpf: formatarCPF(event.target.value) }));
+  };
+
+  const handleTelefoneChange = (event: ChangeEvent<HTMLInputElement>) => {
+    setValues((prev) => ({ ...prev, telefone: formatarTelefone(event.target.value) }));
+  };
+
+  const handleAvatarSelection = async (event: ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+
+    if (!file) {
+      return;
+    }
+
+    const tiposPermitidos = ["image/png", "image/jpeg", "image/jpg"];
+    if (!tiposPermitidos.includes(file.type)) {
+      mostrarAlerta("error", "Por favor, selecione apenas imagens JPG ou PNG.");
+      event.target.value = "";
+      return;
+    }
+
+    if (file.size > 5 * 1024 * 1024) {
+      mostrarAlerta("error", "A imagem original é muito grande. O limite máximo é de 5MB.");
+      event.target.value = "";
+      return;
+    }
+
+    const previewUrl = URL.createObjectURL(file);
+    setSelectedAvatarUrl(previewUrl);
+    setShowCropperModal(true);
+  };
+
+  const closeCropperModal = () => {
+    cropperInstanceRef.current?.destroy();
+    cropperInstanceRef.current = null;
+    if (selectedAvatarUrl?.startsWith("blob:")) {
+      URL.revokeObjectURL(selectedAvatarUrl);
+    }
+    setSelectedAvatarUrl(null);
+    setShowCropperModal(false);
+  };
+
+  const handleSaveCroppedAvatar = async () => {
+    if (!cropperInstanceRef.current) {
+      return;
+    }
+
+    try {
+      setIsUploadingAvatar(true);
+
+      const canvas = cropperInstanceRef.current.getCroppedCanvas({
+        width: 400,
+        height: 400,
+      });
+
+      const blob = await new Promise<Blob | null>((resolve) => {
+        canvas.toBlob((result) => resolve(result), "image/webp", 0.8);
+      });
+
+      if (!blob) {
+        mostrarAlerta("error", "Não foi possível processar a imagem selecionada.");
+        return;
+      }
+
+      const webpFile = new File([blob], "avatar.webp", { type: "image/webp" });
+      const supabase = getSupabaseBrowserClient();
+      const { user } = await obterUsuarioAtual();
+      const userId = user?.id;
+
+      if (!userId) {
+        throw new Error("Usuário não autenticado.");
+      }
+
+      const filePath = `${userId}/avatar_pic.webp`;
+      const { error: uploadError } = await supabase.storage.from("avatares").upload(filePath, webpFile, { upsert: true });
+
+      if (uploadError) {
+        throw uploadError;
+      }
+
+      const { error: updateError } = await supabase.from("perfis").update({ avatar_url: filePath }).eq("id", userId);
+
+      if (updateError) {
+        throw updateError;
+      }
+
+      setAvatarPreviewUrl(canvas.toDataURL("image/webp"));
+      mostrarAlerta("ok", "Sua foto de perfil foi ajustada e salva com sucesso!");
+      closeCropperModal();
+      if (fileInputRef.current) {
+        fileInputRef.current.value = "";
+      }
+    } catch (error) {
+      console.error("Erro ao salvar foto de perfil:", error);
+      mostrarAlerta("error", "Ocorreu um erro ao salvar sua nova foto de perfil no servidor.");
+    } finally {
+      setIsUploadingAvatar(false);
+    }
+  };
+
+  const handleSubmit = async (event: SubmitEvent) => {
+    event.preventDefault();
+
+    if (usernameStatus === "loading") {
+      mostrarAlerta("error", "Aguarde a validação do username antes de salvar.");
+      return;
+    }
+
+    if (usernameStatus === "error") {
+      mostrarAlerta("error", "Escolha um username válido antes de salvar.");
+      return;
+    }
+
+    if (values.senha && values.senha.length > 0 && values.senha.length < 8) {
+      mostrarAlerta("error", "A senha deve ter pelo menos 8 caracteres ou ficar em branco.");
+      return;
+    }
+
+    const valuesToSubmit: FormValues = {
+      ...values,
+      senha: values.senha?.trim() || null,
+    };
+
+    await onSubmit?.(valuesToSubmit);
+  };
+
+  return (
+    <form onSubmit={handleSubmit} id="form-edit" className="w-full max-w-4xl p-4 lg:grid lg:grid-cols-2 lg:gap-10">
+      <div className="space-y-4">
+        <div>
+          <label className="block text-sm font-bold m-2" htmlFor="nome-completo">Nome Completo *</label>
+          <input
+            id="nome-completo"
+            type="text"
+            placeholder="Digite seu nome completo"
+            pattern="[A-Za-zÀ-ÖØ-öø-ÿ\s]+ [A-Za-zÀ-ÖØ-öø-ÿ\s]+$"
+            value={values.nome}
+            onChange={(event) => setValues((prev) => ({ ...prev, nome: event.target.value }))}
+            className="px-4 py-2.5 w-full border border-gray-300 rounded-3xl text-sm focus:ring-2 focus:ring-[#087487] focus:border-transparent outline-none transition"
+            required
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-bold m-2" htmlFor="email">Email *</label>
+          <input
+            id="email"
+            type="email"
+            title="Por favor, insira o seu email pessoal"
+            placeholder="Ex.: nome@exemplo.com"
+            value={values.email}
+            onChange={(event) => setValues((prev) => ({ ...prev, email: event.target.value }))}
+            className="px-4 py-2.5 w-full border border-gray-300 rounded-3xl text-sm focus:ring-2 focus:ring-[#087487] focus:border-transparent outline-none transition"
+            required
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-bold m-2" htmlFor="cpf">CPF *</label>
+          <input
+            id="cpf"
+            type="text"
+            inputMode="numeric"
+            placeholder="Ex.: 123.456.789-00"
+            value={values.cpf}
+            onChange={handleCpfChange}
+            pattern="^\d{3}\.\d{3}\.\d{3}-\d{2}$"
+            className="px-4 py-2.5 w-full border border-gray-300 rounded-3xl text-sm focus:ring-2 focus:ring-[#087487] focus:border-transparent outline-none transition"
+            required
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-bold m-2" htmlFor="input-senha">Mudar Senha (opcional)</label>
+          <div className="relative">
+            <input
+              id="input-senha"
+              className="px-4 py-2.5 w-full border border-gray-300 rounded-3xl text-sm focus:ring-2 focus:ring-[#087487] focus:border-transparent outline-none transition"
+              type={mostrarSenha ? "text" : "password"}
+              value={values.senha ?? ""}
+              onChange={(event) => setValues((prev) => ({ ...prev, senha: event.target.value }))}
+              minLength={8}
+              title="A senha deve ter pelo menos 8 dígitos ou ficar em branco"
+              placeholder="Digite uma nova senha"
+            />
+            <button
+              type="button"
+              onClick={() => setMostrarSenha((prev) => !prev)}
+              className="absolute right-4 bottom-1/2 translate-y-1/2 text-gray-500 hover:text-gray-700 focus:outline-none flex items-center justify-center"
+            >
+              <span className="material-symbols-outlined !text-lg">
+                {mostrarSenha ? "visibility_off" : "visibility"}
+              </span>
+            </button>
+          </div>
+        </div>
+
+        <div>
+          <label className="block text-sm font-bold m-2" htmlFor="telefone">Telefone (opcional)</label>
+          <input
+            id="telefone"
+            type="tel"
+            inputMode="tel"
+            placeholder="Ex.: (83) 98765-4321"
+            value={values.telefone}
+            onChange={handleTelefoneChange}
+            pattern="^\(\d{2}\) \d{5}-\d{4}$"
+            className="px-4 py-2.5 w-full border border-gray-300 rounded-3xl text-sm focus:ring-2 focus:ring-[#087487] focus:border-transparent outline-none transition"
+          />
+        </div>
+      </div>
+
+      <div className="space-y-4">
+        <div>
+          <label className="block text-sm font-bold m-2" htmlFor="matricula-institucional">Matrícula Institucional *</label>
+          <input
+            id="matricula-institucional"
+            type="text"
+            placeholder="Ex.: 20261230012"
+            pattern="[0-9]{9}[0-9]*|[0-9]{7}"
+            value={values.matricula}
+            onChange={(event) => setValues((prev) => ({ ...prev, matricula: event.target.value }))}
+            className="px-4 py-2.5 w-full border border-gray-300 rounded-3xl text-sm focus:ring-2 focus:ring-[#087487] focus:border-transparent outline-none transition"
+            required
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-bold m-2" htmlFor="opcoes">Egressos/Docentes *</label>
+          <div className="relative">
+            <select
+              id="opcoes"
+              value={values.curso}
+              onChange={(event) => setValues((prev) => ({ ...prev, curso: event.target.value }))}
+              required
+              className="px-4 py-2.5 w-full cursor-pointer border border-gray-300 rounded-3xl text-sm focus:ring-2 focus:ring-[#087487] focus:border-transparent outline-none transition appearance-none bg-white"
+            >
+              <option value="" disabled>Selecione uma opção</option>
+              <optgroup label="Cursos Superiores">
+                <option value="Engenharia Elétrica">Engenharia Elétrica</option>
+                <option value="Engenharia de Software">Engenharia de Software</option>
+                <option value="Redes de Computadores">Redes de Computadores</option>
+                <option value="Sistemas para Internet">Sistemas para Internet</option>
+              </optgroup>
+              <optgroup label="Mestrado">
+                <option value="Tecnologia da Informação">Tecnologia da Informação</option>
+              </optgroup>
+              <optgroup label="Corpo Docente">
+                <option value="Coordenador">Coordenador</option>
+                <option value="Professor">Professor</option>
+              </optgroup>
+            </select>
+            <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-gray-500">
+              <svg className="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
+              </svg>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <label className="block text-sm font-bold m-2" htmlFor="data-formacao">Data de Formação *</label>
+          <input
+            id="data-formacao"
+            type="text"
+            pattern="[0-9]{4}\.[0-9]{1}"
+            placeholder="Ex.: 2026.1"
+            value={values.formacao}
+            onChange={(event) => setValues((prev) => ({ ...prev, formacao: event.target.value }))}
+            className="px-4 py-2.5 w-full border border-gray-300 rounded-3xl text-sm focus:ring-2 focus:ring-[#087487] focus:border-transparent outline-none transition"
+            required
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-bold m-2" htmlFor="input-username">Username *</label>
+          <div className="relative">
+            <input
+              type="text"
+              id="input-username"
+              className="px-4 py-2.5 w-full border border-gray-300 rounded-3xl text-sm focus:ring-2 focus:ring-[#087487] focus:border-transparent outline-none transition"
+              value={values.username}
+              onChange={handleUsernameChange}
+              minLength={3}
+              pattern="[A-Za-z0-9\-]+"
+              title="Permitido apenas letras, números e hífen."
+              placeholder="Digite seu nome de usuário"
+              required
+            />
+            <span className="absolute right-4 bottom-1/2 translate-y-1/2 flex items-center justify-center">
+              {usernameStatus === "loading" && (
+                <div className="w-[18px] h-[18px] border-2 border-zinc-300 border-t-[#0b8aa0] rounded-full animate-spin" />
+              )}
+              {usernameStatus === "success" && (
+                <span className="material-symbols-outlined text-green-500 !text-lg">check_circle</span>
+              )}
+              {usernameStatus === "error" && (
+                <span className="material-symbols-outlined text-red-500 !text-lg">cancel</span>
+              )}
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <div className="bg-slate-100 max-w-150 border mx-auto mt-10 lg:mt-4 border-gray-300 rounded-2xl flex justify-center items-center gap-4 p-4 shadow col-span-2">
+        <div className="w-16 h-16 rounded-full overflow-hidden bg-[#0b8aa0] flex items-center justify-center text-white shrink-0">
+          {avatarPreviewUrl ? (
+            <img src={avatarPreviewUrl} alt="Foto de perfil" className="w-full h-full object-cover" />
+          ) : (
+            <svg className="w-8 h-8" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"></path>
+            </svg>
+          )}
+        </div>
+        <div>
+          <p className="text-md font-bold">Foto de Perfil</p>
+          <p className="text-xs text-gray-400 mb-2">Formatos aceitos: JPG, PNG. Tamanho máximo: 5MB.</p>
+
+          <label htmlFor="avatar-input" className="text-white ml-auto cursor-pointer bg-[#0b8aa0] rounded-3xl px-4 py-1 text-xs font-bold flex items-center justify-center gap-2 hover:bg-[#087487] transition duration-300 w-fit">
+            <span className="material-symbols-outlined !text-lg text-white">upload</span>
+            Alterar foto
+          </label>
+
+          <input
+            id="avatar-input"
+            ref={fileInputRef}
+            type="file"
+            accept="image/png, image/jpeg, image/jpg"
+            className="hidden"
+            onChange={handleAvatarSelection}
+          />
+        </div>
+      </div>
+
+      {showCropperModal && selectedAvatarUrl && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 px-4 py-6">
+          <div className="w-full max-w-xl rounded-2xl border border-slate-700 bg-slate-900 p-6 shadow-2xl">
+            <div className="mb-4 flex items-center justify-between">
+              <h3 className="text-lg font-bold text-white">Ajustar Foto de Perfil</h3>
+              <button type="button" onClick={closeCropperModal} className="text-sm font-semibold text-slate-400 hover:text-white">
+                Fechar
+              </button>
+            </div>
+
+            <div className="mb-4 flex max-h-[60vh] items-center justify-center overflow-hidden rounded-xl bg-black w-full [&_.cropper-view-box]:rounded-full [&_.cropper-face]:rounded-full [&_.cropper-view-box]:outline-2 [&_.cropper-view-box]:outline-[#0b8aa0]">
+              <img ref={imageCropperRef}
+              src={selectedAvatarUrl}
+              alt="Imagem para recorte"
+              className="block max-h-[60vh] w-full object-contain" />
+            </div>
+
+            <div className="mb-4 flex justify-center gap-3 text-white">
+              <button type="button" onClick={() => cropperInstanceRef.current?.zoom(0.1)} className="rounded-lg bg-slate-800 px-3 py-1 text-lg font-bold hover:bg-slate-700">
+                +
+              </button>
+              <button type="button" onClick={() => cropperInstanceRef.current?.zoom(-0.1)} className="rounded-lg bg-slate-800 px-3 py-1 text-lg font-bold hover:bg-slate-700">
+                -
+              </button>
+            </div>
+
+            <div className="flex justify-end gap-2">
+              <button type="button" onClick={closeCropperModal} className="rounded-xl px-4 py-2 text-sm font-semibold text-slate-400 hover:text-white">
+                Cancelar
+              </button>
+              <button
+                type="button"
+                onClick={handleSaveCroppedAvatar}
+                disabled={isUploadingAvatar}
+                className="flex items-center justify-center gap-2 rounded-xl bg-[#0b8aa0] px-4 py-2 text-sm font-bold text-white transition hover:bg-[#087487] disabled:cursor-not-allowed disabled:opacity-80"
+              >
+                {isUploadingAvatar ? (
+                  <>
+                    <div className="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
+                    Salvando...
+                  </>
+                ) : (
+                  "Confirmar"
+                )}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      <div className="md:col-span-2 flex justify-end gap-4 mt-12 lg:mt-8">
+        <button id="btn-cancel" type="button" className="px-8 py-2 border border-gray-300 rounded-3xl text-sm font-bold text-[#0b8aa0] hover:bg-gray-100 cursor-pointer shadow-lg transition duration-300 active:scale-95 active:shadow-2xl">
+          <span id="cancel-text">Cancelar</span>
+          <svg id="cancel-spinner" className="hidden animate-spin h-6 w-6 text-[#e0e0e0]" fill="none">
+            <use href="/icons.svg#carregando"></use>
+          </svg>
+        </button>
+        <button
+          disabled={isLoading}
+          className={`px-6 py-2 bg-[#0b8aa0] text-white rounded-3xl text-sm font-bold flex items-center gap-2 cursor-pointer shadow-lg transition ${
+            isLoading ? "opacity-80 cursor-not-allowed" : "hover:bg-[#087487] active:scale-95 active:shadow-2xl"
+          }`}
+          type="submit"
+        >
+          {!isLoading ? (
+            <span>Salvar Alterações</span>
+          ) : (
+            <>
+              <div className="animate-spin h-5 w-5 border-2 border-white/30 border-t-white rounded-full" />
+              <span>Carregando...</span>
+            </>
+          )}
+        </button>
+      </div>
+    </form>
+  );
+}

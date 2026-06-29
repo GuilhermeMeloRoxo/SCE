@@ -1,6 +1,5 @@
 'use server'
-import { notFound } from "next/navigation";
-import { getSupabase } from "./supabase";
+import { getSupabase } from "./supabaseServer";
 
 export async function fazerLogout() {
     try {
@@ -60,7 +59,8 @@ export async function verificarUsernameDisponivel(username: string) {
   if (error) {
     console.error('Erro ao validar username:', error.message);
     throw error;
-  } return count === 0;
+  }
+  return count === 0;
 }
 
 export async function obterUsuarioAtual() {
@@ -72,28 +72,6 @@ export async function obterUsuarioAtual() {
   }
   return data;
 }
-
-export async function buscarPerfilPublico(nomeOuId) {
-  let eq: string;
-  if (nomeOuId.length <= 12) {
-    eq = 'username';
-  } else {
-    eq = 'id';
-  }
-    const supabase = await getSupabase();
-    const { data, error } = await supabase
-    .from("perfis_publicos")
-    .select("*")
-    .eq(eq, nomeOuId)
-    .single();
-
-    if (error || !data) {
-        console.error("Erro ao buscar perfil público:", error?.message);
-      throw new Error('PROFILE_NOT_FOUND');
-    }
-    return { data };
-}
-
 
 export async function loginUsuario(email: string, senha: string) {
   const supabase = await getSupabase();
