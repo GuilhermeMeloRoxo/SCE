@@ -54,7 +54,7 @@ export default function EditarPerfilClient() {
     }
   };
   const handleDelete = async () => {
-    if (confirm("Tem certeza que deseja excluir sua conta permanentemente?")) {
+    if (confirm("Tem certeza que deseja excluir seu perfil permanentemente?")) {
       try {
         const result = await deletarUsuario();
         if (result) {
