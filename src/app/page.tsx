@@ -40,6 +40,7 @@ export default function Mural() {
                 if (!user) {
                     mostrarAlerta('error', 'Você precisa estar autenticado para acessar o mural');
                     router.push('/login')
+                    return;
                 }
                 const { data } = await buscarPerfilPublico(user.id);
                 setTipoUsuario(data?.curso || null);

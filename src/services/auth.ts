@@ -68,7 +68,7 @@ export async function obterUsuarioAtual() {
   const { data, error } = await supabase.auth.getUser();
   if (error || !data?.user?.id) {
     console.error("Erro ao obter usuário atual:", error.message);
-    throw new Error('NOT AUTHENTICATED');
+    return { user: null }; 
   }
   return data;
 }
