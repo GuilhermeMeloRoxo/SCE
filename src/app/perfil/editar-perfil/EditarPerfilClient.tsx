@@ -49,10 +49,9 @@ export default function EditarPerfilClient() {
       if (!result.success) {
         throw new Error(result.error ?? "Falha ao salvar dados.");
       }
-
-      setUsername(values.username);
       mostrarAlerta("ok", "Dados atualizados com sucesso!");
-      router.push("/perfil/"+username);
+      setUsername(values.username);
+      window.location.href = `/perfil/${username}`;
     } catch (erro) {
       console.error("Erro ao atualizar:", erro);
       mostrarAlerta("error", erro instanceof Error ? erro.message : "Falha ao salvar dados.");

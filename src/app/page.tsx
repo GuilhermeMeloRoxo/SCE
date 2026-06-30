@@ -30,33 +30,37 @@ export default function Mural() {
     const [postsCurtidos, setPostsCurtidos] = useState<Set<string>>(new Set());
     const [isOpen, setIsOpen] = useState(false);
     const [tipoUsuario, setTipoUsuario] = useState<string | null>(null);
-
+    const [readyToRender, setReadyToRender] = useState(false);
 
     useEffect(() => {
         async function carregarDadosIniciais() {
             try {
-                const { user }  = await obterUsuarioAtual();
-                setUser(user);
+                const { user } = await obterUsuarioAtual();
+                
                 if (!user) {
                     mostrarAlerta('error', 'Você precisa estar autenticado para acessar o mural');
-                    router.push('/login')
+                    window.location.href = '/login';
                     return;
                 }
+
+                setUser(user);
                 const { data } = await buscarPerfilPublico(user.id);
                 setTipoUsuario(data?.curso || null);
+                
                 const listaPosts = await buscarPostsMural();
                 setPosts(listaPosts);
 
-
-                if (user && listaPosts.length > 0) {
+                if (listaPosts.length > 0) {
                     const idsDosPosts = listaPosts.map((p) => p.post_id);
                     const curtidasSet = await buscarPostsCurtidos(user.id, idsDosPosts);
                     setPostsCurtidos(curtidasSet);
                 }
+                
+                setReadyToRender(true);
+                setLoading(false);
             } catch (err) {
-            mostrarAlerta("error", "Não foi possível carregar as publicações.");
-            } finally {
-            setLoading(false);
+                mostrarAlerta("error", "Não foi possível carregar as publicações.");
+                setLoading(false);
             }
         }
         carregarDadosIniciais();

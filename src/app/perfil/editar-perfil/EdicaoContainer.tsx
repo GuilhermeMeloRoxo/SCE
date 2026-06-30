@@ -3,7 +3,7 @@ import { ChangeEvent, SubmitEvent, useEffect, useRef, useState } from "react";
 import { verificarUsernameDisponivel, obterUsuarioAtual } from "@/services/auth";
 import { useAlerta } from "@/context/AlertContext";
 import { buscarPerfilCompleto } from "@/services/profile";
-import { formatarCPF, formatarTelefone } from "@/utils/formatters";
+import { formatarFormacao, formatarCPF, formatarTelefone } from "@/utils/formatters";
 import Cropper from "cropperjs";
 import "cropperjs/dist/cropper.css";
 import { processarCanvasAvatarParaWebp } from "@/services/images";
@@ -151,6 +151,10 @@ export default function EdicaoContainer({ isLoading = false, usuarioId, onSubmit
 
     return () => window.clearTimeout(timer);
   }, [currentUsername, values.username]);
+
+  const handleFormacaoChange = (event: ChangeEvent<HTMLInputElement>) => {
+    setValues((prev) => ({ ...prev, formacao: formatarFormacao(event.target.value) }));
+  };
 
   const handleUsernameChange = (event: ChangeEvent<HTMLInputElement>) => {
     setValues((prev) => ({ ...prev, username: event.target.value.trim() }));
@@ -368,7 +372,7 @@ export default function EdicaoContainer({ isLoading = false, usuarioId, onSubmit
             pattern="[0-9]{4}\.[0-9]{1}"
             placeholder="Ex.: 2026.1"
             value={values.formacao}
-            onChange={(event) => setValues((prev) => ({ ...prev, formacao: event.target.value }))}
+            onChange={handleFormacaoChange}
             className="px-4 py-2.5 w-full border border-gray-300 rounded-3xl text-sm focus:ring-2 focus:ring-[#087487] focus:border-transparent outline-none transition"
             required
           />
