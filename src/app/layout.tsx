@@ -5,7 +5,7 @@ import { AlertProvider } from '@/context/AlertContext';
 
 export const metadata: Metadata = {
     title: {
-        default: 'Mural - SCE',
+        default: 'SCE',
         template: '%s | SCE'
     },
     description: 'Mural de Notícias do Sistema de Controle de Egressos',
