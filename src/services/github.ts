@@ -43,13 +43,13 @@ export async function buscarRepositoriosGithub(github_user: string) {
 }
 
 
-export async function obterUsuarioGithub() {
+export async function obterUsuarioGithub(username: string) {
   const tokenGithub = await buscarTokenGithub();
   if (!tokenGithub) {
     return { error: 'TOKEN_AUSENTE' };
   }
 
-  const userRes = await fetch('https://api.github.com/user', {
+  const userRes = await fetch(`https://api.github.com/users/${username}`, {
     headers: {
       Authorization: `Bearer ${tokenGithub}`,
       Accept: "application/vnd.github+json"
