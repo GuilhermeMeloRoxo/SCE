@@ -1,11 +1,12 @@
 'use client';
 import { useEffect, useState } from 'react';
-import { buscarRepositoriosGithub, conectarGithub, desvincularGithub, obterUsuarioGithub } from '@/services/github';
+import { buscarRepositoriosGithub, conectarGithub, desvincularGithub, obterUsuarioGithub, removerGithub } from '@/services/github';
 import { GithubIcon, StarIcon } from '../../../components/Icons';
 import GithubButton from './GithubButton';
 import { obterUsuarioAtual} from '@/services/auth';
 import { useAlerta } from '@/context/AlertContext';
 import { buscarPerfilPublico } from '@/services/profile';
+import { getSupabaseBrowserClient } from '@/services/supabaseBrowser';
 
 interface GithubContainerProps {
   username: string;
@@ -50,7 +51,19 @@ export function GithubContainer({ username, pathname }: GithubContainerProps) {
 
         if (resultadoRepos?.error === 'TOKEN_EXPIRADO' || resultadoUserGithub?.error == 'TOKEN_EXPIRADO') {
           mostrarAlerta('alert', 'Seu token github expirou, vamos renová-lo para você, aguarde.')
-          await desvincularGithub();
+          const supabase = getSupabaseBrowserClient();
+
+          const identidadeGithub = usuarioLogadoRes?.user?.identities?.find(
+            (identidade) => identidade.provider === 'github'
+          );
+
+          if (!identidadeGithub) {
+            await removerGithub();
+            return;
+          }
+          const { error } = await supabase.auth.unlinkIdentity(identidadeGithub);
+
+          if (error) throw error;
           const urlRenovacao = await conectarGithub(pathname);
           if (urlRenovacao) {
             window.location.href = urlRenovacao;

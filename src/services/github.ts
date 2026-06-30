@@ -93,3 +93,12 @@ async function buscarTokenGithub() {
   }
   return tokenGithub
 }
+
+export async function removerGithub() {
+  const supabase = await getSupabase();
+  const { user } = await obterUsuarioAtual();
+  await supabase
+  .from('dados_privados')
+  .update({ github_user: null })
+  .eq('id', user.id)
+}
