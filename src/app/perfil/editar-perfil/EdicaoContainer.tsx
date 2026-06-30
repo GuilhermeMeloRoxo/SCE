@@ -298,31 +298,6 @@ export default function EdicaoContainer({ isLoading = false, usuarioId, onSubmit
         </div>
 
         <div>
-          <label className="block text-sm font-bold m-2" htmlFor="input-senha">Mudar Senha (opcional)</label>
-          <div className="relative">
-            <input
-              id="input-senha"
-              className="px-4 py-2.5 w-full border border-gray-300 rounded-3xl text-sm focus:ring-2 focus:ring-[#087487] focus:border-transparent outline-none transition"
-              type={mostrarSenha ? "text" : "password"}
-              value={values.senha ?? ""}
-              onChange={(event) => setValues((prev) => ({ ...prev, senha: event.target.value }))}
-              minLength={8}
-              title="A senha deve ter pelo menos 8 dígitos ou ficar em branco"
-              placeholder="Digite uma nova senha"
-            />
-            <button
-              type="button"
-              onClick={() => setMostrarSenha((prev) => !prev)}
-              className="absolute right-4 bottom-1/2 translate-y-1/2 text-gray-500 hover:text-gray-700 focus:outline-none flex items-center justify-center"
-            >
-              <span className="material-symbols-outlined !text-lg">
-                {mostrarSenha ? "visibility_off" : "visibility"}
-              </span>
-            </button>
-          </div>
-        </div>
-
-        <div>
           <label className="block text-sm font-bold m-2" htmlFor="telefone">Telefone (opcional)</label>
           <input
             id="telefone"
