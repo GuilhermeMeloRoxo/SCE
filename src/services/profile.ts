@@ -87,3 +87,10 @@ export async function atualizarPerfil(dados: AtualizarPerfil) {
 
   return { success: true };
 }
+
+export async function atualizarEmailUsuario(email: string) {
+  const supabase = await getSupabase();
+  const { data, error } = await supabase.auth.updateUser({
+    email: email
+  });
+}

@@ -6,9 +6,8 @@ import { Navbar } from "@/components/Navbar";
 import { ProfileContainer } from "@/components/ProfileContainer";
 import { useAlerta } from "@/context/AlertContext";
 import EdicaoContainer, { type FormValues } from "./EdicaoContainer";
-import { atualizarPerfil } from "@/services/profile";
+import { atualizarEmailUsuario, atualizarPerfil } from "@/services/profile";
 import { obterUsuarioAtual, deletarUsuario } from "@/services/auth";
-import { getSupabase } from "@/services/supabaseServer";
 
 
 export default function EditarPerfilClient() {
@@ -23,7 +22,6 @@ export default function EditarPerfilClient() {
 
     try {
       const { user } = await obterUsuarioAtual();
-      const supabase = await getSupabase();
       const userId = user?.id;
 
       if (!userId) {
@@ -31,12 +29,7 @@ export default function EditarPerfilClient() {
       }
       if (user.email != values.email) {
         try{
-          const { data, error } = await supabase.auth.updateUser({
-            email: values.email
-          });
-          if (error) {
-            throw new Error('Erro ao trocar email: ', error)
-          }
+          await atualizarEmailUsuario(values.email);
           mostrarAlerta('ok', 'Seu email foi alterado com sucesso, verifique sua caixa de mensagens para fazer a confirmação!');
         } catch(err) {
           throw new Error('Erro ao trocar email: ', err.message)
