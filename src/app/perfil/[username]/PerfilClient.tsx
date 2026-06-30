@@ -28,7 +28,7 @@ export default function PerfilClient({ params }: PerfilProps) {
                     <div>
                         <div className="mb-12 mt-6">
                             <div className="inline-flex"><h1 className="text-4xl font-black text-slate-900 tracking-tight">Seu Perfil</h1>
-                            <Link href={'/perfil/'+username+'/editar-perfil'}><span className="material-symbols-outlined !text-2xl pl-4 pt-1 text-slate-800 hover:text-[#087487] transition-colors">edit</span></Link></div>
+                            <Link href={'/perfil/editar-perfil'}><span className="material-symbols-outlined !text-2xl pl-4 pt-1 text-slate-800 hover:text-[#087487] transition-colors">edit</span></Link></div>
                             <div className="h-1.5 w-20 bg-[#0b8aa0] flex flex-col mt-4 rounded-full"></div>
                         </div>
                     </div>
