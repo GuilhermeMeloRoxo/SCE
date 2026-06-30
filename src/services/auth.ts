@@ -1,8 +1,9 @@
 'use server'
 import { getSupabase } from "./supabaseServer";
+import { createClient } from '@supabase/supabase-js';
 
 export async function fazerLogout() {
-    try {
+  try {
       const supabase = await getSupabase();
       const { error } = await supabase.auth.signOut();
       if (error) {
@@ -81,4 +82,23 @@ export async function loginUsuario(email: string, senha: string) {
   });
   if (error) throw error;
   return data?.user;
+}
+export async function deletarUsuario() {
+  let resultado = false;
+  const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.SUPABASE_SECRET_KEY!,
+  {
+    auth: { persistSession: false }
+  }
+  );
+  const data = await obterUsuarioAtual();
+  if (!data) {
+  throw new Error('Usuário não autenticado');
+  }
+  const { error: deleteError } = await supabase.auth.admin.deleteUser(data.user.id);
+  if (deleteError) {
+  throw new Error(deleteError.message);
+  }
+  return resultado = true;
 }

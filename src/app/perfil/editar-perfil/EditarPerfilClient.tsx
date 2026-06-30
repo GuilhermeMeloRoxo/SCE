@@ -7,7 +7,7 @@ import { ProfileContainer } from "@/components/ProfileContainer";
 import { useAlerta } from "@/context/AlertContext";
 import EdicaoContainer, { type FormValues } from "./EdicaoContainer";
 import { atualizarPerfil } from "@/services/profile";
-import { obterUsuarioAtual } from "@/services/auth";
+import { obterUsuarioAtual, deletarUsuario } from "@/services/auth";
 
 
 export default function EditarPerfilClient() {
@@ -53,6 +53,18 @@ export default function EditarPerfilClient() {
       setIsLoading(false);
     }
   };
+  const handleDelete = async () => {
+    if (confirm("Tem certeza que deseja excluir seu perfil permanentemente?")) {
+      try {
+        const result = await deletarUsuario();
+        if (result) {
+          router.push('/login'); 
+        }
+      } catch (error) {
+        mostrarAlerta("error", error.message);
+      }
+    }
+  };
 
   return (
     <>
@@ -74,7 +86,7 @@ export default function EditarPerfilClient() {
             <div className="mb-6 ml-4">
               <div className="inline-flex">
                 <h1 className="text-4xl font-black text-slate-900 tracking-tight">Editar Perfil</h1>
-                <button type="button">
+                <button type="button" onClick={handleDelete}>
                   <span className="material-symbols-outlined cursor-pointer !text-2xl pl-4 pt-1 text-slate-800 hover:text-[red] transition-colors">
                     delete
                   </span>
