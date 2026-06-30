@@ -7,6 +7,13 @@ export function formatarDataMural(dataString: string): string {
   });
 }
 
+export function formatarFormacao(valor: string): string {
+  const apenasDigitos = valor.replace(/\D/g, "").slice(0, 5);
+  if (apenasDigitos.length <= 4) {
+    return apenasDigitos;
+  } return `${apenasDigitos.slice(0, 4)}.${apenasDigitos.slice(4)}`;
+}
+
 export function formatarCPF(valor: string): string {
   const apenasDigitos = valor.replace(/\D/g, "").slice(0, 11);
 
