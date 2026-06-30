@@ -80,7 +80,7 @@ export default function Login() {
                 <button 
                   type="button" 
                   onClick={() => setMostrarSenha(!mostrarSenha)}
-                  className="absolute right-4 bottom-1/2 translate-y-1/2 text-gray-500 hover:text-gray-700 focus:outline-none flex items-center justify-center"
+                  className="absolute right-4 bottom-1/2 translate-y-1/2 cursor-pointer text-gray-500 hover:text-gray-700 focus:outline-none flex items-center justify-center"
                 >
                   <span className="material-symbols-outlined !text-lg">
                     {mostrarSenha ? "visibility_off" : "visibility"}
@@ -92,7 +92,7 @@ export default function Login() {
             <div className="my-8.5 text-center text-gray-600">
               <button 
                 disabled={isLoading}
-                className={`w-full font-bold bg-[#0b8aa0] text-white py-2.5 rounded-3xl shadow-lg transition duration-300 flex items-center justify-center gap-2
+                className={`w-full font-bold bg-[#0b8aa0] cursor-pointer text-white py-2.5 rounded-3xl shadow-lg transition duration-300 flex items-center justify-center gap-2
                   ${isLoading ? "opacity-80 cursor-not-allowed" : "hover:bg-[#087487] active:scale-95 active:shadow-2xl"}`}
                 type="submit"
               >

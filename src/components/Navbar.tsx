@@ -51,7 +51,7 @@ export function Navbar({ username }: NavbarProps) {
         const resultado = await fazerLogout();
 
         if (resultado.success) {
-            router.push("/login");
+            router.push('/login');
         } else {
             mostrarAlerta("error", "Erro ao encerrar a sessão. Tente novamente.");
         }

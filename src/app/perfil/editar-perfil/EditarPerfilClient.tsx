@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
 import { Navbar } from "@/components/Navbar";
 import { ProfileContainer } from "@/components/ProfileContainer";
 import { useAlerta } from "@/context/AlertContext";
@@ -59,15 +58,6 @@ export default function EditarPerfilClient() {
     <>
       <Navbar />
       <div className="sm:mx-12">
-        <nav className="m-6 inline-flex text-sm font-medium sm:text-base sm:ml-0">
-          <Link href="/perfil" className="text-gray-500 hover:text-[#008b8b] transition-colors">
-            Seu Perfil
-          </Link>
-          <p className="text-gray-500 cursor-default"> {" "}&gt;{" "}</p>
-          <Link href="/perfil/editar" className="font-semibold text-[#008b8b] hover:text-gray-500">
-            Editar Perfil
-          </Link>
-        </nav>
 
         <div id="edit-profile" className="w-full flex flex-col md:flex-row gap-6">
           <aside className="w-full md:w-1/3 bg-slate-50 rounded-xl shadow-md border border-gray-100 p-8 flex flex-col items-center text-center">
@@ -85,7 +75,7 @@ export default function EditarPerfilClient() {
               <div className="inline-flex">
                 <h1 className="text-4xl font-black text-slate-900 tracking-tight">Editar Perfil</h1>
                 <button type="button">
-                  <span className="material-symbols-outlined !text-2xl pl-4 pt-1 text-slate-800 hover:text-[red] transition-colors">
+                  <span className="material-symbols-outlined cursor-pointer !text-2xl pl-4 pt-1 text-slate-800 hover:text-[red] transition-colors">
                     delete
                   </span>
                 </button>
