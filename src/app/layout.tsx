@@ -18,7 +18,7 @@ export default function Rootlayout({
 }) {
     return (
         <html lang="pt-br">
-            <body className="bg-white flex sm:justify-center">
+            <body className="bg-slate-200 flex sm:justify-center">
                 <AlertProvider>
                     {children}
                     <Footer />

@@ -108,7 +108,7 @@ export default function Mural() {
         <div id="mural-posts" className="mural-grid">
             {loading ? (
             <div className="flex w-full items-center justify-center">
-                <LoadingIcon className="animate-spin h-20 w-20 mt-30 text-[#e0e0e0]" />
+                <LoadingIcon className="animate-spin h-20 w-20 mt-30 text-gray-500" />
             </div>
             ) : (
             posts.map((post) => {
@@ -191,7 +191,7 @@ export default function Mural() {
 
                     <button type="button" className="cursor-pointer flex items-center gap-1.5 group transition">
                         <span className="material-symbols-outlined text-[20px] text-gray-400 group-hover:text-blue-500 transition">
-                        comment
+                        edit_squre
                         </span>
                         <span className="text-xs font-semibold text-gray-500">{post.quantidade_comentarios}</span>
                     </button>

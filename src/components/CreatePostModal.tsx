@@ -198,7 +198,7 @@ export default function CreatePostModal({ userId, isOpen, setIsOpen }: CreatePos
             
             <div className="flex items-center justify-between mb-6">
               <div className="flex items-center gap-3 text-[#0b8aa0]">
-                <span className="material-symbols-outlined !text-2xl">edit_square</span>
+                <span className="material-symbols-outlined !text-2xl">box_edit</span>
                 <h3 className="text-xl font-bold">Criar Novo Post</h3>
               </div>
               <button
