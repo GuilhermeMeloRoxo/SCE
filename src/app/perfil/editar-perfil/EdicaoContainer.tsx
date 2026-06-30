@@ -1,13 +1,13 @@
 "use client";
-
 import { ChangeEvent, SubmitEvent, useEffect, useRef, useState } from "react";
 import { verificarUsernameDisponivel, obterUsuarioAtual } from "@/services/auth";
 import { useAlerta } from "@/context/AlertContext";
 import { buscarPerfilCompleto } from "@/services/profile";
-import { getSupabaseBrowserClient } from "@/services/supabaseBrowser";
 import { formatarCPF, formatarTelefone } from "@/utils/formatters";
 import Cropper from "cropperjs";
 import "cropperjs/dist/cropper.css";
+import { processarCanvasAvatarParaWebp } from "@/services/images";
+import { fazerUploadAvatarPerfil } from "@/services/storage";
 
 export interface FormValues {
   nome: string;
@@ -107,7 +107,10 @@ export default function EdicaoContainer({ isLoading = false, usuarioId, onSubmit
     cropperInstanceRef.current = new Cropper(imageCropperRef.current, {
       aspectRatio: 1,
       viewMode: 1,
-      dragMode: "move",
+      minCanvasWidth: 0,
+      minCanvasHeight: 0,
+      minCropBoxWidth: 100,
+      dragMode: 'move',
       autoCropArea: 1,
       background: false,
       responsive: true,
@@ -197,58 +200,28 @@ export default function EdicaoContainer({ isLoading = false, usuarioId, onSubmit
   };
 
   const handleSaveCroppedAvatar = async () => {
-    if (!cropperInstanceRef.current) {
-      return;
-    }
+    if (!cropperInstanceRef.current) return;
 
     try {
       setIsUploadingAvatar(true);
 
-      const canvas = cropperInstanceRef.current.getCroppedCanvas({
-        width: 400,
-        height: 400,
-      });
-
-      const blob = await new Promise<Blob | null>((resolve) => {
-        canvas.toBlob((result) => resolve(result), "image/webp", 0.8);
-      });
-
-      if (!blob) {
-        mostrarAlerta("error", "Não foi possível processar a imagem selecionada.");
+      const webpFile = await processarCanvasAvatarParaWebp(cropperInstanceRef.current, "avatar.webp");
+      if (!webpFile) {
+        mostrarAlerta("error", "Não foi possível processar o recorte da imagem.");
         return;
       }
 
-      const webpFile = new File([blob], "avatar.webp", { type: "image/webp" });
-      const supabase = getSupabaseBrowserClient();
-      const { user } = await obterUsuarioAtual();
-      const userId = user?.id;
-
-      if (!userId) {
-        throw new Error("Usuário não autenticado.");
+      const resultado = await fazerUploadAvatarPerfil(webpFile);
+      if (!resultado.success || !resultado.caminhoPublico) {
+        throw new Error(resultado.error);
       }
+      setAvatarPreviewUrl(resultado.caminhoPublico);
 
-      const filePath = `${userId}/avatar_pic.webp`;
-      const { error: uploadError } = await supabase.storage.from("avatares").upload(filePath, webpFile, { upsert: true });
-
-      if (uploadError) {
-        throw uploadError;
-      }
-
-      const { error: updateError } = await supabase.from("perfis").update({ avatar_url: filePath }).eq("id", userId);
-
-      if (updateError) {
-        throw updateError;
-      }
-
-      setAvatarPreviewUrl(canvas.toDataURL("image/webp"));
-      mostrarAlerta("ok", "Sua foto de perfil foi ajustada e salva com sucesso!");
+      mostrarAlerta("ok", "Foto de perfil atualizada com sucesso!");
       closeCropperModal();
-      if (fileInputRef.current) {
-        fileInputRef.current.value = "";
-      }
-    } catch (error) {
-      console.error("Erro ao salvar foto de perfil:", error);
-      mostrarAlerta("error", "Ocorreu um erro ao salvar sua nova foto de perfil no servidor.");
+      
+    } catch (error: any) {
+      mostrarAlerta("error", error?.message || "Erro inesperado ao salvar o avatar.");
     } finally {
       setIsUploadingAvatar(false);
     }
@@ -261,12 +234,10 @@ export default function EdicaoContainer({ isLoading = false, usuarioId, onSubmit
       mostrarAlerta("error", "Aguarde a validação do username antes de salvar.");
       return;
     }
-
     if (usernameStatus === "error") {
       mostrarAlerta("error", "Escolha um username válido antes de salvar.");
       return;
     }
-
     if (values.senha && values.senha.length > 0 && values.senha.length < 8) {
       mostrarAlerta("error", "A senha deve ter pelo menos 8 caracteres ou ficar em branco.");
       return;

@@ -46,7 +46,7 @@ export function GithubContainer({ username, pathname }: GithubContainerProps) {
         }
 
         const resultadoRepos = await buscarRepositoriosGithub(gUser);
-        const resultadoUserGithub  = await obterUsuarioGithub();
+        const resultadoUserGithub  = await obterUsuarioGithub(gUser);
 
         if (resultadoRepos?.error === 'TOKEN_EXPIRADO' || resultadoUserGithub?.error == 'TOKEN_EXPIRADO') {
           mostrarAlerta('alert', 'Seu token github expirou, vamos renová-lo para você, aguarde.')
