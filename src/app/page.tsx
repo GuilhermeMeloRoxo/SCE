@@ -37,6 +37,10 @@ export default function Mural() {
             try {
                 const { user }  = await obterUsuarioAtual();
                 setUser(user);
+                if (!user) {
+                    mostrarAlerta('error', 'Você precisa estar autenticado para acessar o mural');
+                    router.push('/login')
+                }
                 const { data } = await buscarPerfilPublico(user.id);
                 setTipoUsuario(data?.curso || null);
                 const listaPosts = await buscarPostsMural();
@@ -47,8 +51,6 @@ export default function Mural() {
                     const idsDosPosts = listaPosts.map((p) => p.post_id);
                     const curtidasSet = await buscarPostsCurtidos(user.id, idsDosPosts);
                     setPostsCurtidos(curtidasSet);
-                } else if (!user) {
-                    router.push('/');
                 }
             } catch (err) {
             mostrarAlerta("error", "Não foi possível carregar as publicações.");
@@ -60,7 +62,7 @@ export default function Mural() {
     }, []);
 
     const handleCurtir = async (postId: string, jaCurtiu: boolean) => {
-        if (!user) return mostrarAlerta("error", "Você precisa estar logado para curtir.");
+        if (!user) return mostrarAlerta("error", "Você precisa estar autenticado para curtir.");
         
         setBotoesBloqueados((prev) => ({ ...prev, [postId]: true }));
 
