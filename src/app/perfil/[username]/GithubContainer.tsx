@@ -7,6 +7,7 @@ import { obterUsuarioAtual} from '@/services/auth';
 import { useAlerta } from '@/context/AlertContext';
 import { buscarPerfilPublico } from '@/services/profile';
 import { getSupabaseBrowserClient } from '@/services/supabaseBrowser';
+import Link from 'next/link';
 
 interface GithubContainerProps {
   username: string;
@@ -194,7 +195,8 @@ export function GithubContainer({ username, pathname }: GithubContainerProps) {
             <span className="block text-[12px] text-slate-400">Últimos repositórios atualizados</span>
           </div>
         </div>
-        <a href={`https://github.com{github_user}`} target="_blank" rel="noopener noreferrer" className="text-[14px] font-bold text-[#0b8aa0] transition-transform duration-300 group-hover:scale-110 hover:underline hover:text-[#087487]">Ver perfil</a>
+        <Link href={`https://github.com/${githubUser}`} target="_blank" rel="noopener noreferrer"
+        className="text-[14px] font-bold text-[#0b8aa0] transition-transform duration-300 group-hover:scale-110 hover:underline hover:text-[#087487]">Ver perfil</Link>
       </div>
 
       <div className="space-y-4 mb-8">
