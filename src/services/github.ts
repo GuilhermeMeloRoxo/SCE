@@ -100,5 +100,5 @@ export async function removerGithub() {
   await supabase
   .from('dados_privados')
   .update({ github_user: null })
-  .eq('id', user.id)
+  .eq('id', user)
 }

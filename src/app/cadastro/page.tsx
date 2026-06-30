@@ -2,6 +2,7 @@
 import { cadastrarUsuario, verificarCPF, verificarUsernameDisponivel } from '@/services/auth'
 import { useAlerta } from '@/context/AlertContext';
 import { useRouter } from 'next/navigation';
+import { formatarCPF } from "@/utils/formatters";
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
@@ -48,6 +49,12 @@ export default function Cadastro() {
 
       return () => clearTimeout(timer);
     }, [username]);
+
+    useEffect(() => {
+      if (cpf) {
+        setCpf(formatarCPF(cpf));
+      } 
+    }, [cpf]);
 
     const handleUsernameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       setUsername(e.target.value.trim());

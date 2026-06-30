@@ -93,7 +93,7 @@ export async function deletarUsuario() {
   }
   );
   const data = await obterUsuarioAtual();
-  if (!data) {
+  if (!data.user) {
   throw new Error('Usuário não autenticado');
   }
   const { error: deleteError } = await supabase.auth.admin.deleteUser(data.user.id);
