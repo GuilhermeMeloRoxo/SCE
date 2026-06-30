@@ -8,6 +8,7 @@ import Cropper from "cropperjs";
 import "cropperjs/dist/cropper.css";
 import { processarCanvasAvatarParaWebp } from "@/services/images";
 import { fazerUploadAvatarPerfil } from "@/services/storage";
+import { useRouter } from "next/navigation";
 
 export interface FormValues {
   nome: string;
@@ -43,7 +44,6 @@ const initialValues: FormValues = {
 export default function EdicaoContainer({ isLoading = false, usuarioId, onSubmit, onProfileLoaded }: EdicaoContainerProps) {
   const { mostrarAlerta } = useAlerta();
   const [values, setValues] = useState<FormValues>(initialValues);
-  const [mostrarSenha, setMostrarSenha] = useState(false);
   const [currentUsername, setCurrentUsername] = useState("");
   const [usernameStatus, setUsernameStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
   const [showCropperModal, setShowCropperModal] = useState(false);
@@ -53,6 +53,7 @@ export default function EdicaoContainer({ isLoading = false, usuarioId, onSubmit
   const imageCropperRef = useRef<HTMLImageElement | null>(null);
   const cropperInstanceRef = useRef<Cropper | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const router = useRouter();
 
   useEffect(() => {
     let isActive = true;
@@ -485,7 +486,11 @@ export default function EdicaoContainer({ isLoading = false, usuarioId, onSubmit
       )}
 
       <div className="md:col-span-2 flex justify-end gap-4 mt-12 lg:mt-8">
-        <button id="btn-cancel" type="button" className="px-8 py-2 border border-gray-300 rounded-3xl text-sm font-bold text-[#0b8aa0] hover:bg-gray-100 cursor-pointer shadow-lg transition duration-300 active:scale-95 active:shadow-2xl">
+        <button
+      id="btn-cancel"
+      type="button"
+      onClick={() => router.push(`/perfil/${currentUsername}`)}
+          className="px-8 py-2 border border-gray-300 rounded-3xl text-sm font-bold text-[#0b8aa0] hover:bg-gray-100 cursor-pointer shadow-lg transition duration-300 active:scale-95 active:shadow-2xl flex items-center justify-center">
           <span id="cancel-text">Cancelar</span>
           <svg id="cancel-spinner" className="hidden animate-spin h-6 w-6 text-[#e0e0e0]" fill="none">
             <use href="/icons.svg#carregando"></use>

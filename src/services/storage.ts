@@ -1,6 +1,5 @@
 'use server'
 import { obterUsuarioAtual } from "./auth";
-import { getSupabaseBrowserClient } from "./supabaseBrowser";
 import { getSupabase } from "./supabaseServer";
 
 export async function fazerUploadImagemPost(
@@ -47,7 +46,7 @@ export async function fazerUploadImagemPost(
 
 export async function fazerUploadAvatarPerfil(arquivoWebp: File): Promise<{ success: boolean; error?: string; caminhoPublico?: string }> {
   try {
-    const supabase = getSupabaseBrowserClient();
+    const supabase = await getSupabase();
     const { user } = await obterUsuarioAtual();
     const userId = user?.id;
 
@@ -62,6 +61,12 @@ export async function fazerUploadAvatarPerfil(arquivoWebp: File): Promise<{ succ
       .from("avatares")
       .getPublicUrl(filePath);
 
+    const { error: perfisError } = await supabase
+    .from('perfis')
+    .update({ avatar_url: filePath })
+    .eq('id', userId)
+
+    if (perfisError) throw perfisError;
     return { 
       success: true, 
       caminhoPublico: `${publicUrl}?t=${Date.now()}` 

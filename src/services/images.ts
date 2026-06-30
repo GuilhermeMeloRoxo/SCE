@@ -9,14 +9,30 @@ export async function processarCanvasAvatarParaWebp(
 
   if (!canvas) return null;
 
-  const blob = await new Promise<Blob | null>((resolve) => {
-    canvas.toBlob((result) => resolve(result), "image/webp", 0.8);
-  });
+  const LIMITE_BYTES = 400 * 1024;
+  let qualidade = 0.8;
+  let blob: Blob | null = null;
 
-  if (!blob) return null;
+  do {
+    blob = await new Promise<Blob | null>((resolve) => {
+      canvas.toBlob((result) => resolve(result), "image/webp", qualidade);
+    });
+
+    if (!blob) return null;
+
+    if (blob.size > LIMITE_BYTES) {
+      qualidade -= 0.05;
+    }
+  } while (blob.size > LIMITE_BYTES && qualidade > 0.7);
+
+  if (blob.size > LIMITE_BYTES) {
+    console.error("A imagem excede o limite de tamanho permitido de 400KB, mesmo comprimida.");
+    return null; 
+  }
 
   return new File([blob], nomeArquivo, { type: "image/webp" });
 }
+
 
 export async function processarCanvasPostParaWebp(
   cropperInstance: Cropper,
