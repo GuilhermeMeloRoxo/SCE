@@ -52,7 +52,7 @@ export default function EditarPerfilClient() {
 
       setUsername(values.username);
       mostrarAlerta("ok", "Dados atualizados com sucesso!");
-      router.push("/perfil/"+username);
+      router.push('/perfil/'+username);
     } catch (erro) {
       console.error("Erro ao atualizar:", erro);
       mostrarAlerta("error", erro instanceof Error ? erro.message : "Falha ao salvar dados.");
@@ -62,17 +62,15 @@ export default function EditarPerfilClient() {
   };
   const handleDelete = async () => {
     if (confirm("Tem certeza que deseja excluir seu perfil permanentemente?")) {
-      try {
-        const result = await deletarUsuario();
-        if (result) {
-          router.push('/login'); 
-        }
-      } catch (error) {
-        mostrarAlerta("error", error.message);
+      const result = await deletarUsuario();
+
+      if (result?.success) {
+        router.push('/login');
+      } else {
+        mostrarAlerta("error", result?.error || "Ocorreu um erro inesperado.");
       }
     }
   };
-
   return (
     <>
       <Navbar />

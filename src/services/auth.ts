@@ -1,11 +1,14 @@
 'use server'
+import { SupabaseClient } from "@supabase/supabase-js";
+import { getSupabaseAdmin } from "./supabaseAdmin";
 import { getSupabase } from "./supabaseServer";
-import { createClient } from '@supabase/supabase-js';
 
-export async function fazerLogout() {
+export async function fazerLogout(apenasLocal = false) {
   try {
       const supabase = await getSupabase();
-      const { error } = await supabase.auth.signOut();
+      const { error } = await supabase.auth.signOut({ 
+      scope: apenasLocal ? 'local' : 'global' 
+    });
       if (error) {
       console.error("Ocorreu um erro inesperado: ", error.message);
       return { success: false, error };
@@ -83,22 +86,49 @@ export async function loginUsuario(email: string, senha: string) {
   if (error) throw error;
   return data?.user;
 }
+
 export async function deletarUsuario() {
-  let resultado = false;
-  const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SECRET_KEY!,
-  {
-    auth: { persistSession: false }
-  }
-  );
+  const supabaseAdmin = await getSupabaseAdmin();
   const data = await obterUsuarioAtual();
-  if (!data.user) {
-  throw new Error('Usuário não autenticado');
+
+  const userId = data.user.id;
+
+  try {
+    await limparStorageDoUsuario(userId, supabaseAdmin);
+
+    const { error: deleteError } = await supabaseAdmin.auth.admin.deleteUser(userId);
+    if (deleteError) throw deleteError;
+
+    await fazerLogout(true);
+
+  } catch (error: any) {
+    console.error('Erro ao deletar conta:', error);
+    return { success: false, error: error.message || 'Erro inesperado' };
   }
-  const { error: deleteError } = await supabase.auth.admin.deleteUser(data.user.id);
-  if (deleteError) {
-  throw new Error(deleteError.message);
+  return { success: true}
+}
+
+async function limparStorageDoUsuario(userId: string, supabaseAdmin: SupabaseClient) {
+  await supabaseAdmin.storage
+    .from('avatares')
+    .remove([`${userId}/avatar_pic.webp`])
+
+  const { data: arquivosPost, error: listError } = await supabaseAdmin.storage
+    .from('posts_imagens')
+    .list(userId)
+  
+  if (listError) {
+    throw new Error(`Falha ao listar imagens de posts: ${listError.message}`)
   }
-  return resultado = true;
+
+  if (arquivosPost && arquivosPost.length > 0) {
+    const caminhosParaDeletar = arquivosPost.map(arquivo => `${userId}/${arquivo.name}`)
+    const { error: removeError } = await supabaseAdmin.storage
+    .from('posts_imagens')
+    .remove(caminhosParaDeletar)
+
+    if (removeError) {
+      throw new Error(`Falha ao deletar imagens de posts: ${removeError.message}`)
+    }
+  }
 }
