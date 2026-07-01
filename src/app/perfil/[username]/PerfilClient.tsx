@@ -16,7 +16,6 @@ interface PerfilProps {
 export default function PerfilClient({ params }: PerfilProps) {
     const pathname = usePathname();
     const { username } = use(params);
-
     const [isOwner, setIsOwner] = useState(false);
 
     useEffect(() => {
@@ -27,6 +26,10 @@ export default function PerfilClient({ params }: PerfilProps) {
             obterUsuarioAtual(),
           ]);
           const perfil = perfilRes?.data;
+          if (!usuarioRes) {
+            window.location.href = '/login';
+            return;
+          }
           const usuarioAtualId = usuarioRes?.user?.id;
           setIsOwner(Boolean(usuarioAtualId && perfil?.id && usuarioAtualId === perfil.id));
         } catch (err) {

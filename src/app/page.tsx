@@ -1,315 +1,76 @@
-"use client";
-
-import { useEffect, useState } from "react";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
-import { useAlerta } from "@/context/AlertContext";
-import { Navbar } from "@/components/Navbar";
-import { SearchBar } from "@/components/SearchBar";
-import { LoadingIcon } from "@/components/Icons";
-import { obterUsuarioAtual } from "@/services/auth";
-import { formatarDataMural } from "@/utils/formatters";
-import {
-    atualizarPost,
-  buscarPostsCurtidos,
-  buscarPostsMural,
-  gerenciarCurtida,
-  deletarPost,
-} from "@/services/mural";
-import { SendFeedbackModal } from "@/components/SendFeedbackModal";
-import CreatePostModal from "@/components/CreatePostModal";
-import { buscarPerfilPublico } from "@/services/profile";
-import EditPostModal from "@/components/EditPostModal";
+import Link from "next/link";
 
-
-export default function Mural() {
-    const router = useRouter();
-    const { mostrarAlerta } = useAlerta();
-    
-    const [posts, setPosts] = useState<any[]>([]);
-    const [loading, setLoading] = useState(true);
-    const [user, setUser] = useState<any>(null);
-    const [botoesBloqueados, setBotoesBloqueados] = useState<{ [key: string]: boolean }>({});
-    const [postsCurtidos, setPostsCurtidos] = useState<Set<string>>(new Set());
-    const [isOpen, setIsOpen] = useState(false);
-    const [tipoUsuario, setTipoUsuario] = useState<string | null>(null);
-    const [readyToRender, setReadyToRender] = useState(false);
-
-    interface PostTipo {
-        post_id: string;
-        autor_nome: string;
-        autor_avatar?: string;
-        post_data: string;
-        tag_nome: 'Evento' | 'Aviso' | 'Pesquisa' | 'Conquista' | 'Palestra' | 'Material' | 'Oportunidade' | 'Projeto';
-        tag_cor: string;
-        post_conteudo: string;
-        imagem_url?: string;
-        quantidade_curtidas: number;
-    }
-
-    const [isEditOpen, setIsEditOpen] = useState<boolean>(false);
-    const [postParaEditar, setPostParaEditar] = useState<PostTipo | null>(null);
-
-    const handleAbrirEdicao = (post: PostTipo) => {
-    setPostParaEditar(post);
-    setIsEditOpen(true);
-    };
-
-    useEffect(() => {
-        async function carregarDadosIniciais() {
-            try {
-                const { user } = await obterUsuarioAtual();
-                
-                if (!user) {
-                    mostrarAlerta('error', 'Você precisa estar autenticado para acessar o mural');
-                    window.location.href = '/login';
-                    return;
-                }
-
-                setUser(user);
-                const { data } = await buscarPerfilPublico(user.id);
-                setTipoUsuario(data?.curso || null);
-                
-                const listaPosts = await buscarPostsMural();
-                setPosts(listaPosts);
-
-                if (listaPosts.length > 0) {
-                    const idsDosPosts = listaPosts.map((p) => p.post_id);
-                    const curtidasSet = await buscarPostsCurtidos(user.id, idsDosPosts);
-                    setPostsCurtidos(curtidasSet);
-                }
-                
-                setReadyToRender(true);
-                setLoading(false);
-            } catch (err) {
-                mostrarAlerta("error", "Não foi possível carregar as publicações.");
-                setLoading(false);
-            }
-        }
-        carregarDadosIniciais();
-    }, []);
-
-    const handleCurtir = async (postId: string, jaCurtiu: boolean) => {
-        if (!user) return mostrarAlerta("error", "Você precisa estar autenticado para curtir.");
-        
-        setBotoesBloqueados((prev) => ({ ...prev, [postId]: true }));
-
-        try {
-            const resultado = await gerenciarCurtida(postId, user.id, jaCurtiu);
-
-            if (resultado.success) {
-            const listaPostsAtualizada = await buscarPostsMural();
-            setPosts(listaPostsAtualizada);
-
-            if (user) {
-                const idsDosPosts = listaPostsAtualizada.map((post) => post.post_id);
-                const curtidasSet = await buscarPostsCurtidos(user.id, idsDosPosts);
-                setPostsCurtidos(curtidasSet);
-            }
-            }
-        } catch (err) {
-            mostrarAlerta("error", "Erro ao processar curtida.");
-        } finally {
-            setBotoesBloqueados((prev) => ({ ...prev, [postId]: false }));
-        }
-    };
-
-    const handleDeletar = async (postId: string) => {
-        if (confirm("Tem certeza que deseja excluir essa postagem?")){
-            setBotoesBloqueados((prev) => ({ ...prev, [postId]: true }));
-
-            try {
-                const resultado = await deletarPost(postId);
-
-                if (resultado.success) {
-                    mostrarAlerta("ok", "Post excluído com sucesso.");
-                    const listaPostsAtualizada = await buscarPostsMural();
-                    setPosts(listaPostsAtualizada);
-
-                    if (user) {
-                        const idsDosPosts = listaPostsAtualizada.map((post) => post.post_id);
-                        const curtidasSet = await buscarPostsCurtidos(user.id, idsDosPosts);
-                        setPostsCurtidos(curtidasSet);
-                    }
-                } else {
-                    mostrarAlerta("error", resultado.error || "Erro ao excluir o post.");
-                }
-            } catch (err) {
-                mostrarAlerta("error", "Erro ao excluir o post.");
-            } finally {
-                setBotoesBloqueados((prev) => ({ ...prev, [postId]: false }));
-            }
-        }
-    };
-
-    const podeCriarPost = tipoUsuario === 'Coordenador' || tipoUsuario === 'Professor';
-
-    return (
-    <>
-        <Navbar />
-        
-        <main className="container mx-auto px-4">
-        <div className="search my-4 absolute right-10">
-            <SearchBar />
-        </div>
-
-        <h1 className="text-3xl font-bold text-center my-6 text-[#0b8aa0]">
-            Mural de Notícias - IFPB JP
-        </h1>
-
-        <div id="mural-posts" className="mural-grid">
-            {loading ? (
-            <div className="flex w-full items-center justify-center">
-                <LoadingIcon className="animate-spin h-20 w-20 mt-30 text-gray-500" />
+export default function HomePage() {
+  return (
+    <main className="px-4 py-5 sm:px-6 lg:px-8">
+      <div className="mx-auto flex w-full max-w-7xl flex-col gap-10 rounded-[40px] bg-white px-5 py-8 shadow-[0_45px_100px_rgba(15,23,42,0.08)] sm:px-8 sm:py-10 lg:px-12 lg:py-14">
+        <div className="grid gap-10 lg:grid-cols-[1.3fr_1fr] lg:items-center">
+          <div className="space-y-6">
+            <div className="inline-flex items-center gap-3 rounded-full bg-[#e6f7f9] px-6 py-3 text-m font-semibold text-[#0b8aa0] shadow-sm shadow-slate-200/60">
+              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-white shadow-sm">
+                <Image src="/logo.png" alt="SCE" width={50} height={50} className="object-contain rounded-full" />
+              </div>
+              Sistema de Controle de Egressos
             </div>
-            ) : (
-            posts.map((post) => {
-                const curtidoPeloUsuario = postsCurtidos.has(post.post_id);
-
-                return (
-                <div 
-                    key={post.post_id} 
-                    className="mb-6 bg-white rounded-xl shadow-sm border border-gray-200 p-8 max-w-2xl mx-auto flex flex-col items-center text-zinc-900"
-                >
-                    <div className="w-full max-w-[600px] text-left">
-
-                    <div className="flex items-center justify-between mb-4">
-                        <div className="flex items-center gap-3">
-                        {post.autor_avatar ? (
-                            <Image
-                            src={`${post.autor_avatar}?t=${new Date().getTime()}`}
-                            alt={`Foto de ${post.autor_nome}`}
-                            width={40}
-                            height={40}
-                            className="w-10 h-10 object-cover rounded-full"
-                            />
-                        ) : (
-                            <svg className="w-10 h-10 text-gray-400">
-                            <use href="/icons.svg#profile" />
-                            </svg>
-                        )}
-                        <div>
-                            <h3 className="text-sm font-bold text-gray-900 leading-none">{post.autor_nome}</h3>
-                            <span className="text-[11px] text-gray-400">{formatarDataMural(post.post_data)}</span>
-                        </div>
-                        </div>
-
-                        <span
-                        className="px-3 py-1 rounded-full text-[12px] font-bold uppercase tracking-wider"
-                        style={{
-                            backgroundColor: `color-mix(in srgb, ${post.tag_cor}, transparent 90%)`,
-                            color: post.tag_cor,
-                        }}
-                        >
-                        {post.tag_nome}
-                        </span>
-                    </div>
-
-                    <div className="post-content mb-4">
-                        <p className="text-gray-700 text-sm leading-relaxed">{post.post_conteudo}</p>
-                    </div>
-                    </div>
-
-                    {post.imagem_url && (
-                    <div className="mt-4 overflow-hidden rounded-lg border border-gray-100 bg-slate-50 flex items-center justify-center w-full max-w-[600px] mx-auto aspect-[16/9]">
-                        <Image
-                        src={post.imagem_url}
-                        alt="Imagem do post"
-                        width={600}
-                        height={338}
-                        className="w-full h-full object-cover"
-                        />
-                    </div>
-                    )}
-
-                    <div className="w-full max-w-[600px] flex items-center gap-6 mt-5 pt-4 border-t border-gray-100">
-                    <button
-                        disabled={botoesBloqueados[post.post_id]}
-                        onClick={() => handleCurtir(post.post_id, curtidoPeloUsuario)}
-                        className={`flex items-center gap-1.5 group transition ${botoesBloqueados[post.post_id] ? "cursor-not-allowed opacity-70" : "cursor-pointer"}`}
-                    >
-                        {botoesBloqueados[post.post_id] ? (
-                        <span className="h-5 w-5 animate-spin rounded-full border-2 border-gray-300 border-t-red-500" />
-                        ) : (
-                        <span
-                            className={`material-symbols-outlined !text-[24px] transition group-hover:text-red-500
-                            ${curtidoPeloUsuario ? "text-red-500 fill-red-500" : "text-gray-400 fill-none"}`}
-                        >
-                            favorite
-                        </span>
-                        )}
-                        <span className="text-xs font-semibold text-gray-500">{post.quantidade_curtidas}</span>
-                    </button>
-                {podeCriarPost && (
-                    <>
-                    <button type="button" onClick={() => handleAbrirEdicao(post)} className="cursor-pointer flex ml-auto items-center gap-1.5 group transition">
-                        <span className="material-symbols-outlined !text-[24px] text-gray-400 group-hover:text-[#0b8aa0] active:scale-95 active:shadow-2xl transition">
-                        edit_square
-                        </span>
-                    </button>
-                    <button
-                        type="button"
-                        onClick={() => handleDeletar(post.post_id)}
-                        className="cursor-pointer flex items-center gap-1.5 ml-2 text-red-500 group transition"
-                    >
-                        <span className="material-symbols-outlined !text-[24px] text-gray-400 group-hover:text-red-500 active:scale-95 transition">
-                            delete
-                        </span>
-                    </button>
-                    </>
-                )}
-                </div>
+            <div className="max-w-2xl">
+              <h1 className="text-4xl font-black tracking-tight text-slate-950 sm:text-5xl">
+                Conectando histórias, <span className="text-[#0b8aa0]">construindo o futuro.</span>
+              </h1>
+              <p className="mt-6 text-base leading-8 text-slate-600 sm:text-lg">
+                O Sistema de Controle de Egressos do IFPB JP tem como objetivo fortalecer os laços entre a instituição e seus ex-alunos.
+                Aqui você pode manter seus dados atualizados, acompanhar notícias, oportunidades e contribuir para o crescimento da nossa comunidade.
+              </p>
             </div>
-            );
-        }))}
+          </div>
+
+          <div className="relative mx-auto w-full max-w-xl">
+            <div className="absolute -left-8 top-6 h-28 w-28 rounded-full bg-[#d8f2f6]/80 blur-3xl" />
+            <div className="absolute -right-10 bottom-8 h-24 w-24 rounded-full bg-[#0b8aa0]/10 blur-3xl" />
+          </div>
         </div>
-            <EditPostModal 
-                isOpen={isEditOpen} 
-                setIsOpen={setIsEditOpen} 
-                post={postParaEditar}
-                onPostAtualizado={() => {atualizarPost}}
-            />
-        </main>
 
-        <div className="relative">
-        {podeCriarPost ? (
-            <>
-            <button
-                type="button"
-                onClick={() => setIsOpen(true)}
-                className="flex items-center gap-2 px-6 py-3 bg-[#0b8aa0] text-white rounded-full hover:bg-[#087487] cursor-pointer transition duration-300 active:scale-95 fixed bottom-5 right-5 z-40 shadow-xl"
-            >
-                <span className="material-symbols-outlined text-xl">post_add</span>
-                <span className="font-bold">Criar Post</span>
-            </button>
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <Link href="/login" className="group rounded-[30px] border border-[#d7eef3] bg-[#f4fbfc] px-6 py-7 shadow-sm transition hover:-translate-y-1 hover:border-[#0b8aa0] hover:bg-white">
+            <div className="flex h-14 w-14 items-center justify-center rounded-3xl bg-white text-[#0b8aa0] shadow-sm">
+              <span className="material-symbols-outlined !text-2xl">login</span>
+            </div>
+            <div className="mt-5">
+              <h2 className="text-xl font-semibold text-slate-900">Fazer autenticação</h2>
+              <p className="mt-2 text-sm text-slate-500">Acesse sua conta e aproveite todos os recursos.</p>
+            </div>
+            <span className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-[#0b8aa0]">
+              Ir para login <span className="material-symbols-outlined">arrow_forward</span>
+            </span>
+          </Link>
 
-            {isOpen && (
-                <CreatePostModal 
-                userId={user.id} 
-                isOpen={isOpen} 
-                setIsOpen={setIsOpen} 
-                />
-            )}
-            </>
-        ) : (
-            <>
-            <button
-                type="button"
-                onClick={() => setIsOpen(true)}
-                className="flex items-center gap-2 px-6 py-3 bg-[#0b8aa0] text-white rounded-full hover:bg-[#087487] cursor-pointer transition duration-300 active:scale-95 fixed bottom-5 right-5 z-40 shadow-xl"
-            >
-                <span id="chat" className="material-symbols-outlined text-xl">chat</span>
-                <span id="feedback-text" className="font-bold">Enviar Feedback</span>
-            </button>
+          <Link href="/cadastro" className="group rounded-[30px] border border-[#d7eef3] bg-[#f4fbfc] px-6 py-7 shadow-sm transition hover:-translate-y-1 hover:border-[#0b8aa0] hover:bg-white">
+            <div className="flex h-14 w-14 items-center justify-center rounded-3xl bg-white text-[#0b8aa0] shadow-sm">
+              <span className="material-symbols-outlined !text-2xl">person_add</span>
+            </div>
+            <div className="mt-5">
+              <h2 className="text-xl font-semibold text-slate-900">Fazer Cadastro</h2>
+              <p className="mt-2 text-sm text-slate-500">Ainda não tem conta? Cadastre-se agora mesmo.</p>
+            </div>
+            <span className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-[#0b8aa0]">
+              Criar conta <span className="material-symbols-outlined">arrow_forward</span>
+            </span>
+          </Link>
 
-            {isOpen && (
-                <SendFeedbackModal 
-                isOpen={isOpen} 
-                setIsOpen={setIsOpen} 
-                />
-            )}
-            </>
-        )}
+          <Link href="/mural" className="group rounded-[30px] border border-[#d7eef3] bg-[#f4fbfc] px-6 py-7 shadow-sm transition hover:-translate-y-1 hover:border-[#0b8aa0] hover:bg-white">
+            <div className="flex h-14 w-14 items-center justify-center rounded-3xl bg-white text-[#0b8aa0] shadow-sm">
+              <span className="material-symbols-outlined !text-2xl">article</span>
+            </div>
+            <div className="mt-5">
+              <h2 className="text-xl font-semibold text-slate-900">Ver Mural</h2>
+              <p className="mt-2 text-sm text-slate-500">Já está autenticado? Venha ver as postagens do mural e mais!</p>
+            </div>
+            <span className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-[#0b8aa0]">
+              Ver mural <span className="material-symbols-outlined">arrow_forward</span>
+            </span>
+          </Link>
         </div>
-    </>
-)}
+      </div>
+    </main>
+  );
+}

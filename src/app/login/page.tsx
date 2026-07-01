@@ -24,7 +24,7 @@ export default function Login() {
             const dados = await loginUsuario(email, senha);
             if (dados) {
                 mostrarAlerta('ok', 'Bem-vindo(a)!');
-                router.push('/');
+                router.push('/mural');
             }
         } catch (error: any) {
             if (error.message.includes("Invalid login credentials")) {

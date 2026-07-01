@@ -3,6 +3,8 @@ import Image from "next/image";
 export function Footer() {
     return (
         <footer>
+            <p>Nossas Redes Sociais</p>
+        
         <div className="social-icons">
             <a href="https://github.com/ifpb" target="_blank" className="github">
                 <Image src="/github.png" alt="GitHub" width={40} height={40} />
@@ -16,6 +18,7 @@ export function Footer() {
                 <Image src="/linkedin.png" alt="LinkedIn" width={60} height={60} />
             </a>
         </div>
+                            <p className="bg-[#087487]">2026 SCE - Todos os direitos reservados.</p>
         </footer> 
     );
 }
