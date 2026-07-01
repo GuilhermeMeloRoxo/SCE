@@ -1,4 +1,5 @@
 'use server'
+import { SupabaseClient } from "@supabase/supabase-js";
 import { obterUsuarioAtual } from "./auth";
 import { getSupabase } from "./supabaseServer";
 
@@ -92,3 +93,28 @@ export async function deletarPostPorErroDeUpload(postId: string) {
   
   return { success: true };
 }
+export async function limparStorageDoUsuario(userId: string, supabaseAdmin: SupabaseClient) {
+  await supabaseAdmin.storage
+    .from('avatares')
+    .remove([`${userId}/avatar_pic.webp`])
+
+  const { data: arquivosPost, error: listError } = await supabaseAdmin.storage
+    .from('posts_imagens')
+    .list(userId)
+  
+  if (listError) {
+    throw new Error(`Falha ao listar imagens de posts: ${listError.message}`)
+  }
+
+  if (arquivosPost && arquivosPost.length > 0) {
+    const caminhosParaDeletar = arquivosPost.map(arquivo => `${userId}/${arquivo.name}`)
+    const { error: removeError } = await supabaseAdmin.storage
+    .from('posts_imagens')
+    .remove(caminhosParaDeletar)
+
+    if (removeError) {
+      throw new Error(`Falha ao deletar imagens de posts: ${removeError.message}`)
+    }
+  }
+}
+
