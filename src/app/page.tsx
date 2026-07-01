@@ -9,11 +9,12 @@ import { SearchBar } from "@/components/SearchBar";
 import { LoadingIcon } from "@/components/Icons";
 import { obterUsuarioAtual } from "@/services/auth";
 import { formatarDataMural } from "@/utils/formatters";
-import { 
+import {
     atualizarPost,
   buscarPostsCurtidos,
-  buscarPostsMural, 
-  gerenciarCurtida, 
+  buscarPostsMural,
+  gerenciarCurtida,
+  deletarPost,
 } from "@/services/mural";
 import { SendFeedbackModal } from "@/components/SendFeedbackModal";
 import CreatePostModal from "@/components/CreatePostModal";
@@ -112,6 +113,35 @@ export default function Mural() {
             setBotoesBloqueados((prev) => ({ ...prev, [postId]: false }));
         }
     };
+
+    const handleDeletar = async (postId: string) => {
+        if (confirm("Tem certeza que deseja excluir essa postagem?")){
+            setBotoesBloqueados((prev) => ({ ...prev, [postId]: true }));
+
+            try {
+                const resultado = await deletarPost(postId);
+
+                if (resultado.success) {
+                    mostrarAlerta("ok", "Post excluído com sucesso.");
+                    const listaPostsAtualizada = await buscarPostsMural();
+                    setPosts(listaPostsAtualizada);
+
+                    if (user) {
+                        const idsDosPosts = listaPostsAtualizada.map((post) => post.post_id);
+                        const curtidasSet = await buscarPostsCurtidos(user.id, idsDosPosts);
+                        setPostsCurtidos(curtidasSet);
+                    }
+                } else {
+                    mostrarAlerta("error", resultado.error || "Erro ao excluir o post.");
+                }
+            } catch (err) {
+                mostrarAlerta("error", "Erro ao excluir o post.");
+            } finally {
+                setBotoesBloqueados((prev) => ({ ...prev, [postId]: false }));
+            }
+        }
+    };
+
     const podeCriarPost = tipoUsuario === 'Coordenador' || tipoUsuario === 'Professor';
 
     return (
@@ -211,11 +241,22 @@ export default function Mural() {
                         <span className="text-xs font-semibold text-gray-500">{post.quantidade_curtidas}</span>
                     </button>
                 {podeCriarPost && (
+                    <>
                     <button type="button" onClick={() => handleAbrirEdicao(post)} className="cursor-pointer flex ml-auto items-center gap-1.5 group transition">
                         <span className="material-symbols-outlined !text-[24px] text-gray-400 group-hover:text-[#0b8aa0] active:scale-95 active:shadow-2xl transition">
                         edit_square
                         </span>
                     </button>
+                    <button
+                        type="button"
+                        onClick={() => handleDeletar(post.post_id)}
+                        className="cursor-pointer flex items-center gap-1.5 ml-2 text-red-500 group transition"
+                    >
+                        <span className="material-symbols-outlined !text-[24px] text-gray-400 group-hover:text-red-500 active:scale-95 transition">
+                            delete
+                        </span>
+                    </button>
+                    </>
                 )}
                 </div>
             </div>

@@ -117,4 +117,10 @@ export async function limparStorageDoUsuario(userId: string, supabaseAdmin: Supa
     }
   }
 }
-
+export async function apagarImagemPost(filePath: string) {
+  const supabase = await getSupabase();
+  const { error } = await supabase.storage
+  .from('posts_imagens')
+  .remove([filePath]);
+  if (error) throw error;
+}
