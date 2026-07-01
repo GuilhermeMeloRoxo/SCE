@@ -5,12 +5,9 @@ import { useAlerta } from "@/context/AlertContext";
 import { Navbar } from "@/components/Navbar";
 import { SearchBar } from "@/components/SearchBar";
 import { LoadingIcon } from "@/components/Icons";
-import { obterUsuarioAtual } from "@/services/auth";
 import { formatarDataMural } from "@/utils/formatters";
 import {
-    atualizarPost,
-  buscarPostsCurtidos,
-  buscarPostsMural,
+  atualizarPost,
   gerenciarCurtida,
   deletarPost,
 } from "@/services/mural";
@@ -18,18 +15,20 @@ import { SendFeedbackModal } from "@/components/SendFeedbackModal";
 import CreatePostModal from "@/components/CreatePostModal";
 import { buscarPerfilPublico } from "@/services/profile";
 import EditPostModal from "@/components/EditPostModal";
+import { useAuth } from '@/hooks/useAuth';
+import { usePosts } from '@/hooks/usePosts';
 
 
 export default function Mural() {
     const { mostrarAlerta } = useAlerta();
-    
-    const [posts, setPosts] = useState<any[]>([]);
-    const [loading, setLoading] = useState(true);
-    const [user, setUser] = useState<any>(null);
+    const { usuario, carregando } = useAuth();
+    const { postsQuery, curtidasQuery, refreshPosts } = usePosts();
+    const posts = postsQuery.data ?? [];
+    const postsCurtidos = curtidasQuery.data ?? new Set<string>();
     const [botoesBloqueados, setBotoesBloqueados] = useState<{ [key: string]: boolean }>({});
-    const [postsCurtidos, setPostsCurtidos] = useState<Set<string>>(new Set());
     const [isOpen, setIsOpen] = useState(false);
     const [tipoUsuario, setTipoUsuario] = useState<string | null>(null);
+    const isLoading = carregando || postsQuery.isLoading || curtidasQuery.isLoading;
 
     interface PostTipo {
         post_id: string;
@@ -52,89 +51,61 @@ export default function Mural() {
     };
 
     useEffect(() => {
-        async function carregarDadosIniciais() {
-            try {
-                const { user } = await obterUsuarioAtual();
-                
-                if (!user) {
-                    mostrarAlerta('error', 'Você precisa estar autenticado para acessar o mural');
-                    window.location.href = '/login';
-                    return;
-                }
-
-                setUser(user);
-                const { data } = await buscarPerfilPublico(user.id);
-                setTipoUsuario(data?.curso || null);
-                
-                const listaPosts = await buscarPostsMural();
-                setPosts(listaPosts);
-
-                if (listaPosts.length > 0) {
-                    const idsDosPosts = listaPosts.map((p) => p.post_id);
-                    const curtidasSet = await buscarPostsCurtidos(user.id, idsDosPosts);
-                    setPostsCurtidos(curtidasSet);
-                }
-
-                setLoading(false);
-            } catch (err) {
-                mostrarAlerta("error", "Não foi possível carregar as publicações.");
-                setLoading(false);
-            }
+      async function loadTipoUsuario() {
+        if (!usuario) {
+          setTipoUsuario(null);
+          return;
         }
-        carregarDadosIniciais();
-    }, []);
-
-    const handleCurtir = async (postId: string, jaCurtiu: boolean) => {
-        if (!user) return mostrarAlerta("error", "Você precisa estar autenticado para curtir.");
-        
-        setBotoesBloqueados((prev) => ({ ...prev, [postId]: true }));
 
         try {
-            const resultado = await gerenciarCurtida(postId, user.id, jaCurtiu);
-
-            if (resultado.success) {
-            const listaPostsAtualizada = await buscarPostsMural();
-            setPosts(listaPostsAtualizada);
-
-            if (user) {
-                const idsDosPosts = listaPostsAtualizada.map((post) => post.post_id);
-                const curtidasSet = await buscarPostsCurtidos(user.id, idsDosPosts);
-                setPostsCurtidos(curtidasSet);
-            }
-            }
-        } catch (err) {
-            mostrarAlerta("error", "Erro ao processar curtida.");
-        } finally {
-            setBotoesBloqueados((prev) => ({ ...prev, [postId]: false }));
+          const { data } = await buscarPerfilPublico(usuario.id);
+          setTipoUsuario(data?.curso || null);
+        } catch (error) {
+          console.error('Erro ao buscar tipo de usuário:', error);
+          setTipoUsuario(null);
         }
+      }
+
+      loadTipoUsuario();
+    }, [usuario]);
+
+    const handleCurtir = async (postId: string, jaCurtiu: boolean) => {
+      if (!usuario) return mostrarAlerta("error", "Você precisa estar autenticado para curtir.");
+
+      setBotoesBloqueados((prev) => ({ ...prev, [postId]: true }));
+
+      try {
+        const resultado = await gerenciarCurtida(postId, usuario.id, jaCurtiu);
+
+        if (resultado.success) {
+          await refreshPosts();
+        }
+      } catch (err) {
+        mostrarAlerta("error", "Erro ao processar curtida.");
+      } finally {
+        setBotoesBloqueados((prev) => ({ ...prev, [postId]: false }));
+      }
     };
 
     const handleDeletar = async (postId: string) => {
-        if (confirm("Tem certeza que deseja excluir essa postagem?")){
-            setBotoesBloqueados((prev) => ({ ...prev, [postId]: true }));
+      if (confirm("Tem certeza que deseja excluir essa postagem?")) {
+        setBotoesBloqueados((prev) => ({ ...prev, [postId]: true }));
 
-            try {
-                const resultado = await deletarPost(postId);
+        try {
+          const resultado = await deletarPost(postId);
 
-                if (resultado.success) {
-                    mostrarAlerta("ok", "Post excluído com sucesso.");
-                    const listaPostsAtualizada = await buscarPostsMural();
-                    setPosts(listaPostsAtualizada);
-
-                    if (user) {
-                        const idsDosPosts = listaPostsAtualizada.map((post) => post.post_id);
-                        const curtidasSet = await buscarPostsCurtidos(user.id, idsDosPosts);
-                        setPostsCurtidos(curtidasSet);
-                    }
-                } else {
-                    mostrarAlerta("error", resultado.error || "Erro ao excluir o post.");
-                }
-            } catch (err) {
-                mostrarAlerta("error", "Erro ao excluir o post.");
-            } finally {
-                setBotoesBloqueados((prev) => ({ ...prev, [postId]: false }));
-            }
+          if (resultado.success) {
+            mostrarAlerta("ok", "Post excluído com sucesso.");
+            await refreshPosts();
+          } else {
+            mostrarAlerta("error", resultado.error || "Erro ao excluir o post.");
+          }
+        } catch (err) {
+          mostrarAlerta("error", "Erro ao excluir o post.");
+        } finally {
+          setBotoesBloqueados((prev) => ({ ...prev, [postId]: false }));
         }
+      }
     };
 
     const podeCriarPost = tipoUsuario === 'Coordenador' || tipoUsuario === 'Professor';
@@ -153,7 +124,7 @@ export default function Mural() {
         </h1>
 
         <div id="mural-posts" className="mural-grid">
-            {loading ? (
+            {isLoading ? (
             <div className="flex w-full items-center justify-center">
                 <LoadingIcon className="animate-spin h-20 w-20 mt-30 text-gray-500" />
             </div>
@@ -278,9 +249,9 @@ export default function Mural() {
                 <span className="font-bold">Criar Post</span>
             </button>
 
-            {isOpen && (
+            {isOpen && usuario && (
                 <CreatePostModal 
-                userId={user.id} 
+                userId={usuario.id} 
                 isOpen={isOpen} 
                 setIsOpen={setIsOpen} 
                 />

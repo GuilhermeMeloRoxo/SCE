@@ -8,6 +8,7 @@ import Image from 'next/image';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { loginSchema } from '@/schemas/LoginSchema';
+import { useTogglePassword } from '@/hooks/useTogglePassword';
 import type { z } from 'zod';
 
 type LoginFormValues = z.infer<typeof loginSchema>;
@@ -16,8 +17,8 @@ export default function Login() {
   const router = useRouter();
   const { mostrarAlerta } = useAlerta();
   const [isLoading, setIsLoading] = useState(false);
-  const [mostrarSenha, setMostrarSenha] = useState(false);
   const formRef = useRef<HTMLFormElement>(null);
+  const { mostrarSenha, toggleSenha } = useTogglePassword();
 
   const {
     register,
@@ -98,7 +99,7 @@ export default function Login() {
                   />
                   <button
                     type="button"
-                    onClick={() => setMostrarSenha(!mostrarSenha)}
+                    onClick={toggleSenha}
                     className="absolute right-4 bottom-1/2 translate-y-1/2 cursor-pointer text-gray-500 hover:text-gray-700 focus:outline-none flex items-center justify-center"
                   >
                     <span className="material-symbols-outlined !text-lg">

@@ -9,6 +9,7 @@ import Image from 'next/image';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { cadastroSchema } from '@/schemas/CadastroSchema';
+import { useTogglePassword } from '@/hooks/useTogglePassword';
 import type { z } from 'zod';
 
 type CadastroFormValues = z.infer<typeof cadastroSchema>;
@@ -19,7 +20,7 @@ export default function Cadastro() {
 
   const [isLoading, setIsLoading] = useState(false);
   const [usernameStatus, setUsernameStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
-  const [mostrarSenha, setMostrarSenha] = useState(false);
+  const { mostrarSenha, toggleSenha } = useTogglePassword();
 
   const cpfInputRef = useRef<HTMLInputElement>(null);
   const emailInputRef = useRef<HTMLInputElement>(null);
@@ -223,7 +224,7 @@ export default function Cadastro() {
                 />
                 <button
                   type="button"
-                  onClick={() => setMostrarSenha(!mostrarSenha)}
+                  onClick={toggleSenha}
                   className="absolute right-4 bottom-1/2 translate-y-1/2 cursor-pointer text-gray-500 hover:text-gray-700 focus:outline-none flex items-center justify-center"
                 >
                   <span className="material-symbols-outlined !text-lg">

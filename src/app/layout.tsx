@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import '../styles/global.css';
 import { Footer } from "@/components/Footer";
 import { AlertProvider } from '@/context/AlertContext';
+import { ReactQueryProvider } from '@/components/ReactQueryProvider';
 
 export const metadata: Metadata = {
     title: {
@@ -20,7 +21,9 @@ export default function Rootlayout({
         <html lang="pt-br">
             <body className="bg-slate-200 flex sm:justify-center">
                 <AlertProvider>
-                    {children}
+                    <ReactQueryProvider>
+                        {children}
+                    </ReactQueryProvider>
                     <Footer />
                 </AlertProvider>
             </body>

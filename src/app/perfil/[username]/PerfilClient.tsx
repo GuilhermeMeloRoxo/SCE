@@ -5,7 +5,7 @@ import { Navbar } from "@/components/Navbar";
 import { GithubContainer } from '@/app/perfil/[username]/GithubContainer';
 import { ProfileContainer } from '@/components/ProfileContainer';
 import { use, useEffect, useState } from 'react';
-import { obterUsuarioAtual } from '@/services/auth';
+import { useAuth } from '@/hooks/useAuth';
 import { buscarPerfilPublico } from '@/services/profile';
 
 interface PerfilProps {
@@ -16,29 +16,28 @@ interface PerfilProps {
 export default function PerfilClient({ params }: PerfilProps) {
     const pathname = usePathname();
     const { username } = use(params);
+    const { usuario, carregando } = useAuth();
     const [isOwner, setIsOwner] = useState(false);
 
     useEffect(() => {
       async function checkOwner() {
+        if (!username || !usuario) {
+          setIsOwner(false);
+          return;
+        }
+
         try {
-          const [perfilRes, usuarioRes] = await Promise.all([
-            buscarPerfilPublico(username),
-            obterUsuarioAtual(),
-          ]);
+          const perfilRes = await buscarPerfilPublico(username);
           const perfil = perfilRes?.data;
-          if (!usuarioRes) {
-            window.location.href = '/login';
-            return;
-          }
-          const usuarioAtualId = usuarioRes?.user?.id;
-          setIsOwner(Boolean(usuarioAtualId && perfil?.id && usuarioAtualId === perfil.id));
+          setIsOwner(Boolean(usuario.id && perfil?.id && usuario.id === perfil.id));
         } catch (err) {
           console.error('Erro ao verificar dono do perfil', err);
           setIsOwner(false);
         }
       }
-      if (username) checkOwner();
-    }, [username]);
+
+      checkOwner();
+    }, [username, usuario]);
 
     return (
         <>

@@ -7,33 +7,38 @@ import { ProfileContainer } from "@/components/ProfileContainer";
 import { useAlerta } from "@/context/AlertContext";
 import EdicaoContainer, { type FormValues } from "./EdicaoContainer";
 import { atualizarEmailUsuario, atualizarPerfil } from "@/services/profile";
-import { obterUsuarioAtual, deletarUsuario } from "@/services/auth";
+import { deletarUsuario } from "@/services/auth";
+import { useAuth } from '@/hooks/useAuth';
 
 
 export default function EditarPerfilClient() {
   const router = useRouter();
   const { mostrarAlerta } = useAlerta();
+  const { usuario, carregando } = useAuth();
 
   const [username, setUsername] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+
+  if (carregando) {
+    return null;
+  }
 
   const handleEditSubmit = async (values: FormValues) => {
     setIsLoading(true);
 
     try {
-      const { user } = await obterUsuarioAtual();
-      const userId = user?.id;
+      const userId = usuario?.id;
 
       if (!userId) {
-        window.location.href = '/login';
+        router.push('/login');
         return;
       }
-      if (user.email != values.email) {
-        try{
+      if (usuario.email !== values.email) {
+        try {
           await atualizarEmailUsuario(values.email);
           mostrarAlerta('ok', 'Seu email foi alterado com sucesso, verifique sua caixa de mensagens para fazer a confirmação!');
-        } catch(err) {
-          throw new Error('Erro ao trocar email: ', err.message)
+        } catch (err: any) {
+          throw new Error('Erro ao trocar email: ' + (err?.message ?? '')); 
         }
       }
       const result = await atualizarPerfil({
