@@ -270,6 +270,5 @@ export default function Mural() {
             </>
         )}
         </div>
-    );
     </>
 )}
