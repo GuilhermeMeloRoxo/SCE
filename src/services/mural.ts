@@ -151,3 +151,41 @@ export async function buscarTagId(tagNome) {
 
   return data.tag_id;
 }
+
+export interface DadosAtualizacaoPost {
+  conteudo?: string;
+  tag?: string;
+  temImagem?: boolean;
+}
+
+export async function atualizarPost(
+  postId: string, 
+  dados: DadosAtualizacaoPost): Promise<{ success: boolean; error?: string }> {
+  const supabase = await getSupabase();
+  const updateData: any = {};
+  if (dados.conteudo !== undefined) {
+    updateData.conteudo = dados.conteudo;
+  }
+  if (dados.tag !== undefined) {
+    const tagId = await buscarTagId(dados.tag);
+    updateData.tag_id = tagId;
+  }
+  if (dados.temImagem === true) {
+    updateData.caminho_imagem = `${postId}.webp`;
+  } else if (dados.temImagem === false) {
+    updateData.caminho_imagem = null;
+  }
+  if (Object.keys(updateData).length === 0) {
+    return { success: true };
+  }
+  const { error: updateError } = await supabase
+    .from("posts")
+    .update(updateData)
+    .eq("post_id", postId);
+
+  if (updateError) {
+    console.error("Erro ao atualizar post:", updateError.message);
+    return { success: false, error: updateError.message || "Erro ao salvar alterações." };
+  }
+  return { success: true };
+}
