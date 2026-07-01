@@ -22,7 +22,7 @@ export default function GithubButton() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center rounded-[24px] border border-dashed border-slate-300 p-10 text-center">
+    <div className="flex flex-col items-center justify-center rounded-[24px] border border-dashed border-slate-400 p-10 text-center">
       <p className="text-sm text-slate-500 mb-4">Conecte seu GitHub para exibir suas contribuições recentes.</p>
       <button onClick={handleVinculo} className="inline-flex items-center gap-2 rounded-full bg-slate-900 px-6 py-2.5 text-sm font-semibold text-white transition hover:bg-slate-700 cursor-pointer">
           <svg className="w-6 h-6 text-black" fill="white">

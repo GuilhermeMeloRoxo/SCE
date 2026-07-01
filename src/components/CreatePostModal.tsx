@@ -188,7 +188,7 @@ export default function CreatePostModal({ userId, isOpen, setIsOpen }: CreatePos
           className="flex items-center gap-2 px-6 py-3 bg-[#0b8aa0] text-white rounded-full hover:bg-[#087487] transition duration-300 active:scale-95 fixed bottom-5 right-5 z-40 shadow-xl"
         >
           <span className="material-symbols-outlined text-xl">post_add</span>
-          <span className="font-bold">Criar Post</span>
+          <span className="font-bold text-gray-900">Criar Post</span>
         </button>
       </div>
 
@@ -198,14 +198,13 @@ export default function CreatePostModal({ userId, isOpen, setIsOpen }: CreatePos
             
             <div className="flex items-center justify-between mb-6">
               <div className="flex items-center gap-3 text-[#0b8aa0]">
-                <span className="material-symbols-outlined !text-2xl">edit_square</span>
-                <h3 className="text-xl font-bold">Criar Novo Post</h3>
+                <span className="material-symbols-outlined !text-2xl">box_edit</span>
+                <h3 className="text-xl font-bold text-gray-900">Criar Novo Post</h3>
               </div>
               <button
                 type="button"
                 onClick={handleResetForm}
-                className="material-symbols-outlined text-gray-400 cursor-pointer !text-2xl hover:text-gray-600 transition-colors"
-              >
+                className="material-symbols-outlined text-gray-400 cursor-pointer !text-2xl hover:text-gray-600 transition-colors">
                 close
               </button>
             </div>
@@ -213,7 +212,7 @@ export default function CreatePostModal({ userId, isOpen, setIsOpen }: CreatePos
             <form onSubmit={handleSubmit} className="space-y-5 max-h-[75vh] overflow-y-auto pr-2 pl-2 scrollbar-thin">
               
               <div>
-                <label className="block text-sm font-bold mb-1.5 text-zinc-700" htmlFor="select-tags">
+                <label className="block text-sm pl-1 font-bold mb-1.5 text-zinc-700" htmlFor="select-tags">
                   Tag do Post *
                 </label>
                 <div className="relative">
@@ -222,7 +221,7 @@ export default function CreatePostModal({ userId, isOpen, setIsOpen }: CreatePos
                     required
                     value={tagSelecionada || ""}
                     onChange={handleSelectTag}
-                    className="w-full px-4 py-2.5 bg-white border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-[#087487] focus:border-transparent outline-none transition text-zinc-900 appearance-none cursor-pointer"
+                    className="w-full px-4 py-2.5 bg-white border border-gray-300 rounded-3xl text-sm focus:ring-2 focus:ring-[#087487] focus:border-transparent outline-none transition text-zinc-900 appearance-none cursor-pointer"
                   >
                     <option value="" disabled>Selecione uma tag para o post</option>
                     {OPCOES_TAGS.map((tag) => (
@@ -236,7 +235,7 @@ export default function CreatePostModal({ userId, isOpen, setIsOpen }: CreatePos
               </div>
 
               <div>
-                <label className="block text-sm font-bold mb-1.5 text-zinc-700" htmlFor="conteudo-post">
+                <label className="block text-sm text-zinc-700 font-bold mb-1.5 text-zinc-700" htmlFor="conteudo-post">
                   Conteúdo do Post *
                 </label>
                 <div className="relative">
@@ -256,7 +255,7 @@ export default function CreatePostModal({ userId, isOpen, setIsOpen }: CreatePos
               </div>
 
               <div>
-                <label className="block text-sm font-bold mb-1.5 text-zinc-700">
+                <label className="block text-sm pl-1 font-bold mb-1.5 text-zinc-700">
                   Imagem (opcional)
                 </label>
                 <input
@@ -312,15 +311,13 @@ export default function CreatePostModal({ userId, isOpen, setIsOpen }: CreatePos
                 <button
                   type="button"
                   onClick={handleResetForm}
-                  className="px-6 py-2 border border-gray-300 rounded-xl text-sm font-bold text-gray-500 hover:bg-gray-50 transition duration-200"
-                >
+                  className="px-8 py-2 border border-gray-300 rounded-3xl text-sm font-bold text-[#0b8aa0] hover:bg-gray-100 cursor-pointer shadow-lg transition duration-300 active:scale-95 active:shadow-2xl">
                   Cancelar
                 </button>
                 <button
                   type="submit"
                   disabled={isSubmitting || conteudo.trim().length === 0 || !tagSelecionada}
-                  className="px-6 py-2 bg-[#0b8aa0] hover:bg-[#087487] text-white rounded-xl text-sm font-bold flex items-center gap-2 transition duration-200 disabled:cursor-not-allowed disabled:opacity-50"
-                >
+                  className="px-6 py-2 bg-[#0b8aa0] text-white rounded-3xl text-sm font-bold flex items-center gap-2 hover:bg-[#087487]  cursor-pointer shadow-lg transition duration-200 disabled:cursor-not-allowed disabled:opacity-50">
                   {isSubmitting ? (
                     <>
                       <div className="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />

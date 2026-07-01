@@ -18,12 +18,12 @@ export default function PerfilClient({ params }: PerfilProps) {
     return (
         <>
         <Navbar />
-        <main className="min-h-[calc(100vh-65px-150px)] bg-white flex">
+        <main className="min-h-[calc(100vh-65px-150px)] bg-slate-300 flex">
         <div className="flex w-full flex-col lg:flex-row"> 
                 <ProfileContainer 
                     username={username}
                 />
-            <div className="flex-1 bg-white px-8 py-2 sm:py-8 overflow-y-auto">
+            <div className="flex-1 bg-slate-200 px-8 py-2 sm:py-8 overflow-y-auto">
                 <div className="max-w-[1400px]">
                     <div>
                         <div className="mb-12 mt-6">

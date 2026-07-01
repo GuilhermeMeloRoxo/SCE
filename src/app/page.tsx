@@ -10,6 +10,7 @@ import { LoadingIcon } from "@/components/Icons";
 import { obterUsuarioAtual } from "@/services/auth";
 import { formatarDataMural } from "@/utils/formatters";
 import { 
+    atualizarPost,
   buscarPostsCurtidos,
   buscarPostsMural, 
   gerenciarCurtida, 
@@ -17,6 +18,7 @@ import {
 import { SendFeedbackModal } from "@/components/SendFeedbackModal";
 import CreatePostModal from "@/components/CreatePostModal";
 import { buscarPerfilPublico } from "@/services/profile";
+import EditPostModal from "@/components/EditPostModal";
 
 
 export default function Mural() {
@@ -31,6 +33,26 @@ export default function Mural() {
     const [isOpen, setIsOpen] = useState(false);
     const [tipoUsuario, setTipoUsuario] = useState<string | null>(null);
     const [readyToRender, setReadyToRender] = useState(false);
+
+    interface PostTipo {
+        post_id: string;
+        autor_nome: string;
+        autor_avatar?: string;
+        post_data: string;
+        tag_nome: 'Evento' | 'Aviso' | 'Pesquisa' | 'Conquista' | 'Palestra' | 'Material' | 'Oportunidade' | 'Projeto';
+        tag_cor: string;
+        post_conteudo: string;
+        imagem_url?: string;
+        quantidade_curtidas: number;
+    }
+
+    const [isEditOpen, setIsEditOpen] = useState<boolean>(false);
+    const [postParaEditar, setPostParaEditar] = useState<PostTipo | null>(null);
+
+    const handleAbrirEdicao = (post: PostTipo) => {
+    setPostParaEditar(post);
+    setIsEditOpen(true);
+    };
 
     useEffect(() => {
         async function carregarDadosIniciais() {
@@ -108,7 +130,7 @@ export default function Mural() {
         <div id="mural-posts" className="mural-grid">
             {loading ? (
             <div className="flex w-full items-center justify-center">
-                <LoadingIcon className="animate-spin h-20 w-20 mt-30 text-[#e0e0e0]" />
+                <LoadingIcon className="animate-spin h-20 w-20 mt-30 text-gray-500" />
             </div>
             ) : (
             posts.map((post) => {
@@ -180,27 +202,32 @@ export default function Mural() {
                         <span className="h-5 w-5 animate-spin rounded-full border-2 border-gray-300 border-t-red-500" />
                         ) : (
                         <span
-                            className={`material-symbols-outlined text-[20px] transition group-hover:text-red-500
-                            ${curtidoPeloUsuario ? "text-red-500 fill-red-500" : "text-gray-400"}`}
+                            className={`material-symbols-outlined !text-[24px] transition group-hover:text-red-500
+                            ${curtidoPeloUsuario ? "text-red-500 fill-red-500" : "text-gray-400 fill-none"}`}
                         >
                             favorite
                         </span>
                         )}
                         <span className="text-xs font-semibold text-gray-500">{post.quantidade_curtidas}</span>
                     </button>
-
-                    <button type="button" className="cursor-pointer flex items-center gap-1.5 group transition">
-                        <span className="material-symbols-outlined text-[20px] text-gray-400 group-hover:text-blue-500 transition">
-                        comment
+                {podeCriarPost && (
+                    <button type="button" onClick={() => handleAbrirEdicao(post)} className="cursor-pointer flex ml-auto items-center gap-1.5 group transition">
+                        <span className="material-symbols-outlined !text-[24px] text-gray-400 group-hover:text-[#0b8aa0] active:scale-95 active:shadow-2xl transition">
+                        edit_square
                         </span>
-                        <span className="text-xs font-semibold text-gray-500">{post.quantidade_comentarios}</span>
                     </button>
-                    </div>
+                )}
                 </div>
-                );
-            })
-            )}
+            </div>
+            );
+        }))}
         </div>
+            <EditPostModal 
+                isOpen={isEditOpen} 
+                setIsOpen={setIsEditOpen} 
+                post={postParaEditar}
+                onPostAtualizado={() => {atualizarPost}}
+            />
         </main>
 
         <div className="relative">
@@ -243,6 +270,6 @@ export default function Mural() {
             </>
         )}
         </div>
-    </>
     );
-}
+    </>
+)}

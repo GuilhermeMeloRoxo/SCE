@@ -265,7 +265,7 @@ export default function EdicaoContainer({ isLoading = false, usuarioId, onSubmit
             id="nome-completo"
             type="text"
             placeholder="Digite seu nome completo"
-            pattern="[A-Za-zÀ-ÖØ-öø-ÿ\s]+ [A-Za-zÀ-ÖØ-öø-ÿ\s]+$"
+            pattern="^[A-Za-zÀ-ÖØ-öø-ÿ\s-]+ [A-Za-zÀ-ÖØ-öø-ÿ\s-]+$"
             value={values.nome}
             onChange={(event) => setValues((prev) => ({ ...prev, nome: event.target.value }))}
             className="px-4 py-2.5 w-full border border-gray-300 rounded-3xl text-sm focus:ring-2 focus:ring-[#087487] focus:border-transparent outline-none transition"
@@ -508,7 +508,10 @@ export default function EdicaoContainer({ isLoading = false, usuarioId, onSubmit
           type="submit"
         >
           {!isLoading ? (
+          <>
+            <span className="material-symbols-outlined !text-lg">person_edit</span>
             <span>Salvar Alterações</span>
+          </>
           ) : (
             <>
               <div className="animate-spin h-5 w-5 border-2 border-white/30 border-t-white rounded-full" />

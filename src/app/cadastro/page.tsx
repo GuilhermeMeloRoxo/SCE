@@ -222,7 +222,7 @@ export default function Cadastro() {
               
               <div className="inline-flex mt-2">
                 <p className="pr-1 text-gray-900">Já tem um perfil?</p>
-                <Link href="/login" className="text-blue-900 hover:underline">
+                <Link href="/login" className="text-[#087487] hover:underline">
                   Entrar
                 </Link>
               </div>
