@@ -112,7 +112,7 @@ export default function Cadastro() {
                 type="text" 
                 value={nome}
                 onChange={(e) => setNome(e.target.value)}
-                pattern="[A-Za-zÀ-ÖØ-öø-ÿ\s]+ [A-Za-zÀ-ÖØ-öø-ÿ\s]+$"
+                pattern="^[A-Za-zÀ-ÖØ-öø-ÿ\s]+ [A-Za-zÀ-ÖØ-öø-ÿ\s]+$"
                 placeholder="Digite seu nome completo" 
                 required 
               />
