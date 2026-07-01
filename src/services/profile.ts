@@ -66,6 +66,18 @@ export async function buscarPerfilCompleto(usuarioId: string) {
   }
 }
 
+export async function buscarListaUsernames(parteUsername: string) {
+  const supabase = await getSupabase();
+  const { data, error } = await supabase
+  .from('perfis_publicos')
+  .select('username, avatar')
+  .ilike('username', `%${parteUsername}%`)
+  .limit(5);
+  if (error) throw error;
+  const resultados = data.map((perfil: any) => ({ username: perfil.username, avatar: perfil.avatar }));
+  return resultados;
+}
+
 export async function atualizarPerfil(dados: AtualizarPerfil) {
   const supabase = await getSupabase();
 
