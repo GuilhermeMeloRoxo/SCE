@@ -160,6 +160,7 @@ export default function CreatePostModal({ userId, isOpen, setIsOpen }: CreatePos
 
       mostrarAlerta("ok", "Post publicado com sucesso no mural!");
       handleResetForm();
+      location.reload();
 
     } catch (error: any) {
       console.error("Erro no fluxo de publicação do post:", error);
