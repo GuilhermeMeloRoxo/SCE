@@ -51,7 +51,9 @@ export function Navbar({ username }: NavbarProps) {
         const resultado = await fazerLogout();
 
         if (resultado.success) {
+            mostrarAlerta('ok', 'Sua sessão foi encerrada com sucesso!');
             router.push('/login');
+            return;
         } else {
             mostrarAlerta("error", "Erro ao encerrar a sessão. Tente novamente.");
         }
@@ -96,7 +98,7 @@ export function Navbar({ username }: NavbarProps) {
 
 
             <ul ref={menuRef} className={`nav-menu ${menuAtivo ? 'active' : ''}`} id="nav-menu">
-                <li>
+                <li className="border-b border-gray-200 last:border-b-0">
                     <div>
                         <Link href="/" onClick={() => setMenuAtivo(false)}>
                             <span className="material-symbols-outlined">home</span>
@@ -104,7 +106,15 @@ export function Navbar({ username }: NavbarProps) {
                         </Link>
                     </div>
                 </li>
-                <li>
+                <li className="border-b border-gray-200 last:border-b-0">
+                    <div>
+                        <Link href="/mural" onClick={() => setMenuAtivo(false)}>
+                            <span className="material-symbols-outlined">view_timeline</span>
+                            <p>Mural</p>
+                        </Link>
+                    </div>
+                </li>
+                <li className="border-b border-gray-200 last:border-b-0">
                     <div>
                         <Link href={caminho || "#"} onClick={() => setMenuAtivo(false)}>
                             <span className="material-symbols-outlined">account_circle</span> 
@@ -112,7 +122,7 @@ export function Navbar({ username }: NavbarProps) {
                         </Link>
                     </div>
                 </li>
-                <li>
+                <li className="border-b border-gray-200 last:border-b-0">
                     <div>
                         <Link href="#" onClick={handleLogoutClick} id="logout">
                             <span className="material-symbols-outlined">logout</span>

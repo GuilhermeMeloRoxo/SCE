@@ -79,7 +79,7 @@ export default function Cadastro() {
 
         const dados = await cadastrarUsuario(nome, username, email, cpf, senha);
         if (dados.session){
-          router.push('/');
+          router.push('/mural');
         } else {
           mostrarAlerta("ok", "Cadastro realizado! Confira seu email para ativar sua conta.")
         }
