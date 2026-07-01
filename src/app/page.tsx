@@ -149,7 +149,7 @@ export default function Mural() {
         <Navbar />
         
         <main className="container mx-auto px-4">
-        <div id="search" className="search my-4">
+        <div className="search my-4 absolute right-10">
             <SearchBar />
         </div>
 
