@@ -49,8 +49,13 @@ export function GithubContainer({ username, pathname }: GithubContainerProps) {
 
         const resultadoRepos = await buscarRepositoriosGithub(gUser);
         const resultadoUserGithub  = await obterUsuarioGithub(gUser);
+        if (resultadoUserGithub?.error === 'TOKEN_AUSENTE' || resultadoRepos?.error === 'TOKEN_AUSENTE') {
+          mostrarAlerta('error', 'Você precisa conectar seu github na sua página de perfil para ver os repositórios de outros usuários.')
+          setGithubUser('IDENTITY_NOT_LINKED');
+          return;
+        } 
 
-        if (resultadoRepos?.error === 'TOKEN_EXPIRADO' || resultadoUserGithub?.error == 'TOKEN_EXPIRADO') {
+        if (resultadoRepos?.error === 'TOKEN_EXPIRADO' || resultadoUserGithub?.error === 'TOKEN_EXPIRADO') {
           mostrarAlerta('alert', 'Seu token github expirou, vamos renová-lo para você, aguarde.')
           const supabase = getSupabaseBrowserClient();
 
@@ -70,10 +75,7 @@ export function GithubContainer({ username, pathname }: GithubContainerProps) {
             window.location.href = urlRenovacao;
           }
           return;
-        } else if (resultadoUserGithub?.error == 'TOKEN_AUSENTE' || resultadoRepos?.error === 'TOKEN_AUSENTE') {
-          mostrarAlerta('error', 'Você precisa conectar seu github na sua página de perfil para ver os repositórios de outros usuários.')
-          return;
-        } 
+        }
 
         if (resultadoRepos?.data && resultadoUserGithub) {
           setRepos(resultadoRepos.data);
@@ -126,6 +128,23 @@ export function GithubContainer({ username, pathname }: GithubContainerProps) {
           <div className="h-8 w-px bg-slate-200"></div>
           <div className="h-6 bg-slate-200 rounded w-12 mx-auto"></div>
         </div>
+      </div>
+    );
+  }
+
+  if (githubUser === 'IDENTITY_NOT_LINKED' && !isOwner) {
+    return (
+      <div className="rounded-[32px] border border-slate-100 bg-white p-8 shadow-sm flex flex-col items-center justify-center min-h-[300px] text-center">
+        <div className="bg-amber-50 p-4 rounded-full mb-4 text-amber-500">
+          <svg className="w-12 h-12" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
+          </svg>
+        </div>
+
+        <h3 className="text-lg font-bold text-slate-800 mb-1">Conexão Necessária</h3>
+        <p className="text-sm text-slate-500 max-w-xs mb-6">
+          Você precisa conectar sua conta do GitHub na sua própria página de perfil para conseguir visualizar os repositórios de outros usuários.
+        </p>
       </div>
     );
   }

@@ -89,7 +89,7 @@ async function buscarTokenGithub() {
   const tokenGithub = tokenData?.access_token;
 
   if (!tokenGithub) {
-    return { error: 'TOKEN_AUSENTE' };
+    return;
   }
   return tokenGithub
 }
