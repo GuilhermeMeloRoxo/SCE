@@ -119,7 +119,7 @@ export default function Mural() {
             <SearchBar />
         </div>
 
-        <h1 className="text-3xl font-bold text-center my-6 text-[#0b8aa0]">
+        <h1 className="text-3xl font-bold text-center mt-12 mb-6 text-[#0b8aa0]">
             Mural de Notícias - IFPB JP
         </h1>
 
