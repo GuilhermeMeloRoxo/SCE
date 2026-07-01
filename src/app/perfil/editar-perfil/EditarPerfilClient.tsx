@@ -25,7 +25,8 @@ export default function EditarPerfilClient() {
       const userId = user?.id;
 
       if (!userId) {
-        throw new Error("Não foi possível identificar o usuário autenticado.");
+        window.location.href = '/login';
+        return;
       }
       if (user.email != values.email) {
         try{
