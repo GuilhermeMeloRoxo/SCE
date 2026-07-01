@@ -1,4 +1,6 @@
 'use server';
+import { obterUsuarioAtual } from "./auth";
+import { apagarImagemPost } from "./storage";
 import { getSupabase } from "./supabaseServer";
 
 export async function buscarPostsMural() {
@@ -188,4 +190,26 @@ export async function atualizarPost(
     return { success: false, error: updateError.message || "Erro ao salvar alterações." };
   }
   return { success: true };
+}
+
+export async function deletarPost(postId: string) {
+  const supabase = await getSupabase();
+  const data = await obterUsuarioAtual();
+  const userId = data.user.id;
+  const caminhoImagem = `${userId}/${postId}.webp`;
+  try {
+    const { error: deleteError } = await supabase
+    .from('posts')
+    .delete()
+    .eq('post_id', postId)
+
+    if (deleteError) throw deleteError;
+
+    await apagarImagemPost(caminhoImagem);
+    
+  } catch (error: any) {
+    console.error('Erro ao apagar postagem: ', error);
+    return { success: false, error: error.message || 'Erro inesperado' };
+  }
+  return { success: true }
 }
