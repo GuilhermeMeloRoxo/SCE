@@ -4,8 +4,9 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useAlerta } from "@/context/AlertContext";
-import { fazerLogout, obterUsuarioAtual } from "@/services/auth";
+import { fazerLogout } from "@/services/auth";
 import { buscarPerfilPublico } from "@/services/profile";
+import { useAuth } from '@/hooks/useAuth';
 
 interface NavbarProps {
   username?: string;
@@ -13,6 +14,7 @@ interface NavbarProps {
 export function Navbar({ username }: NavbarProps) {
   const router = useRouter();
   const { mostrarAlerta } = useAlerta();
+  const { usuario, carregando } = useAuth();
   const [caminho, setCaminho] = useState<string | null>(null);
 
   useEffect(() => {
@@ -20,26 +22,26 @@ export function Navbar({ username }: NavbarProps) {
       setCaminho('/perfil/' + username);
       return;
     }
-    if (caminho) return;
+    if (caminho || carregando) return;
+    if (!usuario) {
+      setCaminho(null);
+      return;
+    }
 
     async function carregarDadosUsuario() {
       try {
-        const { user } = await obterUsuarioAtual();
-        const { data } = await buscarPerfilPublico(user.id);
+        const { data } = await buscarPerfilPublico(usuario.id);
         if (data?.username) {
           setCaminho('/perfil/' + data.username);
         }
       } catch (e: any) {
-        if (e.message?.includes('NOT AUTHENTICATED')) {
-          mostrarAlerta('error', 'Você precisa estar autenticado para acessar essa página');
-          router.push('/login');
-        } else {
-          mostrarAlerta('error', 'Ocorreu um erro inesperado');
-          router.push('/login');
-        }
+        console.error('Erro ao buscar perfil do usuário no Navbar:', e);
+        mostrarAlerta('error', 'Ocorreu um erro inesperado');
       }
-    } carregarDadosUsuario();
-    }, [username, router, mostrarAlerta]);
+    }
+
+    carregarDadosUsuario();
+  }, [username, caminho, carregando, usuario, mostrarAlerta]);
 
     const [menuAtivo, setMenuAtivo] = useState(false);
     
@@ -51,7 +53,9 @@ export function Navbar({ username }: NavbarProps) {
         const resultado = await fazerLogout();
 
         if (resultado.success) {
-            router.push("/login");
+            mostrarAlerta('ok', 'Sua sessão foi encerrada com sucesso!');
+            router.push('/login');
+            return;
         } else {
             mostrarAlerta("error", "Erro ao encerrar a sessão. Tente novamente.");
         }
@@ -96,7 +100,7 @@ export function Navbar({ username }: NavbarProps) {
 
 
             <ul ref={menuRef} className={`nav-menu ${menuAtivo ? 'active' : ''}`} id="nav-menu">
-                <li>
+                <li className="border-b border-gray-200 last:border-b-0">
                     <div>
                         <Link href="/" onClick={() => setMenuAtivo(false)}>
                             <span className="material-symbols-outlined">home</span>
@@ -104,15 +108,23 @@ export function Navbar({ username }: NavbarProps) {
                         </Link>
                     </div>
                 </li>
-                <li>
+                <li className="border-b border-gray-200 last:border-b-0">
                     <div>
-                        <Link href={caminho || "#"} onClick={() => setMenuAtivo(false)}>
+                        <Link href="/mural" onClick={() => setMenuAtivo(false)}>
+                            <span className="material-symbols-outlined">view_timeline</span>
+                            <p>Mural</p>
+                        </Link>
+                    </div>
+                </li>
+                <li className="border-b border-gray-200 last:border-b-0">
+                    <div>
+                        <Link href={caminho || "/login"} onClick={() => setMenuAtivo(false)}>
                             <span className="material-symbols-outlined">account_circle</span> 
                             <p>Seu Perfil</p>
                         </Link>
                     </div>
                 </li>
-                <li>
+                <li className="border-b border-gray-200 last:border-b-0">
                     <div>
                         <Link href="#" onClick={handleLogoutClick} id="logout">
                             <span className="material-symbols-outlined">logout</span>

@@ -2,33 +2,45 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
 import { Navbar } from "@/components/Navbar";
 import { ProfileContainer } from "@/components/ProfileContainer";
 import { useAlerta } from "@/context/AlertContext";
 import EdicaoContainer, { type FormValues } from "./EdicaoContainer";
-import { atualizarPerfil } from "@/services/profile";
-import { obterUsuarioAtual } from "@/services/auth";
+import { atualizarEmailUsuario, atualizarPerfil } from "@/services/profile";
+import { deletarUsuario } from "@/services/auth";
+import { useAuth } from '@/hooks/useAuth';
 
 
 export default function EditarPerfilClient() {
   const router = useRouter();
   const { mostrarAlerta } = useAlerta();
+  const { usuario, carregando } = useAuth();
 
   const [username, setUsername] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+
+  if (carregando) {
+    return null;
+  }
 
   const handleEditSubmit = async (values: FormValues) => {
     setIsLoading(true);
 
     try {
-      const { user } = await obterUsuarioAtual();
-      const userId = user?.id;
+      const userId = usuario?.id;
 
       if (!userId) {
-        throw new Error("Não foi possível identificar o usuário autenticado.");
+        router.push('/login');
+        return;
       }
-
+      if (usuario.email !== values.email) {
+        try {
+          await atualizarEmailUsuario(values.email);
+          mostrarAlerta('ok', 'Seu email foi alterado com sucesso, verifique sua caixa de mensagens para fazer a confirmação!');
+        } catch (err: any) {
+          throw new Error('Erro ao trocar email: ' + (err?.message ?? '')); 
+        }
+      }
       const result = await atualizarPerfil({
         userId,
         username: values.username,
@@ -43,10 +55,9 @@ export default function EditarPerfilClient() {
       if (!result.success) {
         throw new Error(result.error ?? "Falha ao salvar dados.");
       }
-
-      setUsername(values.username);
       mostrarAlerta("ok", "Dados atualizados com sucesso!");
-      router.push("/perfil");
+      router.push('/perfil/'+username);
+      return ;
     } catch (erro) {
       console.error("Erro ao atualizar:", erro);
       mostrarAlerta("error", erro instanceof Error ? erro.message : "Falha ao salvar dados.");
@@ -54,20 +65,21 @@ export default function EditarPerfilClient() {
       setIsLoading(false);
     }
   };
+  const handleDelete = async () => {
+    if (confirm("Tem certeza que deseja excluir seu perfil permanentemente?")) {
+      const result = await deletarUsuario();
 
+      if (result?.success) {
+        router.push('/login');
+      } else {
+        mostrarAlerta("error", result?.error || "Ocorreu um erro inesperado.");
+      }
+    }
+  };
   return (
     <>
       <Navbar />
       <div className="sm:mx-12">
-        <nav className="m-6 inline-flex text-sm font-medium sm:text-base sm:ml-0">
-          <Link href="/perfil" className="text-gray-500 hover:text-[#008b8b] transition-colors">
-            Seu Perfil
-          </Link>
-          <p className="text-gray-500 cursor-default"> {" "}&gt;{" "}</p>
-          <Link href="/perfil/editar" className="font-semibold text-[#008b8b] hover:text-gray-500">
-            Editar Perfil
-          </Link>
-        </nav>
 
         <div id="edit-profile" className="w-full flex flex-col md:flex-row gap-6">
           <aside className="w-full md:w-1/3 bg-slate-50 rounded-xl shadow-md border border-gray-100 p-8 flex flex-col items-center text-center">
@@ -84,8 +96,8 @@ export default function EditarPerfilClient() {
             <div className="mb-6 ml-4">
               <div className="inline-flex">
                 <h1 className="text-4xl font-black text-slate-900 tracking-tight">Editar Perfil</h1>
-                <button type="button">
-                  <span className="material-symbols-outlined !text-2xl pl-4 pt-1 text-slate-800 hover:text-[red] transition-colors">
+                <button type="button" onClick={handleDelete}>
+                  <span className="material-symbols-outlined cursor-pointer !text-2xl pl-4 pt-1 text-slate-800 hover:text-[red] transition-colors">
                     delete
                   </span>
                 </button>

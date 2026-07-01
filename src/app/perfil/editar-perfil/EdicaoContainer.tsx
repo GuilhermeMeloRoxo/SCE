@@ -1,25 +1,19 @@
 "use client";
-
-import { ChangeEvent, SubmitEvent, useEffect, useRef, useState } from "react";
+import { ChangeEvent, useEffect, useRef, useState } from "react";
 import { verificarUsernameDisponivel, obterUsuarioAtual } from "@/services/auth";
 import { useAlerta } from "@/context/AlertContext";
 import { buscarPerfilCompleto } from "@/services/profile";
-import { getSupabaseBrowserClient } from "@/services/supabaseBrowser";
-import { formatarCPF, formatarTelefone } from "@/utils/formatters";
+import { formatarFormacao, formatarCPF, formatarTelefone } from "@/utils/formatters";
 import Cropper from "cropperjs";
 import "cropperjs/dist/cropper.css";
+import { processarCanvasAvatarParaWebp } from "@/services/images";
+import { fazerUploadAvatarPerfil } from "@/services/storage";
+import { useRouter } from "next/navigation";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { editarSchema, type EditarSchema } from "@/schemas/EditarSchema";
 
-export interface FormValues {
-  nome: string;
-  username: string;
-  email: string;
-  cpf: string;
-  senha: string | null;
-  matricula: string;
-  formacao: string;
-  curso: string;
-  telefone: string;
-}
+export type FormValues = EditarSchema;
 
 interface EdicaoContainerProps {
   isLoading?: boolean;
@@ -42,8 +36,20 @@ const initialValues: FormValues = {
 
 export default function EdicaoContainer({ isLoading = false, usuarioId, onSubmit, onProfileLoaded }: EdicaoContainerProps) {
   const { mostrarAlerta } = useAlerta();
-  const [values, setValues] = useState<FormValues>(initialValues);
-  const [mostrarSenha, setMostrarSenha] = useState(false);
+
+  const {
+    register,
+    handleSubmit,
+    watch,
+    setValue,
+    reset,
+    formState: { errors },
+  } = useForm<EditarSchema>({
+    resolver: zodResolver(editarSchema),
+    mode: 'onTouched',
+    defaultValues: initialValues,
+  });
+
   const [currentUsername, setCurrentUsername] = useState("");
   const [usernameStatus, setUsernameStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
   const [showCropperModal, setShowCropperModal] = useState(false);
@@ -53,6 +59,7 @@ export default function EdicaoContainer({ isLoading = false, usuarioId, onSubmit
   const imageCropperRef = useRef<HTMLImageElement | null>(null);
   const cropperInstanceRef = useRef<Cropper | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const router = useRouter();
 
   useEffect(() => {
     let isActive = true;
@@ -71,7 +78,7 @@ export default function EdicaoContainer({ isLoading = false, usuarioId, onSubmit
           return;
         }
 
-        const dadosCarregados: FormValues = {
+        const dadosCarregados: EditarSchema = {
           nome: resultado.data.nome ?? "",
           username: resultado.data.username ?? "",
           email: resultado.data.email ?? "",
@@ -84,7 +91,7 @@ export default function EdicaoContainer({ isLoading = false, usuarioId, onSubmit
         };
 
         setCurrentUsername(resultado.data.username ?? "");
-        setValues(dadosCarregados);
+        reset(dadosCarregados);
         onProfileLoaded?.(dadosCarregados);
       } catch (error) {
         console.error("Erro ao carregar perfil para edição:", error);
@@ -96,7 +103,7 @@ export default function EdicaoContainer({ isLoading = false, usuarioId, onSubmit
     return () => {
       isActive = false;
     };
-  }, [usuarioId, onProfileLoaded]);
+  }, [usuarioId, onProfileLoaded, reset]);
 
   useEffect(() => {
     if (!showCropperModal || !selectedAvatarUrl || !imageCropperRef.current) {
@@ -107,7 +114,10 @@ export default function EdicaoContainer({ isLoading = false, usuarioId, onSubmit
     cropperInstanceRef.current = new Cropper(imageCropperRef.current, {
       aspectRatio: 1,
       viewMode: 1,
-      dragMode: "move",
+      minCanvasWidth: 0,
+      minCanvasHeight: 0,
+      minCropBoxWidth: 100,
+      dragMode: 'move',
       autoCropArea: 1,
       background: false,
       responsive: true,
@@ -119,46 +129,52 @@ export default function EdicaoContainer({ isLoading = false, usuarioId, onSubmit
     };
   }, [showCropperModal, selectedAvatarUrl]);
 
+  const watchedUsername = watch('username');
+
   useEffect(() => {
-    if (!values.username) {
-      setUsernameStatus("idle");
+    if (!watchedUsername) {
+      setUsernameStatus('idle');
       return;
     }
 
-    if (values.username.length < 4) {
-      setUsernameStatus("error");
+    if (watchedUsername.length < 4) {
+      setUsernameStatus('error');
       return;
     }
 
-    if (values.username === currentUsername) {
-      setUsernameStatus("success");
+    if (watchedUsername === currentUsername) {
+      setUsernameStatus('success');
       return;
     }
 
-    setUsernameStatus("loading");
+    setUsernameStatus('loading');
 
     const timer = window.setTimeout(async () => {
       try {
-        const disponivel = await verificarUsernameDisponivel(values.username);
-        setUsernameStatus(disponivel ? "success" : "error");
+        const disponivel = await verificarUsernameDisponivel(watchedUsername);
+        setUsernameStatus(disponivel ? 'success' : 'error');
       } catch {
-        setUsernameStatus("error");
+        setUsernameStatus('error');
       }
     }, 1000);
 
     return () => window.clearTimeout(timer);
-  }, [currentUsername, values.username]);
+  }, [currentUsername, watchedUsername]);
+
+  const handleFormacaoChange = (event: ChangeEvent<HTMLInputElement>) => {
+    setValue('formacao', formatarFormacao(event.target.value), { shouldValidate: true, shouldDirty: true });
+  };
 
   const handleUsernameChange = (event: ChangeEvent<HTMLInputElement>) => {
-    setValues((prev) => ({ ...prev, username: event.target.value.trim() }));
+    setValue('username', event.target.value.trim(), { shouldValidate: true, shouldDirty: true });
   };
 
   const handleCpfChange = (event: ChangeEvent<HTMLInputElement>) => {
-    setValues((prev) => ({ ...prev, cpf: formatarCPF(event.target.value) }));
+    setValue('cpf', formatarCPF(event.target.value), { shouldValidate: true, shouldDirty: true });
   };
 
   const handleTelefoneChange = (event: ChangeEvent<HTMLInputElement>) => {
-    setValues((prev) => ({ ...prev, telefone: formatarTelefone(event.target.value) }));
+    setValue('telefone', formatarTelefone(event.target.value), { shouldValidate: true, shouldDirty: true });
   };
 
   const handleAvatarSelection = async (event: ChangeEvent<HTMLInputElement>) => {
@@ -197,91 +213,52 @@ export default function EdicaoContainer({ isLoading = false, usuarioId, onSubmit
   };
 
   const handleSaveCroppedAvatar = async () => {
-    if (!cropperInstanceRef.current) {
-      return;
-    }
+    if (!cropperInstanceRef.current) return;
 
     try {
       setIsUploadingAvatar(true);
 
-      const canvas = cropperInstanceRef.current.getCroppedCanvas({
-        width: 400,
-        height: 400,
-      });
-
-      const blob = await new Promise<Blob | null>((resolve) => {
-        canvas.toBlob((result) => resolve(result), "image/webp", 0.8);
-      });
-
-      if (!blob) {
-        mostrarAlerta("error", "Não foi possível processar a imagem selecionada.");
+      const webpFile = await processarCanvasAvatarParaWebp(cropperInstanceRef.current, "avatar.webp");
+      if (!webpFile) {
+        mostrarAlerta("error", "Não foi possível processar o recorte da imagem.");
         return;
       }
 
-      const webpFile = new File([blob], "avatar.webp", { type: "image/webp" });
-      const supabase = getSupabaseBrowserClient();
-      const { user } = await obterUsuarioAtual();
-      const userId = user?.id;
-
-      if (!userId) {
-        throw new Error("Usuário não autenticado.");
+      const resultado = await fazerUploadAvatarPerfil(webpFile);
+      if (!resultado.success || !resultado.caminhoPublico) {
+        throw new Error(resultado.error);
       }
+      setAvatarPreviewUrl(resultado.caminhoPublico);
 
-      const filePath = `${userId}/avatar_pic.webp`;
-      const { error: uploadError } = await supabase.storage.from("avatares").upload(filePath, webpFile, { upsert: true });
-
-      if (uploadError) {
-        throw uploadError;
-      }
-
-      const { error: updateError } = await supabase.from("perfis").update({ avatar_url: filePath }).eq("id", userId);
-
-      if (updateError) {
-        throw updateError;
-      }
-
-      setAvatarPreviewUrl(canvas.toDataURL("image/webp"));
-      mostrarAlerta("ok", "Sua foto de perfil foi ajustada e salva com sucesso!");
+      mostrarAlerta("ok", "Foto de perfil atualizada com sucesso!");
       closeCropperModal();
-      if (fileInputRef.current) {
-        fileInputRef.current.value = "";
-      }
-    } catch (error) {
-      console.error("Erro ao salvar foto de perfil:", error);
-      mostrarAlerta("error", "Ocorreu um erro ao salvar sua nova foto de perfil no servidor.");
+      
+    } catch (error: any) {
+      mostrarAlerta("error", error?.message || "Erro inesperado ao salvar o avatar.");
     } finally {
       setIsUploadingAvatar(false);
     }
   };
 
-  const handleSubmit = async (event: SubmitEvent) => {
-    event.preventDefault();
-
-    if (usernameStatus === "loading") {
-      mostrarAlerta("error", "Aguarde a validação do username antes de salvar.");
+  const handleSubmitForm = async (data: EditarSchema) => {
+    if (usernameStatus === 'loading') {
+      mostrarAlerta('error', 'Aguarde a validação do username antes de salvar.');
+      return;
+    }
+    if (usernameStatus === 'error') {
+      mostrarAlerta('error', 'Escolha um username válido antes de salvar.');
       return;
     }
 
-    if (usernameStatus === "error") {
-      mostrarAlerta("error", "Escolha um username válido antes de salvar.");
-      return;
-    }
-
-    if (values.senha && values.senha.length > 0 && values.senha.length < 8) {
-      mostrarAlerta("error", "A senha deve ter pelo menos 8 caracteres ou ficar em branco.");
-      return;
-    }
-
-    const valuesToSubmit: FormValues = {
-      ...values,
-      senha: values.senha?.trim() || null,
-    };
-
-    await onSubmit?.(valuesToSubmit);
+    await onSubmit?.({
+      ...data,
+      senha: data.senha?.trim() || null,
+    });
   };
 
   return (
-    <form onSubmit={handleSubmit} id="form-edit" className="w-full max-w-4xl p-4 lg:grid lg:grid-cols-2 lg:gap-10">
+    <form noValidate onSubmit={handleSubmit(handleSubmitForm)} id="form-edit" className="w-full max-w-4xl p-4 lg:grid lg:grid-cols-2 lg:gap-10">
+      <input type="hidden" {...register('senha')} />
       <div className="space-y-4">
         <div>
           <label className="block text-sm font-bold m-2" htmlFor="nome-completo">Nome Completo *</label>
@@ -289,12 +266,12 @@ export default function EdicaoContainer({ isLoading = false, usuarioId, onSubmit
             id="nome-completo"
             type="text"
             placeholder="Digite seu nome completo"
-            pattern="[A-Za-zÀ-ÖØ-öø-ÿ\s]+ [A-Za-zÀ-ÖØ-öø-ÿ\s]+$"
-            value={values.nome}
-            onChange={(event) => setValues((prev) => ({ ...prev, nome: event.target.value }))}
-            className="px-4 py-2.5 w-full border border-gray-300 rounded-3xl text-sm focus:ring-2 focus:ring-[#087487] focus:border-transparent outline-none transition"
+            className={`px-4 py-2.5 w-full border rounded-3xl text-sm focus:ring-2 focus:ring-[#087487] focus:border-transparent outline-none transition ${errors.nome ? 'border-red-500' : 'border-gray-300'}`}
+            aria-invalid={!!errors.nome}
+            {...register('nome')}
             required
           />
+          {errors.nome && <p className="text-sm text-red-500 mt-1 ml-2">{errors.nome.message}</p>}
         </div>
 
         <div>
@@ -304,11 +281,12 @@ export default function EdicaoContainer({ isLoading = false, usuarioId, onSubmit
             type="email"
             title="Por favor, insira o seu email pessoal"
             placeholder="Ex.: nome@exemplo.com"
-            value={values.email}
-            onChange={(event) => setValues((prev) => ({ ...prev, email: event.target.value }))}
-            className="px-4 py-2.5 w-full border border-gray-300 rounded-3xl text-sm focus:ring-2 focus:ring-[#087487] focus:border-transparent outline-none transition"
+            className={`px-4 py-2.5 w-full border rounded-3xl text-sm focus:ring-2 focus:ring-[#087487] focus:border-transparent outline-none transition ${errors.email ? 'border-red-500' : 'border-gray-300'}`}
+            aria-invalid={!!errors.email}
+            {...register('email')}
             required
           />
+          {errors.email && <p className="text-sm text-red-500 mt-1 ml-2">{errors.email.message}</p>}
         </div>
 
         <div>
@@ -318,37 +296,16 @@ export default function EdicaoContainer({ isLoading = false, usuarioId, onSubmit
             type="text"
             inputMode="numeric"
             placeholder="Ex.: 123.456.789-00"
-            value={values.cpf}
-            onChange={handleCpfChange}
-            pattern="^\d{3}\.\d{3}\.\d{3}-\d{2}$"
-            className="px-4 py-2.5 w-full border border-gray-300 rounded-3xl text-sm focus:ring-2 focus:ring-[#087487] focus:border-transparent outline-none transition"
+            className={`px-4 py-2.5 w-full border rounded-3xl text-sm focus:ring-2 focus:ring-[#087487] focus:border-transparent outline-none transition ${errors.cpf ? 'border-red-500' : 'border-gray-300'}`}
+            aria-invalid={!!errors.cpf}
+            {...register('cpf', {
+              onChange: (event) => {
+                setValue('cpf', formatarCPF(event.target.value), { shouldValidate: true, shouldDirty: true });
+              },
+            })}
             required
           />
-        </div>
-
-        <div>
-          <label className="block text-sm font-bold m-2" htmlFor="input-senha">Mudar Senha (opcional)</label>
-          <div className="relative">
-            <input
-              id="input-senha"
-              className="px-4 py-2.5 w-full border border-gray-300 rounded-3xl text-sm focus:ring-2 focus:ring-[#087487] focus:border-transparent outline-none transition"
-              type={mostrarSenha ? "text" : "password"}
-              value={values.senha ?? ""}
-              onChange={(event) => setValues((prev) => ({ ...prev, senha: event.target.value }))}
-              minLength={8}
-              title="A senha deve ter pelo menos 8 dígitos ou ficar em branco"
-              placeholder="Digite uma nova senha"
-            />
-            <button
-              type="button"
-              onClick={() => setMostrarSenha((prev) => !prev)}
-              className="absolute right-4 bottom-1/2 translate-y-1/2 text-gray-500 hover:text-gray-700 focus:outline-none flex items-center justify-center"
-            >
-              <span className="material-symbols-outlined !text-lg">
-                {mostrarSenha ? "visibility_off" : "visibility"}
-              </span>
-            </button>
-          </div>
+          {errors.cpf && <p className="text-sm text-red-500 mt-1 ml-2">{errors.cpf.message}</p>}
         </div>
 
         <div>
@@ -358,11 +315,15 @@ export default function EdicaoContainer({ isLoading = false, usuarioId, onSubmit
             type="tel"
             inputMode="tel"
             placeholder="Ex.: (83) 98765-4321"
-            value={values.telefone}
-            onChange={handleTelefoneChange}
-            pattern="^\(\d{2}\) \d{5}-\d{4}$"
-            className="px-4 py-2.5 w-full border border-gray-300 rounded-3xl text-sm focus:ring-2 focus:ring-[#087487] focus:border-transparent outline-none transition"
+            className={`px-4 py-2.5 w-full border rounded-3xl text-sm focus:ring-2 focus:ring-[#087487] focus:border-transparent outline-none transition ${errors.telefone ? 'border-red-500' : 'border-gray-300'}`}
+            aria-invalid={!!errors.telefone}
+            {...register('telefone', {
+              onChange: (event) => {
+                setValue('telefone', formatarTelefone(event.target.value), { shouldValidate: true, shouldDirty: true });
+              },
+            })}
           />
+          {errors.telefone && <p className="text-sm text-red-500 mt-1 ml-2">{errors.telefone.message}</p>}
         </div>
       </div>
 
@@ -373,12 +334,12 @@ export default function EdicaoContainer({ isLoading = false, usuarioId, onSubmit
             id="matricula-institucional"
             type="text"
             placeholder="Ex.: 20261230012"
-            pattern="[0-9]{9}[0-9]*|[0-9]{7}"
-            value={values.matricula}
-            onChange={(event) => setValues((prev) => ({ ...prev, matricula: event.target.value }))}
-            className="px-4 py-2.5 w-full border border-gray-300 rounded-3xl text-sm focus:ring-2 focus:ring-[#087487] focus:border-transparent outline-none transition"
+            className={`px-4 py-2.5 w-full border rounded-3xl text-sm focus:ring-2 focus:ring-[#087487] focus:border-transparent outline-none transition ${errors.matricula ? 'border-red-500' : 'border-gray-300'}`}
+            aria-invalid={!!errors.matricula}
+            {...register('matricula')}
             required
           />
+          {errors.matricula && <p className="text-sm text-red-500 mt-1 ml-2">{errors.matricula.message}</p>}
         </div>
 
         <div>
@@ -386,10 +347,10 @@ export default function EdicaoContainer({ isLoading = false, usuarioId, onSubmit
           <div className="relative">
             <select
               id="opcoes"
-              value={values.curso}
-              onChange={(event) => setValues((prev) => ({ ...prev, curso: event.target.value }))}
+              className={`px-4 py-2.5 w-full cursor-pointer border rounded-3xl text-sm focus:ring-2 focus:ring-[#087487] focus:border-transparent outline-none transition appearance-none bg-white ${errors.curso ? 'border-red-500' : 'border-gray-300'}`}
+              aria-invalid={!!errors.curso}
+              {...register('curso')}
               required
-              className="px-4 py-2.5 w-full cursor-pointer border border-gray-300 rounded-3xl text-sm focus:ring-2 focus:ring-[#087487] focus:border-transparent outline-none transition appearance-none bg-white"
             >
               <option value="" disabled>Selecione uma opção</option>
               <optgroup label="Cursos Superiores">
@@ -419,13 +380,15 @@ export default function EdicaoContainer({ isLoading = false, usuarioId, onSubmit
           <input
             id="data-formacao"
             type="text"
-            pattern="[0-9]{4}\.[0-9]{1}"
             placeholder="Ex.: 2026.1"
-            value={values.formacao}
-            onChange={(event) => setValues((prev) => ({ ...prev, formacao: event.target.value }))}
-            className="px-4 py-2.5 w-full border border-gray-300 rounded-3xl text-sm focus:ring-2 focus:ring-[#087487] focus:border-transparent outline-none transition"
+            className={`px-4 py-2.5 w-full border rounded-3xl text-sm focus:ring-2 focus:ring-[#087487] focus:border-transparent outline-none transition ${errors.formacao ? 'border-red-500' : 'border-gray-300'}`}
+            aria-invalid={!!errors.formacao}
+            {...register('formacao', {
+              onChange: (event) => handleFormacaoChange(event),
+            })}
             required
           />
+          {errors.formacao && <p className="text-sm text-red-500 mt-1 ml-2">{errors.formacao.message}</p>}
         </div>
 
         <div>
@@ -434,27 +397,27 @@ export default function EdicaoContainer({ isLoading = false, usuarioId, onSubmit
             <input
               type="text"
               id="input-username"
-              className="px-4 py-2.5 w-full border border-gray-300 rounded-3xl text-sm focus:ring-2 focus:ring-[#087487] focus:border-transparent outline-none transition"
-              value={values.username}
-              onChange={handleUsernameChange}
-              minLength={3}
-              pattern="[A-Za-z0-9\-]+"
-              title="Permitido apenas letras, números e hífen."
+              className={`px-4 py-2.5 w-full border rounded-3xl text-sm focus:ring-2 focus:ring-[#087487] focus:border-transparent outline-none transition ${errors.username ? 'border-red-500' : 'border-gray-300'}`}
               placeholder="Digite seu nome de usuário"
+              aria-invalid={!!errors.username}
+              {...register('username', {
+                onChange: (event) => handleUsernameChange(event),
+              })}
               required
             />
             <span className="absolute right-4 bottom-1/2 translate-y-1/2 flex items-center justify-center">
-              {usernameStatus === "loading" && (
+              {usernameStatus === 'loading' && (
                 <div className="w-[18px] h-[18px] border-2 border-zinc-300 border-t-[#0b8aa0] rounded-full animate-spin" />
               )}
-              {usernameStatus === "success" && (
+              {usernameStatus === 'success' && (
                 <span className="material-symbols-outlined text-green-500 !text-lg">check_circle</span>
               )}
-              {usernameStatus === "error" && (
+              {usernameStatus === 'error' && (
                 <span className="material-symbols-outlined text-red-500 !text-lg">cancel</span>
               )}
             </span>
           </div>
+          {errors.username && <p className="text-sm text-red-500 mt-1 ml-2">{errors.username.message}</p>}
         </div>
       </div>
 
@@ -539,7 +502,11 @@ export default function EdicaoContainer({ isLoading = false, usuarioId, onSubmit
       )}
 
       <div className="md:col-span-2 flex justify-end gap-4 mt-12 lg:mt-8">
-        <button id="btn-cancel" type="button" className="px-8 py-2 border border-gray-300 rounded-3xl text-sm font-bold text-[#0b8aa0] hover:bg-gray-100 cursor-pointer shadow-lg transition duration-300 active:scale-95 active:shadow-2xl">
+        <button
+      id="btn-cancel"
+      type="button"
+      onClick={() => router.push(`/perfil/${currentUsername}`)}
+          className="px-8 py-2 border border-gray-300 rounded-3xl text-sm font-bold text-[#0b8aa0] hover:bg-gray-100 cursor-pointer shadow-lg transition duration-300 active:scale-95 active:shadow-2xl flex items-center justify-center">
           <span id="cancel-text">Cancelar</span>
           <svg id="cancel-spinner" className="hidden animate-spin h-6 w-6 text-[#e0e0e0]" fill="none">
             <use href="/icons.svg#carregando"></use>
@@ -553,7 +520,10 @@ export default function EdicaoContainer({ isLoading = false, usuarioId, onSubmit
           type="submit"
         >
           {!isLoading ? (
+          <>
+            <span className="material-symbols-outlined !text-lg">person_edit</span>
             <span>Salvar Alterações</span>
+          </>
           ) : (
             <>
               <div className="animate-spin h-5 w-5 border-2 border-white/30 border-t-white rounded-full" />

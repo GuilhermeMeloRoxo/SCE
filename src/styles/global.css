@@ -148,7 +148,7 @@ main {
 }
 #search input {    
     padding: 6px 14px;
-    border: 1px solid #ccc;
+    border: 1px solid rgb(58, 57, 57);
     border-radius: 80px;
     outline: none;
     width: 280px;
@@ -183,7 +183,6 @@ main {
     color: #0b8aa0;
     box-shadow: 0 8px 210px rgba(1, 13, 28, 0.18);
     transition: all 0.2s ease;
-    display: none;
 }
 #btn-send:hover {
     color: #087487;

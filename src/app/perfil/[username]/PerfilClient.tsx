@@ -4,7 +4,9 @@ import { usePathname } from "next/navigation";
 import { Navbar } from "@/components/Navbar";
 import { GithubContainer } from '@/app/perfil/[username]/GithubContainer';
 import { ProfileContainer } from '@/components/ProfileContainer';
-import { use } from 'react';
+import { use, useEffect, useState } from 'react';
+import { useAuth } from '@/hooks/useAuth';
+import { buscarPerfilPublico } from '@/services/profile';
 
 interface PerfilProps {
   params: Promise<{ username: string }>;
@@ -14,21 +16,44 @@ interface PerfilProps {
 export default function PerfilClient({ params }: PerfilProps) {
     const pathname = usePathname();
     const { username } = use(params);
+    const { usuario, carregando } = useAuth();
+    const [isOwner, setIsOwner] = useState(false);
+
+    useEffect(() => {
+      async function checkOwner() {
+        if (!username || !usuario) {
+          setIsOwner(false);
+          return;
+        }
+
+        try {
+          const perfilRes = await buscarPerfilPublico(username);
+          const perfil = perfilRes?.data;
+          setIsOwner(Boolean(usuario.id && perfil?.id && usuario.id === perfil.id));
+        } catch (err) {
+          console.error('Erro ao verificar dono do perfil', err);
+          setIsOwner(false);
+        }
+      }
+
+      checkOwner();
+    }, [username, usuario]);
 
     return (
         <>
         <Navbar />
-        <main className="min-h-[calc(100vh-65px-150px)] bg-white flex">
+        <main className="min-h-[calc(100vh-65px-150px)] bg-slate-300 flex">
         <div className="flex w-full flex-col lg:flex-row"> 
                 <ProfileContainer 
                     username={username}
                 />
-            <div className="flex-1 bg-white px-8 py-2 sm:py-8 overflow-y-auto">
+            <div className="flex-1 bg-slate-200 px-8 py-2 sm:py-8 overflow-y-auto">
                 <div className="max-w-[1400px]">
                     <div>
                         <div className="mb-12 mt-6">
                             <div className="inline-flex"><h1 className="text-4xl font-black text-slate-900 tracking-tight">Seu Perfil</h1>
-                            <Link href={'/perfil/'+username+'/editar-perfil'}><span className="material-symbols-outlined !text-2xl pl-4 pt-1 text-slate-800 hover:text-[#087487] transition-colors">edit</span></Link></div>
+                            {isOwner && (<Link href={'/perfil/editar-perfil'}><span className="material-symbols-outlined !text-2xl pl-4 pt-1 text-slate-800 hover:text-[#087487] transition-colors">edit</span></Link>)}
+                            </div>
                             <div className="h-1.5 w-20 bg-[#0b8aa0] flex flex-col mt-4 rounded-full"></div>
                         </div>
                     </div>

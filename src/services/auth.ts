@@ -1,10 +1,14 @@
 'use server'
+import { getSupabaseAdmin } from "./supabaseAdmin";
 import { getSupabase } from "./supabaseServer";
+import { limparStorageDoUsuario } from "./storage";
 
-export async function fazerLogout() {
-    try {
+export async function fazerLogout(apenasLocal = false) {
+  try {
       const supabase = await getSupabase();
-      const { error } = await supabase.auth.signOut();
+      const { error } = await supabase.auth.signOut({ 
+      scope: apenasLocal ? 'local' : 'global' 
+    });
       if (error) {
       console.error("Ocorreu um erro inesperado: ", error.message);
       return { success: false, error };
@@ -68,7 +72,7 @@ export async function obterUsuarioAtual() {
   const { data, error } = await supabase.auth.getUser();
   if (error || !data?.user?.id) {
     console.error("Erro ao obter usuário atual:", error.message);
-    throw new Error('NOT AUTHENTICATED');
+    return { user: null }; 
   }
   return data;
 }
@@ -82,3 +86,25 @@ export async function loginUsuario(email: string, senha: string) {
   if (error) throw error;
   return data?.user;
 }
+
+export async function deletarUsuario() {
+  const supabaseAdmin = await getSupabaseAdmin();
+  const data = await obterUsuarioAtual();
+
+  const userId = data.user.id;
+
+  try {
+    await limparStorageDoUsuario(userId, supabaseAdmin);
+
+    const { error: deleteError } = await supabaseAdmin.auth.admin.deleteUser(userId);
+    if (deleteError) throw deleteError;
+
+    await fazerLogout(true);
+
+  } catch (error: any) {
+    console.error('Erro ao deletar conta:', error);
+    return { success: false, error: error.message || 'Erro inesperado' };
+  }
+  return { success: true}
+}
+

@@ -2,10 +2,11 @@ import type { Metadata } from 'next';
 import '../styles/global.css';
 import { Footer } from "@/components/Footer";
 import { AlertProvider } from '@/context/AlertContext';
+import { ReactQueryProvider } from '@/components/ReactQueryProvider';
 
 export const metadata: Metadata = {
     title: {
-        default: 'Mural - SCE',
+        default: 'SCE',
         template: '%s | SCE'
     },
     description: 'Mural de Notícias do Sistema de Controle de Egressos',
@@ -18,9 +19,11 @@ export default function Rootlayout({
 }) {
     return (
         <html lang="pt-br">
-            <body className="bg-white flex sm:justify-center">
+            <body className="bg-slate-200 flex sm:justify-center">
                 <AlertProvider>
-                    {children}
+                    <ReactQueryProvider>
+                        {children}
+                    </ReactQueryProvider>
                     <Footer />
                 </AlertProvider>
             </body>

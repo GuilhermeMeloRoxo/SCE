@@ -43,13 +43,13 @@ export async function buscarRepositoriosGithub(github_user: string) {
 }
 
 
-export async function obterUsuarioGithub() {
+export async function obterUsuarioGithub(username: string) {
   const tokenGithub = await buscarTokenGithub();
   if (!tokenGithub) {
     return { error: 'TOKEN_AUSENTE' };
   }
 
-  const userRes = await fetch('https://api.github.com/user', {
+  const userRes = await fetch(`https://api.github.com/users/${username}`, {
     headers: {
       Authorization: `Bearer ${tokenGithub}`,
       Accept: "application/vnd.github+json"
@@ -89,7 +89,16 @@ async function buscarTokenGithub() {
   const tokenGithub = tokenData?.access_token;
 
   if (!tokenGithub) {
-    return { error: 'TOKEN_AUSENTE' };
+    return;
   }
   return tokenGithub
+}
+
+export async function removerGithub() {
+  const supabase = await getSupabase();
+  const { user } = await obterUsuarioAtual();
+  await supabase
+  .from('dados_privados')
+  .update({ github_user: null })
+  .eq('id', user)
 }

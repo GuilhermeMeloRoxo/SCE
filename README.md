@@ -103,6 +103,7 @@ garantindo conformidade total com as exigências de avaliação do MEC.
             .env
             NEXT_PUBLIC_SUPABASE_URL=seu_project_url_aqui
             NEXT_PUBLIC_SUPABASE_ANON_KEY=sua_anon_public_key_aqui
+            SUPABASE_SECRET_KEY=sua_chave_secreta_aqui
          
 4. Dê start na aplicação:
    - npm run dev
@@ -113,43 +114,79 @@ garantindo conformidade total com as exigências de avaliação do MEC.
 ## Estrutura do Projeto
 
       SCE/
-      ├── pages/                                 # Páginas do sistema
-      |   ├── cadastro/                          # Página de cadastro
-      |   |   ├── index.html
-      |   |   └── main.js
-      |   ├── login/                             # Página de login
-      |   |   ├── index.html
-      |   |   └── main.js
-      |   ├── perfil/                            # Página de perfil
-      |   |   ├── editar/                        # Página de edição do perfil
-      |   |   |   ├── index.html
-      |   |   |   └── main.js
-      |   |   ├── index.html
-      |   |   └── main.js
-      ├── public/                                # Imagens e ícones
-      |   ├── components/                        # Componentes reutilizáveis
-      |   |   ├── footer.html
-      |   |   ├── navbar.html
-      |   |   └── search.html
+      ├── public/                                   # Imagens e ícones
       |   ├── favicon.svg
       |   ├── github.png
       |   ├── icons.svg 
       |   ├── instagram.png
       |   ├── linkedin.png
       |   └── logo.png
-      ├── src/                                   # Código-fonte principal da aplicação
-      |   ├── lib/                               # Lida com armazenamento de feedbacks
-      |   |   └── storage.js
-      |   ├── main.js
-      |   ├── style.css                          # Estilização global
-      |   └── supabaseClient.js
-      ├── .env.example                           # Modelo para configurar variáveis do projeto
-      ├── index.html                             # Página inicial
-      ├── package-lock.json                      
-      ├── package.json                           # Gerencia de dependências
-      ├── preview.png
-      ├── schema.sql                             # SQL para gerar tabelas no supabase
-      └── vite.config.js                         # Configuração do Vite
+      ├── src/                                      # Código-fonte principal da aplicação
+      |   ├── app/                                  # Rotas e páginas usando o App Router do Next.js
+      |   |   ├── auth/callback/                    # Rota de redirecionamento
+      |   |   |   └── route.ts
+      |   |   ├── cadastro/                         # Rota da página de registro de novos usuários
+      |   |   |   └── page.tsx
+      |   |   ├── login/                            # Rota da página de autenticação
+      |   |   |   └── page.tsx
+      |   |   ├── mural/                            # Rota do feed ou mural principal de postagens                          
+      |   |   |   └── page.tsx
+      |   |   ├── perfil/                           # Rotas relacionadas ao perfil do usuário
+      |   |   |   ├── [username]/                   # Rota dinâmica para o perfil de um usuário específico
+      |   |   |   |   ├── GithubButton.tsx
+      |   |   |   |   ├── GithubContainer.tsx
+      |   |   |   |   ├── PerfilClient.tsx
+      |   |   |   |   └── page.tsx
+      |   |   |   └── editar-perfil/                # Rota para modificação de dados da conta
+      |   |   |       ├── EdicaoContainer.tsx
+      |   |   |       ├── EditarPerfilClient.tsx
+      |   |   |       └── page.tsx
+      |   |   ├── layout.tsx                        # Layout global que envolve todas as páginas do app
+      |   |   └── page.tsx                          # Página inicial
+      |   ├── componets/                            # Componentes reutilizáveis de interface
+      |   |   ├── CreatePostModal.tsx
+      |   |   ├── EditPostModal.tsx
+      |   |   ├── Footer.tsx
+      |   |   ├── Icons.tsx
+      |   |   ├── Navbar.tsx
+      |   |   ├── ProfileContainer.tsx
+      |   |   ├── ReactQueryProvider.tsx
+      |   |   ├── SearchBar.tsx
+      |   |   └── SendFeedbackModal.tsx
+      |   ├── context/                              # Contextos globais do React para gerenciamento de estado
+      |   |   └── AlertContext.tsx
+      |   ├── hooks/                                # Hooks customizados do React para isolar lógica
+      |   |   ├── useAuth.ts
+      |   |   ├── useCheckUsername.ts
+      |   |   ├── usePosts.ts
+      |   |   └── useTogglePassword.ts
+      |   ├── schemas/                              # Schemas de validação de formulários
+      |   |   ├── CadastroSchema.ts
+      |   |   ├── EditarSchema.ts
+      |   |   └── LoginSchema.ts
+      |   ├── services/                             # Integrações com APIs externas e serviços do Supabase
+      |   |   ├── auth.ts
+      |   |   ├── github.ts
+      |   |   ├── images.ts
+      |   |   ├── mural.ts
+      |   |   ├── profile.ts
+      |   |   ├── storage.ts
+      |   |   ├── supabaseAdmin.ts
+      |   |   ├── supabaseBrowser.ts
+      |   |   └── supabaseServer.ts
+      |   ├── styles/                              # Configurações de estilização global
+      |   |   └── global.css
+      |   └── utils/                               # Funções utilitárias e ferramentas auxiliares
+      |       └── formatters.ts
+      ├── .env.example                             # Modelo de variáveis de ambiente (sem dados sensíveis)
+      ├── next-env.d.ts                            # Tipagens automáticas geradas pelo Next.js para o TypeScript
+      ├── next.config.ts                           # Configurações customizadas do framework Next.js
+      ├── package-lock.json                        # Histórico exato das versões de dependências instaladas
+      ├── package.json                             # Manifesto do projeto com scripts e lista de dependências
+      ├── postcss.config.mjs                       # Configuração do PostCSS usada para processar o Tailwind
+      ├── preview.png                              # Imagem de demonstração do projeto para o repositório
+      ├── schema.sql                               # Estrutura do banco de dados para importar no Supabase
+      └── tsconfig.json                            # Configurações de compilação do TypeScript                         
 
 ## Autores
 - **Guilherme Mélo** - Desenvolvimento Full Stack - [@GuilhermeMelo](https://github.com/GuilhermeMeloRoxo)

@@ -1,4 +1,6 @@
 'use server';
+import { obterUsuarioAtual } from "./auth";
+import { apagarImagemPost } from "./storage";
 import { getSupabase } from "./supabaseServer";
 
 export async function buscarPostsMural() {
@@ -75,6 +77,49 @@ export async function enviarFeedback(tipo: string, assunto: string, mensagem: st
   return { success: true };
 }
 
+export async function criarPost(
+  userId: string, 
+  conteudo: string, 
+  tag: string, 
+  temImagem: boolean
+) {
+  const supabase = await getSupabase();
+  const tagId = await buscarTagId(tag);
+
+  const insertData: any = { 
+    id: userId,
+    conteudo: conteudo, 
+    tag_id: tagId 
+  };
+
+  const { data: postGerado, error: insertError } = await supabase
+    .from("posts")
+    .insert([insertData])
+    .select("post_id")
+    .single();
+
+  if (insertError || !postGerado) {
+    console.error("Erro ao criar post:", insertError?.message);
+    return { success: false, error: insertError?.message || "Erro ao salvar post." };
+  }
+
+  const idDoPostNovo = postGerado.post_id;
+
+  if (temImagem) {
+    const { error: updateError } = await supabase
+      .from("posts")
+      .update({ caminho_imagem: `${idDoPostNovo}.webp` })
+      .eq("post_id", idDoPostNovo);
+
+    if (updateError) {
+      console.error("Erro ao atualizar o nome da imagem:", updateError.message);
+      return { success: false, error: "Post criado, mas falhou ao mapear a imagem." };
+    }
+  }
+
+  return { success: true, postId: idDoPostNovo };
+}
+
 export async function buscarPostsCurtidos(userId: string, postIds: string[]) {
   const supabase = await getSupabase();
   if (!userId || postIds.length === 0) return new Set();
@@ -90,6 +135,81 @@ export async function buscarPostsCurtidos(userId: string, postIds: string[]) {
     return new Set();
   }
 
-  // Transformamos em um Set para buscas ultra-rápidas no JavaScript (.has)
   return new Set(data.map((item) => item.post_id));
+}
+
+export async function buscarTagId(tagNome) {
+  const supabase = await getSupabase();
+  const { data, error } = await supabase
+  .from('tags')
+  .select('tag_id')
+  .eq('nome', tagNome)
+  .single()
+
+  if (error) {
+    console.error("Erro ao buscar nome de tag:", error.message);
+    return {error: "tag inválida"};
+  }
+
+  return data.tag_id;
+}
+
+export interface DadosAtualizacaoPost {
+  conteudo?: string;
+  tag?: string;
+  temImagem?: boolean;
+}
+
+export async function atualizarPost(
+  postId: string, 
+  dados: DadosAtualizacaoPost): Promise<{ success: boolean; error?: string }> {
+  const supabase = await getSupabase();
+  const updateData: any = {};
+  if (dados.conteudo !== undefined) {
+    updateData.conteudo = dados.conteudo;
+  }
+  if (dados.tag !== undefined) {
+    const tagId = await buscarTagId(dados.tag);
+    updateData.tag_id = tagId;
+  }
+  if (dados.temImagem === true) {
+    updateData.caminho_imagem = `${postId}.webp`;
+  } else if (dados.temImagem === false) {
+    updateData.caminho_imagem = null;
+  }
+  if (Object.keys(updateData).length === 0) {
+    return { success: true };
+  }
+  const { error: updateError } = await supabase
+    .from("posts")
+    .update(updateData)
+    .eq("post_id", postId);
+
+  if (updateError) {
+    console.error("Erro ao atualizar post:", updateError.message);
+    return { success: false, error: updateError.message || "Erro ao salvar alterações." };
+  }
+  return { success: true };
+}
+
+export async function deletarPost(postId: string) {
+  const supabase = await getSupabase();
+  const data = await obterUsuarioAtual();
+  const userId = data.user.id;
+  const caminhoImagem = `${userId}/${postId}.webp`;
+  try {
+    const { error: deleteError } = await supabase
+    .from('posts')
+    .delete()
+    .eq('post_id', postId)
+
+    if (deleteError) throw deleteError;
+
+    await apagarImagemPost(caminhoImagem);
+    
+  } catch (error: any) {
+    console.error('Erro ao apagar postagem: ', error);
+    return { success: false, error: error.message || 'Erro inesperado' };
+  }
+  return { success: true }
 }
